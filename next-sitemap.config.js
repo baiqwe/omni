@@ -1,5 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
-const { landingPageSlugs } = require("./config/landing-pages-slugs");
+const landingPages = require("./config/landing-pages.json");
+const landingPageSlugs = Object.keys(landingPages);
 
 module.exports = {
     siteUrl: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',

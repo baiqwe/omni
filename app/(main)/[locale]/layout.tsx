@@ -12,6 +12,10 @@ import { ClarityAnalytics } from "@/components/clarity-analytics";
 import { site } from "@/config/site";
 import "../../globals.css";
 
+export function generateStaticParams() {
+    return routing.locales.map((locale) => ({ locale }));
+}
+
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
     const params = await props.params;
     const { locale } = params;
