@@ -1,5 +1,20 @@
 import { redirect } from "next/navigation";
 
+export function normalizeLocale(locale?: string | null) {
+  return locale === "zh" ? "zh" : "en";
+}
+
+export function getLocalePath(path: string, locale?: string | null) {
+  const normalizedLocale = normalizeLocale(locale);
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+  if (/^\/(en|zh)(\/|$)/.test(normalizedPath)) {
+    return normalizedPath;
+  }
+
+  return `/${normalizedLocale}${normalizedPath}`;
+}
+
 /**
  * Redirects to a specified path with an encoded message as a query parameter.
  * @param {('error' | 'success')} type - The type of message, either 'error' or 'success'.
@@ -11,6 +26,7 @@ export function encodedRedirect(
   type: "error" | "success",
   path: string,
   message: string,
+  locale?: string | null,
 ) {
-  return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
+  return redirect(`${getLocalePath(path, locale)}?${type}=${encodeURIComponent(message)}`);
 }

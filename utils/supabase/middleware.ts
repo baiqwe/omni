@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
+import { getAppKey } from "./project";
 
 export const updateSession = async (request: NextRequest) => {
   // This `try/catch` block is only here for the interactive tutorial.
@@ -16,6 +17,11 @@ export const updateSession = async (request: NextRequest) => {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
+        global: {
+          headers: {
+            "x-app-key": getAppKey(),
+          },
+        },
         cookies: {
           getAll() {
             return request.cookies.getAll();
@@ -38,10 +44,12 @@ export const updateSession = async (request: NextRequest) => {
     // This will refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/server-side/nextjs
     const user = await supabase.auth.getUser();
+    const localeMatch = request.nextUrl.pathname.match(/^\/(en|zh)(?:\/|$)/);
+    const localePrefix = localeMatch ? `/${localeMatch[1]}` : "/en";
 
     // Only protect dashboard routes
-    if (request.nextUrl.pathname.startsWith("/dashboard") && user.error) {
-      return NextResponse.redirect(new URL("/sign-in", request.url));
+    if (/^\/(?:en|zh)?\/?dashboard(?:\/|$)/.test(request.nextUrl.pathname) && user.error) {
+      return NextResponse.redirect(new URL(`${localePrefix}/sign-in`, request.url));
     }
     // Redirect to dashboard all the time if user is logged in
     // if (request.nextUrl.pathname === "/" && !user.error) {

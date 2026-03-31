@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { getProjectId } from "@/utils/supabase/project";
 
 export class CreditError extends Error {
     code: string;
@@ -10,10 +11,12 @@ export class CreditError extends Error {
 
 export async function getUserCredits(userId: string) {
     const supabase = await createClient();
+    const projectId = await getProjectId(supabase);
 
     const { data: customer, error } = await supabase
         .from('customers')
         .select('*')
+        .eq('project_id', projectId)
         .eq('user_id', userId)
         .single();
 
@@ -26,6 +29,7 @@ export async function getUserCredits(userId: string) {
                 const { data: newCustomer, error: createError } = await supabase
                     .from('customers')
                     .insert({
+                        project_id: projectId,
                         user_id: userId,
                         email: user.email,
                         credits: 30, // Default signup bonus
@@ -52,11 +56,13 @@ export async function getUserCredits(userId: string) {
 
 export async function deductCredits(userId: string, amount: number, description: string) {
     const supabase = await createClient();
+    const projectId = await getProjectId(supabase);
 
     // Get current balance
     const { data: customer, error: fetchError } = await supabase
         .from('customers')
         .select('id, credits')
+        .eq('project_id', projectId)
         .eq('user_id', userId)
         .single();
 
@@ -76,6 +82,7 @@ export async function deductCredits(userId: string, amount: number, description:
             credits: newBalance,
             updated_at: new Date().toISOString()
         })
+        .eq('project_id', projectId)
         .eq('id', customer.id);
 
     if (updateError) {
@@ -84,6 +91,7 @@ export async function deductCredits(userId: string, amount: number, description:
 
     // Log history
     await supabase.from('credits_history').insert({
+        project_id: projectId,
         customer_id: customer.id,
         amount: amount,
         type: 'subtract',
@@ -100,10 +108,12 @@ export async function deductCredits(userId: string, amount: number, description:
 
 export async function addCredits(userId: string, amount: number, description: string) {
     const supabase = await createClient();
+    const projectId = await getProjectId(supabase);
 
     const { data: customer, error: fetchError } = await supabase
         .from('customers')
         .select('id, credits')
+        .eq('project_id', projectId)
         .eq('user_id', userId)
         .single();
 
@@ -119,6 +129,7 @@ export async function addCredits(userId: string, amount: number, description: st
             credits: newBalance,
             updated_at: new Date().toISOString()
         })
+        .eq('project_id', projectId)
         .eq('id', customer.id);
 
     if (updateError) {
@@ -126,6 +137,7 @@ export async function addCredits(userId: string, amount: number, description: st
     }
 
     await supabase.from('credits_history').insert({
+        project_id: projectId,
         customer_id: customer.id,
         amount: amount,
         type: 'add',

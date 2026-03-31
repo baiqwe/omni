@@ -39,7 +39,7 @@ export function PricingSection({ locale }: PricingSectionProps) {
 
             // Redirect back to current page (pricing) or dashboard
             const successUrl = new URL(window.location.href);
-            successUrl.pathname = '/dashboard';
+            successUrl.pathname = `/${locale}/dashboard`;
             successUrl.searchParams.set('checkout', 'success');
             formData.append('redirectUrl', successUrl.toString());
 

@@ -1,5 +1,6 @@
 
 import { createClient } from "@/utils/supabase/server";
+import { getProjectId } from "@/utils/supabase/project";
 import { NextResponse } from "next/server";
 
 export const runtime = 'edge';
@@ -7,6 +8,7 @@ export const runtime = 'edge';
 export async function GET(request: Request) {
     try {
         const supabase = await createClient();
+        const projectId = await getProjectId(supabase);
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
@@ -16,6 +18,7 @@ export async function GET(request: Request) {
         const { data: customer, error: fetchError } = await supabase
             .from("customers")
             .select("*")
+            .eq("project_id", projectId)
             .eq("user_id", user.id)
             .single();
 
@@ -44,6 +47,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const supabase = await createClient();
+        const projectId = await getProjectId(supabase);
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
@@ -77,6 +81,7 @@ export async function POST(request: Request) {
         const { data: customer } = await supabase
             .from("customers")
             .select("*")
+            .eq("project_id", projectId)
             .eq("user_id", user.id)
             .single();
 

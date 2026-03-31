@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { getAppKey } from "@/utils/supabase/project";
 import { NextResponse } from "next/server";
 
 export const runtime = 'edge';
@@ -37,12 +38,13 @@ export async function POST(request: Request) {
             },
             body: JSON.stringify({
                 product_id: priceId,
-                success_url: redirectUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard?checkout=success`,
+                success_url: redirectUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/en/dashboard?checkout=success`,
                 // 🔥 关键：将 User ID 和产品类型传入 metadata，以便 Webhook 识别
                 metadata: {
                     user_id: user.id,
                     user_email: user.email,
                     product_type: productType || "subscription",
+                    app_key: getAppKey(),
                     ...(credits && { credits: parseInt(credits) }),
                 },
             }),

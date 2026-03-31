@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { getAppKey } from "./project";
 
 export const createClient = async () => {
   const cookieStore = await cookies();
@@ -8,6 +9,11 @@ export const createClient = async () => {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      global: {
+        headers: {
+          "x-app-key": getAppKey(),
+        },
+      },
       cookies: {
         getAll() {
           return cookieStore.getAll();

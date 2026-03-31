@@ -19,7 +19,7 @@ interface NavItem {
 export default function Header() {
   const pathname = usePathname();
   const t = useTranslations('nav');
-  const isDashboard = pathname?.startsWith("/dashboard");
+  const isDashboard = /^\/(?:en|zh)?\/?dashboard(?:\/|$)/.test(pathname || "");
   const { user, loading } = useUser();
 
   // 更可靠地检测当前 locale

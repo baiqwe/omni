@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { getProjectId } from "@/utils/supabase/project";
 import { redirect } from "next/navigation";
 import { SubscriptionStatusCard } from "@/components/dashboard/subscription-status-card";
 import { CreditsBalanceCard } from "@/components/dashboard/credits-balance-card";
@@ -10,6 +11,7 @@ export default async function DashboardPage(props: { params: Promise<{ locale: s
     const { locale } = params;
 
     const supabase = await createClient();
+    const projectId = await getProjectId(supabase);
 
     const {
         data: { user },
@@ -32,6 +34,7 @@ export default async function DashboardPage(props: { params: Promise<{ locale: s
       )
     `
         )
+        .eq("project_id", projectId)
         .eq("user_id", user.id)
         .single();
 

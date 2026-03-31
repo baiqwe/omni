@@ -28,10 +28,28 @@ const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
         autoRefreshToken: false,
         persistSession: false,
     },
+    global: {
+        headers: {
+            "x-app-key": process.env.NEXT_PUBLIC_APP_KEY || process.env.APP_KEY || "anima",
+        },
+    },
 });
 
 async function main() {
     console.log("Starting user fix script...");
+    const appKey = process.env.NEXT_PUBLIC_APP_KEY || process.env.APP_KEY || "anima";
+    const { data: project, error: projectError } = await supabase
+        .from("app_projects")
+        .select("id")
+        .eq("key", appKey)
+        .single();
+
+    if (projectError || !project?.id) {
+        console.error(`Failed to resolve app project "${appKey}":`, projectError);
+        return;
+    }
+
+    const projectId = project.id;
 
     // 1. List all users
     const { data: { users }, error: listError } = await supabase.auth.admin.listUsers();
@@ -49,6 +67,7 @@ async function main() {
         const { data: customer, error: fetchError } = await supabase
             .from("customers")
             .select("*")
+            .eq("project_id", projectId)
             .eq("user_id", user.id)
             .single();
 
@@ -60,6 +79,7 @@ async function main() {
         if (!customer) {
             console.log(`  -> Customer record missing. Creating...`);
             const { error: insertError } = await supabase.from("customers").insert({
+                project_id: projectId,
                 user_id: user.id,
                 email: user.email,
                 credits: 1000,
@@ -88,6 +108,7 @@ async function main() {
                 console.warn(`  -> RPC failed (${rpcError.message}), trying direct update...`);
                 const { error: updateError } = await supabase.from('customers')
                     .update({ credits: (customer.credits || 0) + 1000 })
+                    .eq('project_id', projectId)
                     .eq('user_id', user.id);
 
                 if (updateError) console.error(`  -> Direct update failed:`, updateError);

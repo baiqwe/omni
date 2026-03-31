@@ -9,7 +9,7 @@ import { landingPages } from "@/config/landing-pages";
 export function Footer() {
   const pathname = usePathname();
   const t = useTranslations('footer');
-  const isDashboard = pathname?.startsWith("/dashboard");
+  const isDashboard = /^\/(?:en|zh)?\/?dashboard(?:\/|$)/.test(pathname || "");
 
   // 检测当前 locale
   const pathParts = pathname?.split('/') || [];

@@ -4,12 +4,16 @@ import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { getLocalePath } from "@/utils/utils";
 
 export const runtime = 'edge';
 
 export default async function ForgotPassword(props: {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<Message>;
 }) {
+  const params = await props.params;
+  const locale = params.locale;
   const searchParams = await props.searchParams;
   return (
     <>
@@ -24,6 +28,7 @@ export default async function ForgotPassword(props: {
       </div>
       <div className="grid gap-6">
         <form className="grid gap-4">
+          <input type="hidden" name="locale" value={locale} />
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -49,7 +54,7 @@ export default async function ForgotPassword(props: {
         <div className="text-sm text-muted-foreground text-center">
           Remember your password?{" "}
           <Link
-            href="/sign-in"
+            href={getLocalePath("/sign-in", locale)}
             className="text-primary underline underline-offset-4 hover:text-primary/90"
           >
             Sign in

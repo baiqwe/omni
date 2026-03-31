@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { getProjectId } from "@/utils/supabase/project";
 import { NextResponse } from "next/server";
 
 export const runtime = 'edge';
@@ -7,6 +8,7 @@ export async function GET() {
     try {
         // 1. 验证用户登录
         const supabase = await createClient();
+        const projectId = await getProjectId(supabase);
         const { data: { user }, error: userError } = await supabase.auth.getUser();
 
         if (userError || !user) {
@@ -17,6 +19,7 @@ export async function GET() {
         const { data: customerData } = await supabase
             .from("customers")
             .select("creem_customer_id")
+            .eq("project_id", projectId)
             .eq("user_id", user.id)
             .single();
 
@@ -37,7 +40,7 @@ export async function GET() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard`,
+                    return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/en/dashboard`,
                 }),
             }
         );

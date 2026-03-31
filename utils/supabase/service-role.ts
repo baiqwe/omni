@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { getAppKey } from "./project";
 
 export const createServiceRoleClient = () => {
   return createClient(
@@ -8,6 +9,11 @@ export const createServiceRoleClient = () => {
       auth: {
         autoRefreshToken: false,
         persistSession: false,
+      },
+      global: {
+        headers: {
+          "x-app-key": getAppKey(),
+        },
       },
     }
   );

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { hasSupabaseEnv } from "@/utils/supabase/env";
+import { getProjectId } from "@/utils/supabase/project";
 import {
   SubscriptionStatus,
   ACTIVE_STATUSES,
@@ -68,6 +69,7 @@ export function useSubscription() {
     }
 
     try {
+      const projectId = await getProjectId(supabase);
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -88,6 +90,7 @@ export function useSubscription() {
           )
         `
         )
+        .eq("project_id", projectId)
         .eq("user_id", user.id)
         .single();
 

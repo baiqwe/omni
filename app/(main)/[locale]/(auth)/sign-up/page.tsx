@@ -8,12 +8,16 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
 import { redirect } from "next/navigation";
+import { getLocalePath } from "@/utils/utils";
 
 export const runtime = 'edge';
 
 export default async function SignUp(props: {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<Message>;
 }) {
+  const params = await props.params;
+  const locale = params.locale;
   const searchParams = await props.searchParams;
 
   const signUpWithGoogle = async () => {
@@ -38,7 +42,7 @@ export default async function SignUp(props: {
     });
 
     if (error) {
-      return encodedRedirect("error", "/sign-up", error.message);
+      return encodedRedirect("error", "/sign-up", error.message, locale);
     }
 
     if (data.url) {
@@ -56,6 +60,7 @@ export default async function SignUp(props: {
       </div>
       <div className="grid gap-6">
         <form className="grid gap-4">
+          <input type="hidden" name="locale" value={locale} />
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -129,7 +134,7 @@ export default async function SignUp(props: {
         <div className="text-sm text-muted-foreground text-center">
           Already have an account?{" "}
           <Link
-            href="/sign-in"
+            href={getLocalePath("/sign-in", locale)}
             className="text-primary underline underline-offset-4 hover:text-primary/90"
           >
             Sign in

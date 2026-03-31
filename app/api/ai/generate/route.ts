@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { getProjectId } from "@/utils/supabase/project";
 import { CREDITS_PER_GENERATION } from "@/config/credit-packs";
 import type { AnimeStyleId } from "@/config/landing-pages";
 
@@ -65,6 +66,7 @@ function buildPrompt(opts: {
 
 export async function POST(request: NextRequest) {
     const supabase = await createClient();
+    const projectId = await getProjectId(supabase);
 
     try {
         const body = await request.json();
@@ -225,6 +227,7 @@ export async function POST(request: NextRequest) {
 
             // 5. Log Generation
             await supabase.from("generations").insert({
+                project_id: projectId,
                 user_id: user.id,
                 prompt: finalPrompt,
                 model_id: "nano-banana",

@@ -1,4 +1,5 @@
 import { createServiceRoleClient } from "./service-role";
+import { getProjectId } from "./project";
 import { CreemCustomer, CreemSubscription } from "@/types/creem";
 
 export async function createOrUpdateCustomer(
@@ -6,11 +7,13 @@ export async function createOrUpdateCustomer(
   userId: string
 ) {
   const supabase = createServiceRoleClient();
+  const projectId = await getProjectId(supabase);
 
   // First, try to find existing customer by user_id (preserves existing credits from registration)
   const { data: existingByUserId, error: userIdError } = await supabase
     .from("customers")
     .select()
+    .eq("project_id", projectId)
     .eq("user_id", userId)
     .single();
 
@@ -29,6 +32,7 @@ export async function createOrUpdateCustomer(
         country: creemCustomer.country,
         updated_at: new Date().toISOString(),
       })
+      .eq("project_id", projectId)
       .eq("id", existingByUserId.id);
 
     if (error) throw error;
@@ -40,6 +44,7 @@ export async function createOrUpdateCustomer(
   const { data: existingByCreemId, error: creemIdError } = await supabase
     .from("customers")
     .select()
+    .eq("project_id", projectId)
     .eq("creem_customer_id", creemCustomer.id)
     .single();
 
@@ -56,6 +61,7 @@ export async function createOrUpdateCustomer(
         country: creemCustomer.country,
         updated_at: new Date().toISOString(),
       })
+      .eq("project_id", projectId)
       .eq("id", existingByCreemId.id);
 
     if (error) throw error;
@@ -66,6 +72,7 @@ export async function createOrUpdateCustomer(
   const { data: newCustomer, error } = await supabase
     .from("customers")
     .insert({
+      project_id: projectId,
       user_id: userId,
       creem_customer_id: creemCustomer.id,
       email: creemCustomer.email,
@@ -88,10 +95,12 @@ export async function createOrUpdateSubscription(
   customerId: string
 ) {
   const supabase = createServiceRoleClient();
+  const projectId = await getProjectId(supabase);
 
   const { data: existingSubscription, error: fetchError } = await supabase
     .from("subscriptions")
     .select()
+    .eq("project_id", projectId)
     .eq("creem_subscription_id", creemSubscription.id)
     .single();
 
@@ -100,6 +109,7 @@ export async function createOrUpdateSubscription(
   }
 
   const subscriptionData = {
+    project_id: projectId,
     customer_id: customerId,
     creem_product_id:
       typeof creemSubscription?.product === "string"
@@ -117,6 +127,7 @@ export async function createOrUpdateSubscription(
     const { error } = await supabase
       .from("subscriptions")
       .update(subscriptionData)
+      .eq("project_id", projectId)
       .eq("id", existingSubscription.id);
 
     if (error) throw error;
@@ -138,15 +149,18 @@ export async function createOrUpdateSubscription(
 
 export async function getUserSubscription(userId: string) {
   const supabase = createServiceRoleClient();
+  const projectId = await getProjectId(supabase);
 
   const { data, error } = await supabase
     .from("subscriptions")
     .select(
       `
       *,
-      customers!inner(user_id)
+      customers!inner(user_id, project_id)
     `
     )
+    .eq("project_id", projectId)
+    .eq("customers.project_id", projectId)
     .eq("customers.user_id", userId)
     .eq("status", "active")
     .single();
@@ -165,10 +179,12 @@ export async function addCreditsToCustomer(
   description?: string
 ) {
   const supabase = createServiceRoleClient();
+  const projectId = await getProjectId(supabase);
   // Start a transaction
   const { data: client } = await supabase
     .from("customers")
     .select("credits")
+    .eq("project_id", projectId)
     .eq("id", customerId)
     .single();
   if (!client) throw new Error("Customer not found");
@@ -180,6 +196,7 @@ export async function addCreditsToCustomer(
   const { error: updateError } = await supabase
     .from("customers")
     .update({ credits: newCredits, updated_at: new Date().toISOString() })
+    .eq("project_id", projectId)
     .eq("id", customerId);
 
   if (updateError) throw updateError;
@@ -188,6 +205,7 @@ export async function addCreditsToCustomer(
   const { error: historyError } = await supabase
     .from("credits_history")
     .insert({
+      project_id: projectId,
       customer_id: customerId,
       amount: credits,
       type: "add",
@@ -206,11 +224,13 @@ export async function useCredits(
   description: string
 ) {
   const supabase = createServiceRoleClient();
+  const projectId = await getProjectId(supabase);
 
   // Start a transaction
   const { data: client } = await supabase
     .from("customers")
     .select("credits")
+    .eq("project_id", projectId)
     .eq("id", customerId)
     .single();
   if (!client) throw new Error("Customer not found");
@@ -222,6 +242,7 @@ export async function useCredits(
   const { error: updateError } = await supabase
     .from("customers")
     .update({ credits: newCredits, updated_at: new Date().toISOString() })
+    .eq("project_id", projectId)
     .eq("id", customerId);
 
   if (updateError) throw updateError;
@@ -230,6 +251,7 @@ export async function useCredits(
   const { error: historyError } = await supabase
     .from("credits_history")
     .insert({
+      project_id: projectId,
       customer_id: customerId,
       amount: credits,
       type: "subtract",
@@ -243,10 +265,12 @@ export async function useCredits(
 
 export async function getCustomerCredits(customerId: string) {
   const supabase = createServiceRoleClient();
+  const projectId = await getProjectId(supabase);
 
   const { data, error } = await supabase
     .from("customers")
     .select("credits")
+    .eq("project_id", projectId)
     .eq("id", customerId)
     .single();
 
@@ -256,10 +280,12 @@ export async function getCustomerCredits(customerId: string) {
 
 export async function getCreditsHistory(customerId: string) {
   const supabase = createServiceRoleClient();
+  const projectId = await getProjectId(supabase);
 
   const { data, error } = await supabase
     .from("credits_history")
     .select("*")
+    .eq("project_id", projectId)
     .eq("customer_id", customerId)
     .order("created_at", { ascending: false });
 

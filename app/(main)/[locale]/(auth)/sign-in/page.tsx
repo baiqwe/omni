@@ -8,10 +8,13 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
 import { redirect } from "next/navigation";
+import { getLocalePath } from "@/utils/utils";
 
 export const runtime = 'edge';
 
-export default async function Login(props: { searchParams: Promise<Message> }) {
+export default async function Login(props: { params: Promise<{ locale: string }>; searchParams: Promise<Message> }) {
+  const params = await props.params;
+  const locale = params.locale;
   const searchParams = await props.searchParams;
 
   const signInWithGoogle = async () => {
@@ -36,7 +39,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
     });
 
     if (error) {
-      return encodedRedirect("error", "/sign-in", error.message);
+      return encodedRedirect("error", "/sign-in", error.message, locale);
     }
 
     if (data.url) {
@@ -54,6 +57,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
       </div>
       <div className="grid gap-6">
         <form className="grid gap-4">
+          <input type="hidden" name="locale" value={locale} />
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -71,7 +75,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
               <Link
-                href="/forgot-password"
+                href={getLocalePath("/forgot-password", locale)}
                 className="text-sm font-medium text-primary hover:underline"
               >
                 Forgot password?
@@ -135,7 +139,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
         <div className="text-sm text-muted-foreground text-center">
           Don't have an account?{" "}
           <Link
-            href="/sign-up"
+            href={getLocalePath("/sign-up", locale)}
             className="text-primary underline underline-offset-4 hover:text-primary/90"
           >
             Sign up
