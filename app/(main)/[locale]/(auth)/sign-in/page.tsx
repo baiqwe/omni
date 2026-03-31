@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
+import { getRequestOrigin } from "@/utils/request";
 import { encodedRedirect } from "@/utils/utils";
 import { redirect } from "next/navigation";
 import { getLocalePath } from "@/utils/utils";
@@ -20,12 +21,7 @@ export default async function Login(props: { params: Promise<{ locale: string }>
   const signInWithGoogle = async () => {
     "use server";
     const supabase = await createClient();
-
-    // 动态获取当前域名，支持多域名部署
-    const headersList = await import('next/headers').then(m => m.headers());
-    const host = headersList.get('host') || '';
-    const protocol = host.includes('localhost') ? 'http' : 'https';
-    const origin = `${protocol}://${host}`;
+    const origin = await getRequestOrigin();
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",

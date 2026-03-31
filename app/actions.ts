@@ -5,6 +5,7 @@ import { getLocalePath, normalizeLocale } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { getAppKey } from "@/utils/supabase/project";
 import { headers } from "next/headers";
+import { getRequestOrigin } from "@/utils/request";
 import { redirect } from "next/navigation";
 
 function resolveActionLocale(formData?: FormData) {
@@ -21,7 +22,7 @@ export const signUpAction = async (formData: FormData) => {
   const password = formData.get("password")?.toString();
   const locale = resolveActionLocale(formData);
   const supabase = await createClient();
-  const origin = (await headers()).get("origin");
+  const origin = await getRequestOrigin();
 
   if (!email || !password) {
     return encodedRedirect(
@@ -73,7 +74,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const locale = resolveActionLocale(formData);
   const supabase = await createClient();
-  const origin = (await headers()).get("origin");
+  const origin = await getRequestOrigin();
   const callbackUrl = formData.get("callbackUrl")?.toString();
 
   if (!email) {
