@@ -8,11 +8,10 @@ import type { AnimeStyleId } from "@/config/landing-pages";
 export const runtime = "nodejs";
 export const maxDuration = 60; // 1 minute timeout
 
-// Replicate official Stable Diffusion img2img.
-// We keep the current product flow (photo -> anime redraw) and reuse the
-// Animagine/Pony-style prompt matrix against an img2img-capable backend.
+// Replicate official Nano Banana Pro image editing model.
+// Verified input schema uses `prompt` + `image_input[]`.
 const REPLICATE_MODEL =
-    "stability-ai/stable-diffusion-img2img:15a3689ee13b0d2616e98820eca31d4c3abcd36672df6afce5cb6feb1d66087d";
+    "google/nano-banana-pro:d71e2df08d6ef4c4fb6d3773e9e557de6312e04444940dbb81fd73366ed83941";
 
 type Intensity = "low" | "medium" | "high";
 
@@ -78,36 +77,35 @@ function buildPromptParts(opts: {
     userPrompt?: string;
 }) {
     const stylePreset = STYLE_PRESETS[opts.style] ?? STYLE_PRESETS.standard;
-    const intensityTags =
+    const intensityInstruction =
         opts.intensity === "low"
-            ? "subtle stylization, preserve original facial structure, preserve original proportions"
+            ? "Apply a subtle anime edit. Keep the original facial structure, pose, and proportions very close to the uploaded photo."
             : opts.intensity === "high"
-                ? "strong anime stylization, expressive 2d redraw, bold lineart, stylized features while keeping identity recognizable"
-                : "balanced stylization, recognizable identity, clean anime redraw";
+                ? "Apply a strong anime transformation with expressive 2D stylization, bolder linework, and a clearly illustrated look while keeping the person recognizable."
+                : "Apply a balanced anime transformation with clean 2D rendering while preserving identity.";
 
-    const keepTags: string[] = [];
-    if (opts.keepEyeColor) keepTags.push("preserve eye color");
-    if (opts.keepHairColor) keepTags.push("preserve hair color");
+    const keepInstructions: string[] = [];
+    if (opts.keepEyeColor) keepInstructions.push("Preserve the original eye color.");
+    if (opts.keepHairColor) keepInstructions.push("Preserve the original hair color.");
 
-    const userTags = opts.userPrompt?.trim() ? opts.userPrompt.trim() : "";
+    const userInstruction = opts.userPrompt?.trim()
+        ? `Extra user request: ${opts.userPrompt.trim()}`
+        : "";
 
     return {
         positive: [
-            PONY_PREFIX,
-            stylePreset.prompt,
-            intensityTags,
-            keepTags.join(", "),
-            userTags,
+            "Transform the uploaded photo into polished anime artwork.",
+            "Keep the same person, pose, composition, and overall identity from the input image.",
+            `Use this target style: ${stylePreset.prompt}.`,
+            `Quality tags to emphasize: ${PONY_PREFIX}.`,
+            intensityInstruction,
+            ...keepInstructions,
+            "Output one clean final image with no text, no watermark, and no extra subjects unless requested.",
+            userInstruction,
         ]
             .filter(Boolean)
-            .join(", "),
-        negative: [
-            PONY_NEGATIVE_PREFIX,
-            stylePreset.negative,
-            "text, watermark, logo, caption, signature, jpeg artifacts, extra fingers, extra digits, bad hands, bad anatomy, blurry",
-        ]
-            .filter(Boolean)
-            .join(", "),
+            .join(" "),
+        negative: `${PONY_NEGATIVE_PREFIX}, ${stylePreset.negative}, text, watermark, logo, caption, signature, jpeg artifacts, extra fingers, extra digits, bad hands, bad anatomy, blurry`,
         promptStrength: resolvePromptStrength(stylePreset.denoising, opts.intensity),
     };
 }
@@ -224,12 +222,10 @@ export async function POST(request: NextRequest) {
                 userPrompt: prompt,
             });
 
-            console.log("=== Calling Replicate img2img ===");
+            console.log("=== Calling Replicate Nano Banana Pro ===");
             console.log("Model:", REPLICATE_MODEL);
             console.log("Style:", style);
             console.log("Prompt:", positive);
-            console.log("Negative:", negative);
-            console.log("Prompt strength:", promptStrength);
 
             const replicate = new Replicate({
                 auth: process.env.REPLICATE_API_TOKEN,
@@ -257,14 +253,12 @@ export async function POST(request: NextRequest) {
                 body: JSON.stringify({
                     version: REPLICATE_MODEL.split(":")[1],
                     input: {
-                        image: replicateImage,
+                        image_input: [replicateImage],
                         prompt: positive,
-                        negative_prompt: negative,
-                        prompt_strength: promptStrength,
-                        num_outputs: 1,
-                        num_inference_steps: 30,
-                        guidance_scale: 6,
-                        scheduler: "K_EULER_ANCESTRAL",
+                        aspect_ratio: "match_input_image",
+                        resolution: "2K",
+                        output_format: "jpg",
+                        safety_filter_level: "block_only_high",
                     },
                 }),
             });
@@ -294,7 +288,7 @@ export async function POST(request: NextRequest) {
                 project_id: projectId,
                 user_id: user.id,
                 prompt: positive,
-                model_id: "replicate-stable-diffusion-img2img",
+                model_id: "replicate-nano-banana-pro",
                 image_url: resultImageUrl,
                 input_image_url: image.startsWith("http") ? image : "user_upload",
                 status: "succeeded",
@@ -308,7 +302,7 @@ export async function POST(request: NextRequest) {
                     stylePrompt: stylePreset.prompt,
                     styleNegativePrompt: negative,
                     denoisingStrength: promptStrength,
-                    promptFramework: "pony-style-preset-matrix",
+                    promptFramework: "nano-banana-style-matrix",
                     provider: "replicate",
                 }
             });
