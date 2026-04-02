@@ -123,14 +123,20 @@ function normalizeImageInput(image: string) {
             throw new Error("Invalid image data URL");
         }
 
-        return Buffer.from(matches[2], "base64");
+        return {
+            buffer: Buffer.from(matches[2], "base64"),
+            mimeType: matches[1] || "image/png",
+        };
     }
 
     if (/^https?:\/\//.test(image)) {
         return image;
     }
 
-    return Buffer.from(image, "base64");
+    return {
+        buffer: Buffer.from(image, "base64"),
+        mimeType: "image/png",
+    };
 }
 
 function extractReplicateOutputUrl(output: unknown) {
@@ -230,9 +236,19 @@ export async function POST(request: NextRequest) {
                 fileEncodingStrategy: "data-uri",
             });
 
+            const normalizedImage = normalizeImageInput(image);
+            const replicateImage =
+                typeof normalizedImage === "string"
+                    ? normalizedImage
+                    : (
+                        await replicate.files.create(
+                            new Blob([normalizedImage.buffer], { type: normalizedImage.mimeType })
+                        )
+                    ).urls.get;
+
             const output = await replicate.run(REPLICATE_MODEL, {
                 input: {
-                    image: normalizeImageInput(image),
+                    image: replicateImage,
                     prompt: positive,
                     negative_prompt: negative,
                     prompt_strength: promptStrength,
