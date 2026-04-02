@@ -245,20 +245,40 @@ export async function POST(request: NextRequest) {
                             new Blob([normalizedImage.buffer], { type: normalizedImage.mimeType })
                         )
                     ).urls.get;
+            console.log("Replicate uploaded image:", replicateImage);
 
-            const output = await replicate.run(REPLICATE_MODEL, {
-                input: {
-                    image: replicateImage,
-                    prompt: positive,
-                    negative_prompt: negative,
-                    prompt_strength: promptStrength,
-                    num_outputs: 1,
-                    num_inference_steps: 30,
-                    guidance_scale: 6,
-                    scheduler: "K_EULER_ANCESTRAL",
+            const predictionResponse = await fetch("https://api.replicate.com/v1/predictions", {
+                method: "POST",
+                headers: {
+                    Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+                    "Content-Type": "application/json",
+                    Prefer: "wait=60",
                 },
-                wait: { mode: "poll", interval: 1000 },
+                body: JSON.stringify({
+                    version: REPLICATE_MODEL.split(":")[1],
+                    input: {
+                        image: replicateImage,
+                        prompt: positive,
+                        negative_prompt: negative,
+                        prompt_strength: promptStrength,
+                        num_outputs: 1,
+                        num_inference_steps: 30,
+                        guidance_scale: 6,
+                        scheduler: "K_EULER_ANCESTRAL",
+                    },
+                }),
             });
+
+            if (!predictionResponse.ok) {
+                const predictionErrorText = await predictionResponse.text();
+                console.error("Replicate prediction error:", predictionResponse.status, predictionErrorText);
+                throw new Error(
+                    `Replicate prediction failed: ${predictionResponse.status} - ${predictionErrorText}`
+                );
+            }
+
+            const prediction = await predictionResponse.json();
+            const output = prediction.output;
 
             const resultImageUrl = extractReplicateOutputUrl(output);
 
