@@ -80,22 +80,23 @@ export function useSubscription() {
 
       const { data: customerData } = await supabase
         .from("customers")
-        .select(
-          `
-          credits,
-          subscriptions (
-            status,
-            current_period_end,
-            canceled_at
-          )
-        `
-        )
+        .select("id, credits")
         .eq("project_id", projectId)
         .eq("user_id", user.id)
         .single();
 
-      const sub = customerData?.subscriptions?.[0];
       const credits = customerData?.credits || 0;
+
+      const { data: sub } = customerData
+        ? await supabase
+            .from("subscriptions")
+            .select("status, current_period_end, canceled_at")
+            .eq("project_id", projectId)
+            .eq("customer_id", customerData.id)
+            .order("current_period_end", { ascending: false })
+            .limit(1)
+            .maybeSingle()
+        : { data: null };
 
       if (!sub) {
         // No subscription, but user might have credits

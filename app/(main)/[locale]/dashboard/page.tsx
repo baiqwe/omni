@@ -31,16 +31,7 @@ export default async function DashboardPage(props: { params: Promise<{ locale: s
 
         const { data: customerData, error: customerError } = await supabase
             .from("customers")
-            .select(
-                `
-        *,
-        subscriptions (
-          status,
-          current_period_end,
-          creem_product_id
-        )
-      `
-            )
+            .select("id, credits")
             .eq("project_id", projectId)
             .eq("user_id", user.id)
             .maybeSingle();
@@ -48,8 +39,22 @@ export default async function DashboardPage(props: { params: Promise<{ locale: s
         if (customerError) {
             console.error("Failed to load dashboard customer data:", customerError);
         } else if (customerData) {
-            subscription = customerData.subscriptions?.[0] ?? null;
             credits = customerData.credits || 0;
+
+            const { data: subscriptionData, error: subscriptionError } = await supabase
+                .from("subscriptions")
+                .select("status, current_period_end, creem_product_id")
+                .eq("project_id", projectId)
+                .eq("customer_id", customerData.id)
+                .order("current_period_end", { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (subscriptionError) {
+                console.error("Failed to load dashboard subscription data:", subscriptionError);
+            } else if (subscriptionData) {
+                subscription = subscriptionData;
+            }
         }
     } catch (error) {
         console.error("Failed to load dashboard project data:", error);
