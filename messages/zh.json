@@ -1,8 +1,8 @@
 {
   "metadata": {
     "title": "照片转二次元 AI 在线生成器（需要登录）",
-    "description": "上传照片，一键生成高质量二次元/动漫风格图片。支持吉卜力风、赛博朋克、90年代复古、Webtoon 等多种风格。",
-    "keywords": "照片转二次元, photo to anime, 动漫滤镜, 吉卜力风, 动漫头像生成器"
+    "description": "上传照片，一键生成高质量二次元/动漫风格图片。支持吉卜力风、赛博朋克、90年代复古、韩漫风等多种风格。",
+    "keywords": "照片转二次元, 照片转动漫, 动漫滤镜, 吉卜力风, 动漫头像生成器"
   },
   "nav": {
     "home": "首页",
@@ -74,8 +74,8 @@
     "use_title": "为二次元用户而生",
     "use_subtitle": "头像、cos 重绘、创作编辑都能用。",
     "u1_title": "玩家 / 主播",
-    "u1_desc": "生成更吸睛的动漫头像用于 Discord/Twitch。",
-    "u2_title": "Coser",
+    "u1_desc": "生成更吸睛的动漫头像，可用于 Discord、Twitch 等社交平台。",
+    "u2_title": "Coser / 角色扮演玩家",
     "u2_desc": "把 cos 照重绘成二次元插画。",
     "u3_title": "创作者",
     "u3_desc": "用于内容发布与视觉风格统一。",
@@ -84,7 +84,7 @@
     "faq1_q": "需要注册吗？",
     "faq1_a": "需要。生成图片必须登录，新账号会有少量免费额度。",
     "faq2_q": "支持哪些风格？",
-    "faq2_a": "标准日漫、吉卜力风、赛博朋克、90年代复古、Webtoon 等。",
+    "faq2_a": "标准日漫、吉卜力风、赛博朋克、90年代复古、韩漫风等。",
     "faq3_q": "能保持瞳色/发色吗？",
     "faq3_a": "可以，打开开关即可让模型尽量保留颜色。",
     "faq4_q": "上传照片安全吗？",
@@ -114,10 +114,10 @@
   "Pricing": {
     "eyebrow": "创作者定价",
     "title": "四张卡片，把升级路径讲明白。",
-    "subtitle": "当买断包和 Pro 订阅放在同一视觉平面时，用户会自动对比单张成本和特权差距。只要订阅卡片足够强，转化就会自然发生。",
-    "artist_anchor": "找真人画师约一张定制二次元头像，往往要 30 到 50 美元，还要等上几周。Animeify Pro 用不到一单约稿的价格，就能立刻给你 100 次工作室级生成机会。",
+    "subtitle": "当买断包和专业版订阅放在同一视觉平面时，用户会自动对比单张成本和特权差距。只要订阅卡片足够强，转化就会自然发生。",
+    "artist_anchor": "找真人画师约一张定制二次元头像，往往要花 30 到 50 美元，还要等上几周。Animeify 专业版用不到一单约稿的价格，就能立刻给你 100 次工作室级生成机会。",
     "buyout_label": "买断",
-    "subscription_label": "Pro",
+    "subscription_label": "专业版",
     "one_time_payment": "一次性付款",
     "month": "月",
     "year": "年",
@@ -131,8 +131,8 @@
     "faq_kicker": "为什么值得升级？",
     "checkout_failed": "发起支付失败。",
     "refill_title": "积分不够了？",
-    "refill_subtitle": "可以买断包快速补充，或者直接升级 Pro。",
-    "refill_upgrade": "开通 Pro 月订阅",
+    "refill_subtitle": "可以买断包快速补充，或者直接升级专业版。",
+    "refill_upgrade": "开通专业版月订阅",
     "refill_mini": "购买 10 积分",
     "cards": {
       "starter": {
@@ -161,7 +161,7 @@
         "missing": {
           "queue": "优先队列",
           "upscale": "4K 高清放大",
-          "styles": "Pro 专属画风"
+          "styles": "专业版专属画风"
         }
       },
       "monthly": {
@@ -172,7 +172,7 @@
           "credits": "每月 100 积分",
           "queue": "优先 GPU 队列（接近零等待）",
           "upscale": "4K 高清放大",
-          "styles": "Pro 专属隐藏画风",
+          "styles": "专业版专属隐藏画风",
           "license": "商用版权许可",
           "watermark": "零水印导出"
         }
@@ -185,7 +185,7 @@
           "credits": "每年 1200 积分",
           "queue": "优先 GPU 队列",
           "upscale": "4K 高清放大",
-          "styles": "Pro 专属隐藏画风",
+          "styles": "专业版专属隐藏画风",
           "license": "商用版权许可",
           "watermark": "零水印导出"
         }

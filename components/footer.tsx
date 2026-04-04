@@ -4,7 +4,7 @@ import { Logo } from "./logo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { landingPages } from "@/config/landing-pages";
+import { getLocalizedLandingPage } from "@/config/landing-pages";
 
 export function Footer() {
   const pathname = usePathname();
@@ -15,18 +15,26 @@ export function Footer() {
   const pathParts = pathname?.split('/') || [];
   const currentLocale = (pathParts[1] === 'en' || pathParts[1] === 'zh') ? pathParts[1] : 'en';
   const localePrefix = `/${currentLocale}`;
+  const isZh = currentLocale === "zh";
+
+  const ghibliPage = getLocalizedLandingPage("ghibli-filter", currentLocale);
+  const animePfpPage = getLocalizedLandingPage("anime-pfp-generator", currentLocale);
+  const cyberpunkPage = getLocalizedLandingPage("cyberpunk-anime", currentLocale);
+  const retroPage = getLocalizedLandingPage("90s-anime-filter", currentLocale);
+  const webtoonPage = getLocalizedLandingPage("webtoon-ai", currentLocale);
+  const cosplayPage = getLocalizedLandingPage("cosplay-enhancer", currentLocale);
 
   const toolLinks = [
-    { label: "Photo to Anime", labelZh: "照片转二次元", href: `${localePrefix}` },
-    { label: landingPages["ghibli-filter"]?.h1 || "Ghibli Filter", labelZh: "吉卜力风格", href: `${localePrefix}/ghibli-filter` },
-    { label: landingPages["anime-pfp-generator"]?.h1 || "Anime PFP", labelZh: "动漫头像", href: `${localePrefix}/anime-pfp-generator` },
-    { label: landingPages["cyberpunk-anime"]?.h1 || "Cyberpunk Anime", labelZh: "赛博朋克", href: `${localePrefix}/cyberpunk-anime` },
+    { label: isZh ? "照片转二次元" : "Photo to Anime", href: `${localePrefix}` },
+    { label: ghibliPage?.h1 || (isZh ? "吉卜力风格滤镜" : "Ghibli Filter"), href: `${localePrefix}/ghibli-filter` },
+    { label: animePfpPage?.h1 || (isZh ? "动漫头像生成器" : "Anime PFP Generator"), href: `${localePrefix}/anime-pfp-generator` },
+    { label: cyberpunkPage?.h1 || (isZh ? "赛博朋克动漫滤镜" : "Cyberpunk Anime Filter"), href: `${localePrefix}/cyberpunk-anime` },
   ];
 
   const styleLinks = [
-    { label: landingPages["90s-anime-filter"]?.h1 || "90s Anime", href: `${localePrefix}/90s-anime-filter` },
-    { label: landingPages["webtoon-ai"]?.h1 || "Webtoon", href: `${localePrefix}/webtoon-ai` },
-    { label: landingPages["cosplay-enhancer"]?.h1 || "Cosplay Enhancer", href: `${localePrefix}/cosplay-enhancer` },
+    { label: retroPage?.h1 || (isZh ? "90 年代复古动漫滤镜" : "90s Anime Filter"), href: `${localePrefix}/90s-anime-filter` },
+    { label: webtoonPage?.h1 || (isZh ? "韩漫风 AI 滤镜" : "Webtoon AI Filter"), href: `${localePrefix}/webtoon-ai` },
+    { label: cosplayPage?.h1 || (isZh ? "Cos 照增强器" : "Cosplay Enhancer"), href: `${localePrefix}/cosplay-enhancer` },
   ];
 
   const legalLinks = [
@@ -79,7 +87,7 @@ export function Footer() {
                   href={link.href}
                   className="text-sm text-muted-foreground transition-colors hover:text-primary"
                 >
-                  {currentLocale === 'zh' ? link.labelZh : link.label}
+                  {link.label}
                 </Link>
               ))}
             </nav>

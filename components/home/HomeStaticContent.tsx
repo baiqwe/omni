@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Sparkles, Shield, Zap, Users, ArrowRight, Palette, Camera } from "lucide-react";
-import { landingPages } from "@/config/landing-pages";
+import { getLocalizedLandingPage, landingPages } from "@/config/landing-pages";
 import type { ReactNode } from "react";
 
 type Props = { locale: string };
@@ -18,7 +18,10 @@ export default async function HomeStaticContent({ locale }: Props) {
     landingPages["cyberpunk-anime"],
     landingPages["webtoon-ai"],
     landingPages["cosplay-enhancer"],
-  ].filter(Boolean);
+  ]
+    .filter(Boolean)
+    .map((page) => getLocalizedLandingPage(page.slug, locale))
+    .filter((page): page is NonNullable<typeof page> => Boolean(page));
 
   return (
     <>

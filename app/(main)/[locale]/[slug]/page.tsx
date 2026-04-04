@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
-import { landingPageSlugs, getLandingPage, landingPages } from "@/config/landing-pages";
+import { landingPageSlugs, getLocalizedLandingPage, landingPages } from "@/config/landing-pages";
 import { AnimeImageEditor } from "@/components/feature/anime-image-editor";
 import { site } from "@/config/site";
 import { locales } from "@/i18n/routing";
@@ -23,7 +23,7 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
   const params = await props.params;
   const { locale, slug } = params;
 
-  const page = getLandingPage(slug);
+  const page = getLocalizedLandingPage(slug, locale);
   if (!page) return {};
 
   const isPrimaryAlias = page.slug === "photo-to-anime";
@@ -57,7 +57,7 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
   const params = await props.params;
   const { locale, slug } = params;
 
-  const page = getLandingPage(slug);
+  const page = getLocalizedLandingPage(slug, locale);
   if (!page) notFound();
 
   const t = await getTranslations({ locale, namespace: "landing" });
@@ -65,7 +65,9 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
   const isPrimaryAlias = page.slug === "photo-to-anime";
   const relatedPages = Object.values(landingPages)
     .filter((item) => item.slug !== page.slug && item.slug !== "photo-to-anime")
-    .slice(0, 3);
+    .slice(0, 3)
+    .map((item) => getLocalizedLandingPage(item.slug, locale))
+    .filter((item): item is NonNullable<typeof item> => Boolean(item));
   const breadcrumbItems = [
     { name: locale === "zh" ? "首页" : "Home", href: `${localePrefix}` },
     { name: page.h1, href: isPrimaryAlias ? `${localePrefix}` : `${localePrefix}/${page.slug}` },
