@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "Photo to Anime AI Converter Online",
-    "description": "Convert any photo to anime online with AI. Turn selfies and portraits into anime art with styles like Ghibli-inspired, cyberpunk, 90s retro, and webtoon.",
-    "keywords": "photo to anime, photo to anime ai, photo to anime converter, anime filter, ai anime converter, ghibli filter ai, anime pfp generator"
+    "title": "[Free Try] Photo to Anime AI - Create a Stunning Anime Avatar in One Click",
+    "description": "Want to see your anime alter ego? Try our photo to anime AI generator for free. Upload a selfie and instantly unlock Ghibli-inspired, webtoon, and 90s retro anime filters to create your own high-impact anime look.",
+    "keywords": "photo to anime, turn photo into anime, ai anime generator, free anime avatar maker, one click anime filter, ghibli filter ai, anime character creator"
   },
   "nav": {
     "home": "Home",
@@ -22,8 +22,8 @@
     "feature_1": "Multiple styles",
     "feature_2": "Intensity control",
     "feature_3": "Download ready",
-    "tool_title": "Try it now",
-    "tool_subtitle": "Upload a photo to start. You’ll be asked to sign in to generate."
+    "tool_title": "Try it free",
+    "tool_subtitle": "Upload one photo and instantly explore your anime alter ego."
   },
   "uploader": {
     "title": "Upload Your Image",
@@ -53,11 +53,11 @@
     "generating": "Summoning your anime alter ego...",
     "reset": "Upload new image",
     "download": "Download",
-    "signin_gate_title": "Sign in to generate your anime image.",
-    "signin_gate_desc": "New accounts get a small free allowance. Upgrade anytime for more generations.",
-    "cta_signup": "Sign Up",
-    "cta_signin": "Sign In",
-    "error_signin_required": "Sign in required to generate. Create an account to get a free allowance.",
+    "signin_gate_title": "Unlock free credits and HD watermark-free downloads",
+    "signin_gate_desc": "Create your account to claim free generation credits and save every anime artwork you make.",
+    "cta_signup": "Claim free credits",
+    "cta_signin": "Sign in to continue",
+    "error_signin_required": "Your free try is ready. Create an account in seconds to generate now.",
     "error_failed": "Generation failed. Please try again.",
     "disclaimer": "Results vary by photo quality and chosen style."
   },
@@ -81,8 +81,8 @@
     "u3_desc": "Create consistent anime visuals for posts and projects.",
     "faq_title": "FAQ",
     "faq_subtitle": "Quick answers before you generate.",
-    "faq1_q": "Do I need to sign up?",
-    "faq1_a": "Yes. Generation requires signing in. New accounts get a small free allowance.",
+    "faq1_q": "Can I try it for free?",
+    "faq1_a": "Yes. New accounts get free generation credits, so you can test the photo to anime effect before upgrading.",
     "faq2_q": "What styles do you support?",
     "faq2_a": "Standard anime, Ghibli-inspired, cyberpunk, 90s retro, webtoon, and more.",
     "faq3_q": "Can I keep my hair/eye color?",
