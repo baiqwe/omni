@@ -86,7 +86,8 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
 
   return (
     <div className="bg-background">
-      <section id="anime-uploader" className="py-10 lg:py-16 bg-gradient-to-b from-muted/20 to-background">
+      <section id="anime-uploader" className="relative overflow-hidden py-12 lg:py-20">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(227,104,74,0.1),transparent_22%),radial-gradient(circle_at_88%_12%,rgba(27,163,147,0.1),transparent_18%)]" />
         <div className="container px-4 md:px-6">
           <Breadcrumbs items={breadcrumbItems} className="mb-6" />
           <FAQSchema items={page.faqs} />
@@ -104,17 +105,18 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
 
       <InspirationGallery locale={locale} style={page.defaultStyle} anchorHrefPrefix={`/${locale}/${page.slug}`} maxItems={3} />
 
-      <section className="py-14 border-t bg-background">
+      <section className="border-t border-border/70 bg-background/40 py-16">
         <div className="container px-4 md:px-6">
           <div className="max-w-4xl mx-auto space-y-10">
             <div className="space-y-4">
+              <div className="section-kicker">{locale === "zh" ? "使用指南" : "How It Works"}</div>
               <h2 className="text-3xl font-bold tracking-tight">{t("how_title", { keyword: page.targetKeyword })}</h2>
               <ol className="grid gap-3 text-muted-foreground list-decimal pl-5">
                 <li>{t("how_step1")}</li>
                 <li>{t("how_step2")}</li>
                 <li>{t("how_step3")}</li>
               </ol>
-              <div className="rounded-xl border border-border bg-muted/20 p-6 text-sm leading-relaxed text-muted-foreground">
+              <div className="surface-card p-6 text-sm leading-relaxed text-muted-foreground">
                 <p>
                   {locale === "zh"
                     ? `${page.h1} 最适合清晰、光线良好的照片。正面或半侧面人像通常最稳定，复杂遮挡、模糊自拍或过暗背景更容易影响五官和发色还原。`
@@ -129,10 +131,11 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
             </div>
 
             <div className="space-y-4">
+              <div className="section-kicker">FAQ</div>
               <h2 className="text-3xl font-bold tracking-tight">{t("faq_title")}</h2>
               <div className="grid gap-6">
                 {page.faqs.map((faq, idx) => (
-                  <div key={idx} className="rounded-xl border border-border p-6 bg-muted/10">
+                  <div key={idx} className="surface-card p-6">
                     <div className="text-lg font-bold">{faq.question}</div>
                     <div className="mt-2 text-muted-foreground leading-relaxed">{faq.answer}</div>
                   </div>
@@ -141,7 +144,7 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
             </div>
 
             <div className="space-y-4">
-              <div className="rounded-xl border border-border bg-muted/10 p-5">
+              <div className="surface-card p-5">
                 <p className="text-sm text-muted-foreground">
                   {locale === "zh" ? "想先试通用模式？" : "Want to start with the general converter?"}{" "}
                   <Link href={`${localePrefix}`} className="font-medium text-primary hover:underline">
@@ -160,7 +163,7 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
                   <Link
                     key={related.slug}
                     href={`${localePrefix}/${related.slug}`}
-                    className="rounded-xl border border-border bg-background p-5 transition-colors hover:border-primary/40 hover:bg-muted/10"
+                    className="surface-card p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30"
                   >
                     <div className="text-lg font-semibold">{related.h1}</div>
                     <div className="mt-2 text-sm text-muted-foreground">{related.subtitle}</div>

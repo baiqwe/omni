@@ -71,20 +71,21 @@ export default function ImageUploader({ onImageSelect, onHeicConvert }: ImageUpl
             <div
                 {...getRootProps()}
                 className={`
-          relative border-2 border-dashed rounded-lg p-12 text-center cursor-pointer
+          relative overflow-hidden rounded-[28px] border-2 border-dashed p-12 text-center cursor-pointer
           transition-colors duration-200
           ${isDragActive
                         ? 'border-primary bg-primary/5'
-                        : 'border-muted-foreground/30 hover:border-primary/50 hover:bg-muted/30'
+                        : 'border-muted-foreground/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.72),rgba(255,255,255,0.96))] hover:border-primary/50 hover:bg-muted/20'
                     }
         `}
             >
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(227,104,74,0.08),transparent_24%),radial-gradient(circle_at_100%_0%,rgba(27,163,147,0.1),transparent_20%)]" />
                 <input {...getInputProps()} />
 
-                <div className="flex flex-col items-center gap-4">
+                <div className="relative flex flex-col items-center gap-4">
                     <div className={`
-            p-4 rounded-full transition-colors
-            ${isDragActive ? 'bg-primary/20' : 'bg-muted'}
+            rounded-full p-4 transition-colors
+            ${isDragActive ? 'bg-primary/20' : 'bg-background/90 shadow-sm'}
           `}>
                         <Upload className={`w-8 h-8 ${isDragActive ? 'text-primary' : 'text-muted-foreground'}`} />
                     </div>
@@ -100,7 +101,7 @@ export default function ImageUploader({ onImageSelect, onHeicConvert }: ImageUpl
 
                     <button
                         type="button"
-                        className="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                        className="rounded-full bg-primary px-6 py-2 text-primary-foreground shadow-[0_18px_30px_-18px_hsl(var(--primary))] transition-colors hover:bg-primary/90"
                     >
                         {t('browse')}
                     </button>

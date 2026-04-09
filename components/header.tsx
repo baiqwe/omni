@@ -38,19 +38,19 @@ export default function Header() {
   const navItems = isDashboard ? dashboardItems : mainNavItems;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-[100] w-full border-b border-border/70 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/65">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center">
           <Logo />
         </div>
 
         {/* Centered Navigation */}
-        <nav className="hidden md:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-border/70 bg-background/80 px-2 py-1 shadow-[0_10px_35px_-24px_rgba(27,31,45,0.35)] backdrop-blur md:flex">
           {navItems.map((item) => (
             <Link
               key={item.id}
               href={item.href}
-              className="text-lg font-semibold text-muted-foreground transition-colors hover:text-primary"
+              className="rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
             >
               {item.label}
             </Link>
@@ -59,13 +59,13 @@ export default function Header() {
 
         <div className="flex items-center gap-2">
           {/* Pass locale-free href to the locale-aware Link component. */}
-          <div className="hidden md:flex items-center gap-1 mr-2">
+          <div className="mr-2 hidden items-center gap-1 rounded-full border border-border/70 bg-background/80 p-1 shadow-[0_10px_35px_-24px_rgba(27,31,45,0.35)] md:flex">
             <Link
               href={pathWithoutLocale}
               locale="en"
-              className={`px-2 py-1 rounded text-sm transition-colors ${currentLocale === 'en'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+              className={`rounded-full px-3 py-1.5 text-sm transition-colors ${currentLocale === 'en'
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
             >
               EN
@@ -73,9 +73,9 @@ export default function Header() {
             <Link
               href={pathWithoutLocale}
               locale="zh"
-              className={`px-2 py-1 rounded text-sm transition-colors ${currentLocale === 'zh'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+              className={`rounded-full px-3 py-1.5 text-sm transition-colors ${currentLocale === 'zh'
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
             >
               中文
@@ -103,10 +103,10 @@ export default function Header() {
             </div>
           ) : (
             <div className="hidden md:flex gap-2">
-              <Button asChild size="sm" variant="outline">
+              <Button asChild size="sm" variant="outline" className="rounded-full">
                 <Link href="/sign-in">{t('sign_in')}</Link>
               </Button>
-              <Button asChild size="sm">
+              <Button asChild size="sm" className="rounded-full shadow-[0_16px_30px_-18px_hsl(var(--primary))]">
                 <Link href="/sign-up">{t('sign_up')}</Link>
               </Button>
             </div>

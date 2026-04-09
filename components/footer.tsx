@@ -59,16 +59,17 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t bg-muted/30">
-      <div className="container px-4 py-12 md:py-16">
+    <footer className="border-t border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.3),rgba(255,255,255,0.86))]">
+      <div className="container px-4 py-14 md:py-20">
+        <div className="surface-panel px-6 py-8 md:px-8 md:py-10">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
           {/* Brand */}
           <div className="col-span-full lg:col-span-2">
             <Logo />
-            <p className="mt-4 text-sm text-muted-foreground max-w-sm">
+            <p className="mt-5 max-w-sm text-sm leading-7 text-muted-foreground">
               {t('tagline')}
             </p>
-            <p className="mt-2 text-xs text-muted-foreground">
+            <p className="mt-3 inline-flex rounded-full border border-border/80 bg-background/80 px-3 py-1.5 text-xs text-muted-foreground">
               {currentLocale === 'zh'
                 ? '提示：为生成效果，上传图片会发送到第三方 AI 服务处理。'
                 : 'Note: uploads are sent to a third-party AI service for generation.'}
@@ -85,7 +86,7 @@ export function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  className="text-sm text-muted-foreground transition-all hover:translate-x-0.5 hover:text-primary"
                 >
                   {link.label}
                 </Link>
@@ -103,7 +104,7 @@ export function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  className="text-sm text-muted-foreground transition-all hover:translate-x-0.5 hover:text-primary"
                 >
                   {link.label}
                 </Link>
@@ -119,7 +120,7 @@ export function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  className="text-sm text-muted-foreground transition-all hover:translate-x-0.5 hover:text-primary"
                 >
                   {link.label}
                 </Link>
@@ -129,13 +130,14 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 md:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border/70 pt-8 md:flex-row">
           <p className="text-center text-sm text-muted-foreground md:text-left">
             © {new Date().getFullYear()} {t('brand')}. {t('rights')}
           </p>
           <p className="text-center text-sm text-muted-foreground md:text-right">
             {t('built_by')}
           </p>
+        </div>
         </div>
       </div>
     </footer>

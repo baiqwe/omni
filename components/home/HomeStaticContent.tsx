@@ -26,7 +26,7 @@ export default async function HomeStaticContent({ locale }: Props) {
 
   return (
     <>
-      <section className="py-16 bg-background border-t">
+      <section className="border-t border-border/70 bg-background/40 py-16">
         <div className="container px-4 md:px-6">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-3 gap-6">
@@ -52,10 +52,11 @@ export default async function HomeStaticContent({ locale }: Props) {
 
       <InspirationGallery locale={locale} maxItems={4} />
 
-      <section className="py-16 bg-muted/20">
+      <section className="py-16">
         <div className="container px-4 md:px-6">
           <div className="max-w-6xl mx-auto space-y-10">
             <div className="text-center space-y-3">
+              <div className="section-kicker">{isZh ? "热门风格" : "Style Matrix"}</div>
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("styles_title")}</h2>
               <p className="text-muted-foreground text-lg max-w-3xl mx-auto">{t("styles_subtitle")}</p>
               <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
@@ -70,7 +71,7 @@ export default async function HomeStaticContent({ locale }: Props) {
                 <Link
                   key={p.slug}
                   href={`${localePrefix}/${p.slug}`}
-                  className="group bg-background rounded-xl border border-border p-6 hover:shadow-md transition-shadow"
+                  className="group surface-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="space-y-2">
@@ -95,10 +96,11 @@ export default async function HomeStaticContent({ locale }: Props) {
         </div>
       </section>
 
-      <section className="py-16 bg-background">
+      <section className="py-16">
         <div className="container px-4 md:px-6">
           <div className="max-w-6xl mx-auto space-y-10">
             <div className="text-center space-y-3">
+              <div className="section-kicker">{isZh ? "使用场景" : "Use Cases"}</div>
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("use_title")}</h2>
               <p className="text-muted-foreground text-lg max-w-3xl mx-auto">{t("use_subtitle")}</p>
             </div>
@@ -124,10 +126,11 @@ export default async function HomeStaticContent({ locale }: Props) {
         </div>
       </section>
 
-      <section className="py-16 bg-muted/20 border-t">
+      <section className="border-t border-border/70 bg-muted/10 py-16">
         <div className="container px-4 md:px-6">
           <div className="max-w-4xl mx-auto space-y-10">
             <div className="text-center space-y-3">
+              <div className="section-kicker">FAQ</div>
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("faq_title")}</h2>
               <p className="text-muted-foreground text-lg">{t("faq_subtitle")}</p>
             </div>
@@ -139,7 +142,7 @@ export default async function HomeStaticContent({ locale }: Props) {
                 { q: t("faq3_q"), a: t("faq3_a") },
                 { q: t("faq4_q"), a: t("faq4_a") },
               ].map((item, idx) => (
-                <div key={idx} className="bg-background rounded-xl border border-border p-6 space-y-2">
+                <div key={idx} className="surface-card space-y-2 p-6">
                   <div className="text-lg font-bold">{item.q}</div>
                   <div className="text-muted-foreground leading-relaxed">{item.a}</div>
                 </div>
@@ -149,21 +152,21 @@ export default async function HomeStaticContent({ locale }: Props) {
         </div>
       </section>
 
-      <section className="py-16 bg-gradient-to-b from-muted/20 to-background">
+      <section className="py-16">
         <div className="container px-4 md:px-6">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
+          <div className="surface-panel mx-auto max-w-4xl space-y-6 px-6 py-10 text-center md:px-10">
             <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">{t("cta_title")}</h2>
             <p className="text-muted-foreground text-lg">{t("cta_subtitle")}</p>
             <div className="flex flex-wrap justify-center gap-3 pt-2">
               <Link
                 href={`${localePrefix}/sign-up`}
-                className="px-8 py-4 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium"
+                className="rounded-full bg-primary px-8 py-4 font-medium text-primary-foreground shadow-[0_22px_40px_-24px_hsl(var(--primary))] transition-colors hover:bg-primary/90"
               >
                 {t("cta_signup")}
               </Link>
               <Link
                 href={`${localePrefix}/pricing`}
-                className="px-8 py-4 rounded-full bg-background border border-border hover:bg-muted/30 transition-colors font-medium"
+                className="rounded-full border border-border bg-background px-8 py-4 font-medium transition-colors hover:bg-muted/30"
               >
                 {t("cta_pricing")}
               </Link>
@@ -178,8 +181,8 @@ export default async function HomeStaticContent({ locale }: Props) {
 
 function FeatureCard({ icon, title, desc }: { icon: ReactNode; title: string; desc: string }) {
   return (
-    <div className="bg-background rounded-xl p-6 border border-border">
-      <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">{icon}</div>
+    <div className="surface-card p-6">
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,rgba(227,104,74,0.14),rgba(27,163,147,0.12))]">{icon}</div>
       <div className="text-xl font-bold mb-2">{title}</div>
       <div className="text-muted-foreground">{desc}</div>
     </div>

@@ -9,48 +9,48 @@ html {
 }
 
 :root  {
-  --background: 262.1 100% 100%;
-  --foreground: 262.1 5% 10%;
-  --card: 262.1 50% 100%;
-  --card-foreground: 262.1 5% 15%;
-  --popover: 262.1 100% 100%;
-  --popover-foreground: 262.1 100% 10%;
-  --primary: 262.1 88.3% 57.8%;
+  --background: 36 43% 97%;
+  --foreground: 220 26% 14%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 26% 14%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 26% 14%;
+  --primary: 13 78% 57%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 262.1 30% 90%;
-  --secondary-foreground: 0 0% 0%;
-  --muted: 224.10000000000002 30% 95%;
-  --muted-foreground: 262.1 5% 40%;
-  --accent: 224.10000000000002 30% 90%;
-  --accent-foreground: 262.1 5% 15%;
+  --secondary: 36 36% 91%;
+  --secondary-foreground: 220 26% 14%;
+  --muted: 36 25% 93%;
+  --muted-foreground: 220 14% 38%;
+  --accent: 166 28% 91%;
+  --accent-foreground: 220 26% 14%;
   --destructive: 0 100% 50%;
-  --destructive-foreground: 262.1 5% 100%;
-  --border: 262.1 30% 82%;
-  --input: 262.1 30% 50%;
-  --ring: 262.1 88.3% 57.8%;
-  --radius: 0.5rem;
+  --destructive-foreground: 0 0% 100%;
+  --border: 25 27% 84%;
+  --input: 25 20% 78%;
+  --ring: 13 78% 57%;
+  --radius: 1rem;
 }
 .dark  {
-  --background: 262.1 50% 10%;
-  --foreground: 262.1 5% 100%;
-  --card: 262.1 50% 10%;
-  --card-foreground: 262.1 5% 100%;
-  --popover: 262.1 50% 5%;
-  --popover-foreground: 262.1 5% 100%;
-  --primary: 262.1 88.3% 57.8%;
+  --background: 220 26% 9%;
+  --foreground: 32 36% 96%;
+  --card: 220 24% 12%;
+  --card-foreground: 32 36% 96%;
+  --popover: 220 24% 10%;
+  --popover-foreground: 32 36% 96%;
+  --primary: 13 78% 60%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 262.1 30% 20%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 224.10000000000002 30% 25%;
-  --muted-foreground: 262.1 5% 65%;
-  --accent: 224.10000000000002 30% 25%;
-  --accent-foreground: 262.1 5% 95%;
+  --secondary: 220 18% 18%;
+  --secondary-foreground: 32 36% 96%;
+  --muted: 220 18% 16%;
+  --muted-foreground: 32 18% 72%;
+  --accent: 166 18% 18%;
+  --accent-foreground: 32 36% 96%;
   --destructive: 0 100% 50%;
-  --destructive-foreground: 262.1 5% 100%;
-  --border: 262.1 30% 50%;
-  --input: 262.1 30% 50%;
-  --ring: 262.1 88.3% 57.8%;
-  --radius: 0.5rem;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 16% 24%;
+  --input: 220 12% 28%;
+  --ring: 13 78% 60%;
+  --radius: 1rem;
 }
 
 }
@@ -59,7 +59,50 @@ html {
   * {
     @apply border-border;
   }
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(circle at top left, rgba(227, 104, 74, 0.14), transparent 24%),
+      radial-gradient(circle at top right, rgba(27, 163, 147, 0.09), transparent 20%),
+      linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0)),
+      linear-gradient(rgba(24, 31, 45, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(24, 31, 45, 0.035) 1px, transparent 1px);
+    background-size: auto, auto, auto, 28px 28px, 28px 28px;
+    background-position: 0 0, 100% 0, 0 0, center top, center top;
+  }
+  .dark body {
+    background-image:
+      radial-gradient(circle at top left, rgba(231, 98, 67, 0.16), transparent 24%),
+      radial-gradient(circle at top right, rgba(27, 163, 147, 0.1), transparent 20%),
+      linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)),
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", "Noto Serif SC", "Source Han Serif SC", serif;
+    letter-spacing: -0.02em;
+  }
+  p, li, a, button, input, textarea, label {
+    font-family: "Avenir Next", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+}
+
+@layer components {
+  .surface-card {
+    @apply rounded-[28px] border border-border/80 bg-card/90 shadow-[0_24px_80px_-42px_rgba(27,31,45,0.28)] backdrop-blur-sm;
+  }
+
+  .surface-panel {
+    @apply rounded-[32px] border border-border/70 bg-background/78 shadow-[0_30px_90px_-48px_rgba(27,31,45,0.32)] backdrop-blur-xl;
+  }
+
+  .section-kicker {
+    @apply inline-flex items-center rounded-full border border-primary/15 bg-background/85 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-primary shadow-sm;
   }
 }

@@ -20,11 +20,11 @@ export function InspirationGallery({
   const items = getLocalizedGalleryItems(locale, style).slice(0, maxItems);
 
   return (
-    <section className="py-16 bg-background border-t">
+    <section className="border-t border-border/70 bg-background/35 py-16">
       <div className="container px-4 md:px-6">
         <div className="max-w-6xl mx-auto space-y-10">
           <div className="max-w-3xl space-y-3">
-            <div className="inline-flex items-center rounded-full border border-border bg-muted/30 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+            <div className="section-kicker">
               {locale === "zh" ? "灵感画廊" : "Inspiration Gallery"}
             </div>
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -46,7 +46,7 @@ export function InspirationGallery({
               return (
                 <article
                   key={item.id}
-                  className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
+                  className="group surface-card overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/30"
                 >
                   <div className="relative aspect-[4/5] overflow-hidden bg-muted/20">
                     <Image
@@ -57,7 +57,7 @@ export function InspirationGallery({
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                     />
                     <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
-                      <span className="rounded-full bg-background/90 px-3 py-1 text-xs font-semibold text-foreground shadow-sm">
+                      <span className="rounded-full border border-border/70 bg-background/92 px-3 py-1 text-xs font-semibold text-foreground shadow-sm">
                         {item.categoryLabel}
                       </span>
                       <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-background shadow-lg">
@@ -72,7 +72,7 @@ export function InspirationGallery({
                     </div>
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent p-5 text-white">
                       <div className="text-lg font-semibold">{item.titleLabel}</div>
-                      <div className="mt-2 text-sm text-white/85">{item.descriptionLabel}</div>
+                      <div className="mt-2 text-sm text-zinc-100">{item.descriptionLabel}</div>
                     </div>
                   </div>
 
@@ -82,7 +82,7 @@ export function InspirationGallery({
                     </div>
                     <Link
                       href={href}
-                      className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                      className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-[0_18px_30px_-18px_hsl(var(--primary))] transition-colors hover:bg-primary/90"
                     >
                       {locale === "zh" ? "制作同款" : "Try this style"}
                       <ArrowRight className="h-4 w-4" />

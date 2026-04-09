@@ -173,9 +173,9 @@ export function AnimeImageEditor({
       <div className="space-y-6">
         <div className="space-y-2 text-center">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{title}</h1>
-          {subtitle ? <p className="text-muted-foreground text-lg max-w-2xl mx-auto">{subtitle}</p> : null}
+          {subtitle ? <p className="mx-auto max-w-2xl text-lg leading-8 text-muted-foreground">{subtitle}</p> : null}
         </div>
-        <Card className="p-6 md:p-8">
+        <Card className="surface-panel p-6 md:p-8">
           <ImageUploader onImageSelect={handleImageSelect} onHeicConvert={convertHeic} />
         </Card>
       </div>
@@ -197,8 +197,8 @@ export function AnimeImageEditor({
 
   return (
     <div className={compact ? "w-full" : "max-w-6xl mx-auto"}>
-      <div className="grid lg:grid-cols-2 gap-6 lg:gap-10 items-start">
-        <div className="space-y-6 p-6 bg-card border border-border rounded-xl lg:sticky lg:top-4">
+      <div className="grid items-start gap-6 lg:grid-cols-2 lg:gap-10">
+        <div className="surface-panel space-y-6 p-6 lg:sticky lg:top-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-bold">{t("panel_title")}</h2>
             <p className="text-sm text-muted-foreground">{t("panel_subtitle")}</p>
@@ -213,8 +213,10 @@ export function AnimeImageEditor({
                     <label
                       key={s.id}
                       htmlFor={`style-${s.id}`}
-                      className={`flex items-start gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${
-                        style === s.id ? "border-primary bg-primary/5" : "border-border hover:bg-muted/30"
+                      className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition-all ${
+                        style === s.id
+                          ? "border-primary/40 bg-primary/8 shadow-[0_20px_40px_-28px_hsl(var(--primary))]"
+                          : "border-border/80 bg-background/70 hover:border-primary/20 hover:bg-muted/30"
                       }`}
                     >
                       <RadioGroupItem value={s.id} id={`style-${s.id}`} className="mt-1" />
@@ -272,19 +274,19 @@ export function AnimeImageEditor({
               value={extraPrompt}
               onChange={(e) => setExtraPrompt(e.target.value)}
               placeholder={t("prompt_placeholder")}
-              className="w-full min-h-[100px] rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+              className="min-h-[100px] w-full rounded-2xl border border-border/80 bg-background/85 px-4 py-3 text-sm outline-none transition-shadow focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
           {!user ? (
-            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
+            <div className="rounded-[24px] border border-primary/20 bg-primary/6 p-4 space-y-3">
               <p className="text-sm text-foreground">{t("signin_gate_title")}</p>
               <p className="text-sm text-muted-foreground">{t("signin_gate_desc")}</p>
               <div className="flex gap-3">
-                <Button asChild className="flex-1">
+                <Button asChild className="flex-1 rounded-full shadow-[0_18px_30px_-18px_hsl(var(--primary))]">
                   <Link href={`${localePrefix}/sign-up`}>{t("cta_signup")}</Link>
                 </Button>
-                <Button asChild variant="outline" className="flex-1">
+                <Button asChild variant="outline" className="flex-1 rounded-full">
                   <Link href={`${localePrefix}/sign-in`}>{t("cta_signin")}</Link>
                 </Button>
               </div>
@@ -295,7 +297,7 @@ export function AnimeImageEditor({
             <Button
               onClick={handleGenerate}
               disabled={isGenerating || !originalImage}
-              className="flex-1"
+              className="flex-1 rounded-full shadow-[0_18px_30px_-18px_hsl(var(--primary))]"
               size="lg"
             >
               {isGenerating ? (
@@ -310,14 +312,14 @@ export function AnimeImageEditor({
                 </>
               )}
             </Button>
-            <Button onClick={handleReset} variant="outline" size="lg">
+            <Button onClick={handleReset} variant="outline" size="lg" className="rounded-full">
               <RefreshCw className="w-4 h-4 mr-2" />
               {t("reset")}
             </Button>
           </div>
 
           <div className="flex gap-3">
-            <Button onClick={handleDownload} disabled={!resultImage} variant="secondary" className="flex-1">
+            <Button onClick={handleDownload} disabled={!resultImage} variant="secondary" className="flex-1 rounded-full">
               <Download className="w-4 h-4 mr-2" />
               {t("download")}
             </Button>
@@ -332,8 +334,8 @@ export function AnimeImageEditor({
 
         <div className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="overflow-hidden rounded-xl border border-border bg-card">
-              <div className="border-b border-border bg-muted/20 px-4 py-3 text-sm font-medium">
+            <div className="surface-card overflow-hidden">
+              <div className="border-b border-border/80 bg-[linear-gradient(180deg,rgba(227,104,74,0.05),rgba(255,255,255,0.2))] px-4 py-3 text-sm font-medium">
                 {t("preview_before")}
               </div>
               <div className="aspect-[4/5] bg-muted/10">
@@ -341,8 +343,8 @@ export function AnimeImageEditor({
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-xl border border-border bg-card">
-              <div className="border-b border-border bg-muted/20 px-4 py-3 text-sm font-medium">
+            <div className="surface-card overflow-hidden">
+              <div className="border-b border-border/80 bg-[linear-gradient(180deg,rgba(27,163,147,0.06),rgba(255,255,255,0.2))] px-4 py-3 text-sm font-medium">
                 {resultImage ? t("preview_after") : (locale === "zh" ? "风格结果预览区" : "Generated result preview")}
               </div>
               <div className="relative aspect-[4/5] bg-muted/10">

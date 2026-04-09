@@ -36,10 +36,10 @@ const previewItems = [
 
 export function HeroStylePreview({ locale, className = "" }: HeroStylePreviewProps) {
   return (
-    <div className={`rounded-[28px] border border-border bg-card/80 p-5 shadow-sm md:p-6 ${className}`}>
+    <div className={`surface-panel p-5 md:p-6 ${className}`}>
       <div className="space-y-4">
         <div className="space-y-2">
-          <div className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+          <div className="section-kicker">
             {locale === "zh" ? "风格预览" : "Style Preview"}
           </div>
           <h2 className="text-2xl font-bold tracking-tight">
@@ -57,7 +57,7 @@ export function HeroStylePreview({ locale, className = "" }: HeroStylePreviewPro
             {previewItems.map((item) => (
               <div
                 key={item.id}
-                className="group relative overflow-hidden rounded-[24px] border border-border/80 bg-muted/20 shadow-[0_12px_40px_rgba(15,23,42,0.08)]"
+                className="group relative overflow-hidden rounded-[24px] border border-border/80 bg-muted/20 shadow-[0_18px_52px_-30px_rgba(15,23,42,0.28)]"
               >
                 <div className="relative aspect-[1.08/1]">
                   <Image
@@ -76,7 +76,7 @@ export function HeroStylePreview({ locale, className = "" }: HeroStylePreviewPro
             ))}
           </div>
 
-          <div className="pointer-events-none absolute left-1/2 top-1/2 w-[120px] -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-background bg-background/90 p-1 shadow-2xl md:w-[148px]">
+          <div className="pointer-events-none absolute left-1/2 top-1/2 w-[120px] -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-background bg-background/90 p-1 shadow-[0_22px_60px_-20px_rgba(27,31,45,0.45)] md:w-[148px]">
             <div className="relative aspect-square overflow-hidden rounded-full">
               <Image
               src="/images/gallery/hero-before.jpg"

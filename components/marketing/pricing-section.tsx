@@ -137,15 +137,15 @@ export function PricingSection({ locale }: PricingSectionProps) {
         const costPerImage = calculateCostPerGeneration(plan);
 
         const cardClass = isYearly
-            ? "border-slate-800 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.22),transparent_30%),linear-gradient(180deg,#111827_0%,#020617_100%)] text-white shadow-[0_35px_120px_-35px_rgba(15,23,42,0.9)]"
+            ? "border-slate-800 bg-[radial-gradient(circle_at_top,rgba(227,104,74,0.14),transparent_24%),radial-gradient(circle_at_100%_0%,rgba(27,163,147,0.16),transparent_20%),linear-gradient(180deg,#111827_0%,#020617_100%)] text-white shadow-[0_35px_120px_-35px_rgba(15,23,42,0.9)]"
             : isMonthly
-                ? "border-primary/50 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(249,245,255,0.95))] shadow-[0_30px_110px_-40px_rgba(147,51,234,0.55)]"
-                : "border-border/70 bg-white/95 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.3)]";
+                ? "border-primary/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(255,247,243,0.95))] shadow-[0_30px_110px_-40px_rgba(227,104,74,0.3)]"
+                : "border-border/70 bg-white/92 shadow-[0_24px_70px_-42px_rgba(15,23,42,0.3)]";
 
         const badgeClass = isYearly
             ? "bg-amber-300 text-slate-950"
             : isMonthly
-                ? "bg-rose-500 text-white"
+                ? "bg-primary text-white"
                 : "bg-muted text-foreground";
 
         const buttonClass = isYearly
@@ -207,7 +207,7 @@ export function PricingSection({ locale }: PricingSectionProps) {
             <div
                 key={plan.id}
                 className={cn(
-                    "relative flex h-full snap-center flex-col rounded-[32px] border px-7 pb-6 pt-7 transition-all duration-300 hover:-translate-y-1",
+                    "relative flex h-full snap-center flex-col rounded-[32px] border px-7 pb-6 pt-7 transition-all duration-300 hover:-translate-y-1.5",
                     cardClass,
                     isMonthly || isYearly ? "lg:z-10" : ""
                 )}
@@ -254,7 +254,7 @@ export function PricingSection({ locale }: PricingSectionProps) {
                         </p>
                     )}
 
-                    <div className={cn("rounded-2xl border px-4 py-4", isYearly ? "border-white/10 bg-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" : isMonthly ? "border-primary/15 bg-primary/5" : "border-border/60 bg-muted/30")}>
+                    <div className={cn("rounded-2xl border px-4 py-4", isYearly ? "border-white/10 bg-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" : isMonthly ? "border-primary/15 bg-primary/5" : "border-border/60 bg-muted/20")}>
                         <p className={cn("text-xs font-semibold uppercase tracking-[0.22em]", textMuted)}>
                             {t("price_per_image")}
                         </p>
@@ -310,12 +310,12 @@ export function PricingSection({ locale }: PricingSectionProps) {
 
     return (
         <section className="relative isolate overflow-visible">
-            <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_15%_10%,rgba(244,114,182,0.12),transparent_24%),radial-gradient(circle_at_85%_10%,rgba(99,102,241,0.14),transparent_22%),linear-gradient(180deg,#f8fafc_0%,#ffffff_42%,#f8fafc_100%)]" />
-            <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(15,23,42,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-[size:34px_34px] [mask-image:radial-gradient(circle_at_center,black,transparent_85%)]" />
+            <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_15%_10%,rgba(227,104,74,0.12),transparent_24%),radial-gradient(circle_at_85%_10%,rgba(27,163,147,0.12),transparent_22%),linear-gradient(180deg,#fcfbf8_0%,#ffffff_42%,#f8f5ef_100%)]" />
+            <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(15,23,42,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.035)_1px,transparent_1px)] bg-[size:34px_34px] [mask-image:radial-gradient(circle_at_center,black,transparent_85%)]" />
 
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
                 <div className="mx-auto max-w-4xl text-center">
-                    <span className="inline-flex rounded-full border border-primary/15 bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-primary shadow-sm">
+                    <span className="section-kicker">
                         {t("eyebrow")}
                     </span>
                     <h2 className="mt-6 text-4xl font-black tracking-tight sm:text-5xl">{t("title")}</h2>
@@ -328,7 +328,7 @@ export function PricingSection({ locale }: PricingSectionProps) {
                     </div>
                 </div>
 
-                <div className="mt-12 rounded-[28px] border border-amber-300/50 bg-amber-50 px-6 py-5 shadow-sm">
+                <div className="mt-12 rounded-[28px] border border-amber-300/50 bg-[linear-gradient(180deg,rgba(255,251,235,0.95),rgba(255,247,228,0.9))] px-6 py-5 shadow-[0_20px_50px_-36px_rgba(217,119,6,0.35)]">
                     <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-800">{t("faq_kicker")}</p>
                     <p className="mt-3 text-base leading-8 text-amber-950">{t("artist_anchor")}</p>
                 </div>
