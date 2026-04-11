@@ -190,7 +190,7 @@ export function AnimeImageEditor({
       <div className="space-y-6">
         <div className="space-y-2 text-center">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{title}</h1>
-          {subtitle ? <p className="mx-auto max-w-2xl text-lg leading-8 text-muted-foreground">{subtitle}</p> : null}
+          {subtitle ? <p className="mx-auto max-w-2xl text-lg leading-8 text-foreground/72">{subtitle}</p> : null}
         </div>
         <Card className="surface-panel p-6 md:p-8">
           <ImageUploader onImageSelect={handleImageSelect} onHeicConvert={convertHeic} />
@@ -218,7 +218,7 @@ export function AnimeImageEditor({
         <div className="surface-panel space-y-6 p-6 lg:sticky lg:top-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-bold">{t("panel_title")}</h2>
-            <p className="text-sm text-muted-foreground">{t("panel_subtitle")}</p>
+            <p className="text-sm text-foreground/68">{t("panel_subtitle")}</p>
           </div>
 
           {!hideStyleSelector && (
@@ -230,33 +230,33 @@ export function AnimeImageEditor({
                     <label
                       key={s.id}
                       htmlFor={`style-${s.id}`}
-                      className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition-all ${
+                      className={`flex cursor-pointer items-start gap-3 rounded-[24px] p-4 transition-all duration-300 ${
                         style === s.id
-                          ? "border-primary/40 bg-primary/8 shadow-[0_20px_40px_-28px_hsl(var(--primary))]"
-                          : "border-border/80 bg-background/70 hover:border-primary/20 hover:bg-muted/30"
+                          ? "border-primary/[0.35] bg-[linear-gradient(135deg,rgba(255,102,147,0.12),rgba(94,210,198,0.08))] shadow-[0_22px_40px_-30px_hsl(var(--primary))]"
+                          : "border-border/80 bg-background/[0.94] hover:border-primary/[0.15] hover:bg-muted/[0.34] hover:shadow-[0_16px_32px_-26px_rgba(27,31,45,0.18)]"
                       }`}
                     >
                       <RadioGroupItem value={s.id} id={`style-${s.id}`} className="mt-1" />
                       <div className="space-y-1">
                         <div className="font-semibold">{s.label}</div>
-                        <div className="text-sm text-muted-foreground">{s.desc}</div>
+                        <div className="text-sm text-foreground/68">{s.desc}</div>
                       </div>
                     </label>
                   ))}
                 </div>
               </RadioGroup>
               {selectedStyle ? (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-foreground/62">
                   {t("style_hint")}: <span className="font-medium text-foreground">{selectedStyle.label}</span>
                 </p>
               ) : null}
             </div>
           )}
 
-          <div className="space-y-3">
+          <div className="space-y-3 rounded-[24px] border border-border/75 bg-muted/[0.42] p-4">
             <div className="flex items-center justify-between">
               <Label className="text-base font-semibold">{t("intensity_label")}</Label>
-              <span className="text-sm text-muted-foreground">{t(`intensity_${intensity}`)}</span>
+              <span className="text-sm text-foreground/68">{t(`intensity_${intensity}`)}</span>
             </div>
             <Slider
               value={[intensityToSliderValue(intensity)]}
@@ -265,13 +265,13 @@ export function AnimeImageEditor({
               max={100}
               step={1}
             />
-            <div className="flex justify-between text-xs text-muted-foreground">
+            <div className="flex justify-between text-xs text-foreground/62">
               <span>{t("intensity_low")}</span>
               <span>{t("intensity_high")}</span>
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 rounded-[24px] border border-border/75 bg-muted/[0.42] p-4">
             <Label className="text-base font-semibold">{t("details_label")}</Label>
             <div className="grid gap-3">
               <label className="flex items-center gap-3">
@@ -285,20 +285,20 @@ export function AnimeImageEditor({
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 rounded-[24px] border border-border/75 bg-muted/[0.34] p-4">
             <Label className="text-base font-semibold">{t("prompt_label")}</Label>
             <textarea
               value={extraPrompt}
               onChange={(e) => setExtraPrompt(e.target.value)}
               placeholder={t("prompt_placeholder")}
-              className="min-h-[100px] w-full rounded-2xl border border-border/80 bg-background/85 px-4 py-3 text-sm outline-none transition-shadow focus:ring-2 focus:ring-primary/20"
+              className="min-h-[100px] w-full rounded-[22px] border border-border/80 bg-background px-4 py-3 text-sm outline-none transition-shadow focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
           {!user ? (
-            <div className="rounded-[24px] border border-primary/20 bg-primary/6 p-4 space-y-3">
+            <div className="rounded-[24px] border border-primary/20 bg-primary/[0.06] p-4 space-y-3">
               <p className="text-sm text-foreground">{t("signin_gate_title")}</p>
-              <p className="text-sm text-muted-foreground">{t("signin_gate_desc")}</p>
+              <p className="text-sm text-foreground/68">{t("signin_gate_desc")}</p>
               <div className="flex gap-3">
                 <Button asChild className="flex-1 rounded-full shadow-[0_18px_30px_-18px_hsl(var(--primary))]">
                   <Link href={`${localePrefix}/sign-up`}>{t("cta_signup")}</Link>
@@ -314,8 +314,9 @@ export function AnimeImageEditor({
             <Button
               onClick={handleGenerate}
               disabled={isGenerating || !originalImage}
-              className="flex-1 rounded-full shadow-[0_18px_30px_-18px_hsl(var(--primary))]"
+              className="flex-1 rounded-full shadow-[0_18px_30px_-18px_hsl(var(--primary))] data-[loading=true]:animate-pulse"
               size="lg"
+              data-loading={isGenerating}
             >
               {isGenerating ? (
                 <>
@@ -366,10 +367,14 @@ export function AnimeImageEditor({
               </div>
               <div className="relative aspect-[4/5] bg-muted/10">
                 {isGenerating ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+                  <div className="absolute inset-0 overflow-hidden bg-background/[0.82] backdrop-blur-sm">
+                    <div className="absolute inset-y-0 left-[-35%] w-1/3 skew-x-[-18deg] bg-white/35 blur-2xl animate-[shimmer_1.8s_ease-in-out_infinite]" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,102,147,0.12),transparent_45%)] animate-pulse" />
+                    <div className="relative flex h-full items-center justify-center">
                     <div className="text-center space-y-3">
                       <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
-                      <div className="text-sm text-muted-foreground">{t("processing")}</div>
+                      <div className="text-sm text-foreground/72">{t("processing")}</div>
+                    </div>
                     </div>
                   </div>
                 ) : null}
@@ -377,7 +382,7 @@ export function AnimeImageEditor({
                 {resultImage ? (
                   <img src={resultImage} alt={t("preview_after")} className="h-full w-full object-cover" />
                 ) : (
-                  <div className="flex h-full items-center justify-center p-6 text-center text-sm leading-7 text-muted-foreground">
+                  <div className="flex h-full items-center justify-center p-6 text-center text-sm leading-7 text-foreground/68">
                     {locale === "zh"
                       ? "生成完成后，这里会显示最终动漫结果。你可以继续换风格、调浓度，直到挑到最喜欢的版本。"
                       : "Your final anime result will appear here after generation. You can keep switching styles and intensity until you land on the version you like most."}
@@ -386,7 +391,7 @@ export function AnimeImageEditor({
               </div>
             </div>
           </div>
-          <div className="text-xs text-muted-foreground text-center">
+          <div className="text-center text-xs text-foreground/60">
             {t("disclaimer")}
           </div>
         </div>

@@ -38,19 +38,19 @@ export default function Header() {
   const navItems = isDashboard ? dashboardItems : mainNavItems;
 
   return (
-    <header className="sticky top-0 z-[100] w-full border-b border-border/70 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/65">
+    <header className="sticky top-0 z-[100] w-full border-b border-border/80 bg-background/[0.88] shadow-[0_14px_40px_-34px_rgba(27,31,45,0.28)] backdrop-blur-2xl supports-[backdrop-filter]:bg-background/[0.78]">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center">
           <Logo />
         </div>
 
         {/* Centered Navigation */}
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-border/70 bg-background/80 px-2 py-1 shadow-[0_10px_35px_-24px_rgba(27,31,45,0.35)] backdrop-blur md:flex">
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-border/80 bg-background/[0.94] px-2 py-1 shadow-[0_10px_35px_-24px_rgba(27,31,45,0.18)] backdrop-blur-xl md:flex">
           {navItems.map((item) => (
             <Link
               key={item.id}
               href={item.href}
-              className="rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
+              className="rounded-full px-4 py-2 text-sm font-semibold text-foreground/75 transition-all duration-300 hover:scale-[1.02] hover:bg-primary/[0.1] hover:text-primary"
             >
               {item.label}
             </Link>
@@ -59,7 +59,7 @@ export default function Header() {
 
         <div className="flex items-center gap-2">
           {/* Pass locale-free href to the locale-aware Link component. */}
-          <div className="mr-2 hidden items-center gap-1 rounded-full border border-border/70 bg-background/80 p-1 shadow-[0_10px_35px_-24px_rgba(27,31,45,0.35)] md:flex">
+          <div className="mr-2 hidden items-center gap-1 rounded-full border border-border/80 bg-background/[0.94] p-1 shadow-[0_10px_35px_-24px_rgba(27,31,45,0.18)] md:flex">
             <Link
               href={pathWithoutLocale}
               locale="en"

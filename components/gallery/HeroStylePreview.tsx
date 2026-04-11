@@ -45,7 +45,7 @@ export function HeroStylePreview({ locale, className = "" }: HeroStylePreviewPro
           <h2 className="text-2xl font-bold tracking-tight">
             {locale === "zh" ? "同一张原图，预览不同动漫风格" : "Preview multiple anime styles from one source image"}
           </h2>
-          <p className="text-sm leading-7 text-muted-foreground">
+          <p className="text-sm leading-7 text-foreground/72">
             {locale === "zh"
               ? "先快速感受同一张图在不同风格下的画面变化，再上传你自己的照片开始生成。"
               : "See how the same reference image changes across different anime directions before uploading your own photo."}
@@ -57,7 +57,7 @@ export function HeroStylePreview({ locale, className = "" }: HeroStylePreviewPro
             {previewItems.map((item) => (
               <div
                 key={item.id}
-                className="group relative overflow-hidden rounded-[24px] border border-border/80 bg-muted/20 shadow-[0_18px_52px_-30px_rgba(15,23,42,0.28)]"
+                className="group relative overflow-hidden rounded-[24px] border border-white/[0.55] bg-muted/[0.16] shadow-[0_18px_52px_-30px_rgba(15,23,42,0.2)] transition-transform duration-300 hover:-translate-y-1"
               >
                 <div className="relative aspect-[1.08/1]">
                   <Image
@@ -66,7 +66,7 @@ export function HeroStylePreview({ locale, className = "" }: HeroStylePreviewPro
                   fill
                   sizes="(max-width: 1024px) 50vw, 280px"
                   priority={item.id === previewItems[0].id}
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.045]"
                 />
                 </div>
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 pb-4 pt-10 text-sm font-semibold text-white">
@@ -76,7 +76,7 @@ export function HeroStylePreview({ locale, className = "" }: HeroStylePreviewPro
             ))}
           </div>
 
-          <div className="pointer-events-none absolute left-1/2 top-1/2 w-[120px] -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-background bg-background/90 p-1 shadow-[0_22px_60px_-20px_rgba(27,31,45,0.45)] md:w-[148px]">
+          <div className="pointer-events-none absolute left-1/2 top-1/2 w-[120px] -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-background bg-background/[0.92] p-1 shadow-[0_22px_60px_-20px_rgba(255,102,147,0.28)] md:w-[148px]">
             <div className="relative aspect-square overflow-hidden rounded-full">
               <Image
               src="/images/gallery/hero-before.jpg"
@@ -94,12 +94,12 @@ export function HeroStylePreview({ locale, className = "" }: HeroStylePreviewPro
         </div>
 
         <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
-          <div className="rounded-xl border border-border bg-background/80 px-4 py-3">
+          <div className="rounded-xl border border-border/80 bg-background/[0.96] px-4 py-3 text-foreground/68">
             {locale === "zh"
               ? "用同一张参考图做多风格展示，帮助用户一眼看出不同风格之间的结果差异。"
               : "The same source image is reused so visitors can instantly compare how each style changes the final result."}
           </div>
-          <div className="rounded-xl border border-border bg-background/80 px-4 py-3">
+          <div className="rounded-xl border border-border/80 bg-background/[0.96] px-4 py-3 text-foreground/68">
             {locale === "zh"
               ? "上传后生成的仍然是用户自己的照片，不是固定模板头像。"
               : "When users upload, the result is still generated from their own photo rather than a fixed template avatar."}

@@ -20,7 +20,7 @@ export function InspirationGallery({
   const items = getLocalizedGalleryItems(locale, style).slice(0, maxItems);
 
   return (
-    <section className="border-t border-border/70 bg-background/35 py-16">
+    <section className="border-t border-border/70 bg-background/[0.68] py-16">
       <div className="container px-4 md:px-6">
         <div className="max-w-6xl mx-auto space-y-10">
           <div className="max-w-3xl space-y-3">
@@ -30,7 +30,7 @@ export function InspirationGallery({
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
               {locale === "zh" ? "看看不同风格会把画面带到哪里" : "See how each style changes the final look"}
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-foreground/72">
               {locale === "zh"
                 ? "我们先用静态精选案例来展示画面走向。后续只需要替换图片素材，这个画廊就能继续扩展。"
                 : "This gallery starts with curated static examples so the page feels visual today and stays easy to expand later."}
@@ -46,7 +46,7 @@ export function InspirationGallery({
               return (
                 <article
                   key={item.id}
-                  className="group surface-card overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/30"
+                  className="group surface-card overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/20 hover:shadow-[0_22px_54px_-34px_rgba(255,102,147,0.18)]"
                 >
                   <div className="relative aspect-[4/5] overflow-hidden bg-muted/20">
                     <Image
@@ -54,10 +54,10 @@ export function InspirationGallery({
                       alt={item.altLabel}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.045]"
                     />
                     <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
-                      <span className="rounded-full border border-border/70 bg-background/92 px-3 py-1 text-xs font-semibold text-foreground shadow-sm">
+                      <span className="rounded-full border border-border/80 bg-background/[0.96] px-3 py-1 text-xs font-semibold text-foreground shadow-sm">
                         {item.categoryLabel}
                       </span>
                       <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-background shadow-lg">
@@ -77,7 +77,7 @@ export function InspirationGallery({
                   </div>
 
                   <div className="flex items-center justify-between gap-4 p-5">
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-sm text-foreground/66">
                       {locale === "zh" ? "点击直达上传区，直接试这个风格" : "Jump straight to the uploader and try this style"}
                     </div>
                     <Link

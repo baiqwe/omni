@@ -31,7 +31,8 @@ function HeroWithUploadSection({
 
     return (
         <section id="anime-uploader" className="relative overflow-hidden py-12 lg:py-20">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(227,104,74,0.12),transparent_24%),radial-gradient(circle_at_82%_18%,rgba(27,163,147,0.12),transparent_20%)]" />
+            <div className="magic-mesh" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.55),transparent_28%)]" />
             <div className="container px-4 md:px-6">
                 <div className="mx-auto max-w-6xl space-y-10">
                     <div className="text-center space-y-5">
@@ -42,19 +43,19 @@ function HeroWithUploadSection({
                             {t('title')}{" "}
                             <span className="bg-gradient-to-r from-primary via-[#c66044] to-[#1ba393] bg-clip-text text-transparent">{t('title_highlight')}</span>
                         </h1>
-                        <p className="mx-auto max-w-3xl text-lg leading-8 text-muted-foreground md:text-xl">
+                        <p className="mx-auto max-w-3xl text-lg leading-8 text-foreground/72 md:text-xl">
                             {t('subtitle')}
                         </p>
-                        <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-sm text-muted-foreground">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/80 px-4 py-2 shadow-sm">
+                        <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-sm text-foreground/72">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/[0.94] px-4 py-2 shadow-sm">
                                 <span className="h-2 w-2 rounded-full bg-[#1c9f6b]"></span>
                                 {t('feature_1')}
                             </div>
-                            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/80 px-4 py-2 shadow-sm">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/[0.94] px-4 py-2 shadow-sm">
                                 <span className="h-2 w-2 rounded-full bg-[#1ba393]"></span>
                                 {t('feature_2')}
                             </div>
-                            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/80 px-4 py-2 shadow-sm">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/[0.94] px-4 py-2 shadow-sm">
                                 <span className="h-2 w-2 rounded-full bg-primary"></span>
                                 {t('feature_3')}
                             </div>
