@@ -8,7 +8,6 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
 import { SoftwareApplicationSchema } from "@/components/json-ld-schema";
 import { GoogleAnalytics } from "@/components/google-analytics";
-import { ClarityAnalytics } from "@/components/clarity-analytics";
 import { site } from "@/config/site";
 
 export function generateStaticParams() {
@@ -117,7 +116,6 @@ export default async function LocaleLayout(props: {
     return (
         <>
             <GoogleAnalytics />
-            <ClarityAnalytics />
             <SoftwareApplicationSchema locale={locale} />
             <NextIntlClientProvider messages={messages} locale={locale}>
                 <ThemeProvider

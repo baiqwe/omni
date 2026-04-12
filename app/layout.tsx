@@ -1,4 +1,5 @@
 import "./globals.css";
+import { ClarityAnalytics } from "@/components/clarity-analytics";
 
 export default function RootLayout({
   children,
@@ -7,6 +8,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <ClarityAnalytics />
+      </head>
       <body className="bg-background text-foreground antialiased" suppressHydrationWarning>
         {children}
       </body>
