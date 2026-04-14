@@ -16,6 +16,8 @@ const REPLICATE_MODEL =
 const REPLICATE_WAIT_SECONDS = 45;
 const REPLICATE_POLL_INTERVAL_MS = 2500;
 const REPLICATE_POLL_ATTEMPTS = 18;
+const ACTIVE_GENERATION_WINDOW_MS = 10 * 60 * 1000;
+const GENERATIONS_BUCKET = "generations";
 
 type Intensity = "low" | "medium" | "high";
 
@@ -138,6 +140,69 @@ function extractReplicateOutputUrl(output: unknown) {
     return null;
 }
 
+function getImageExtension(contentType: string | null, imageUrl: string) {
+    if (contentType === "image/png") return "png";
+    if (contentType === "image/webp") return "webp";
+    if (contentType === "image/jpg" || contentType === "image/jpeg") return "jpg";
+
+    try {
+        const pathname = new URL(imageUrl).pathname.toLowerCase();
+        if (pathname.endsWith(".png")) return "png";
+        if (pathname.endsWith(".webp")) return "webp";
+        if (pathname.endsWith(".jpg") || pathname.endsWith(".jpeg")) return "jpg";
+    } catch {
+        // Ignore URL parsing issues and fall back to jpg.
+    }
+
+    return "jpg";
+}
+
+async function uploadGeneratedImageToStorage(opts: {
+    serviceSupabase: ReturnType<typeof createServiceRoleClient>;
+    projectId: string;
+    userId: string;
+    generationId: string;
+    imageUrl: string;
+}) {
+    const imageResponse = await fetch(opts.imageUrl, {
+        method: "GET",
+        cache: "no-store",
+    });
+
+    if (!imageResponse.ok) {
+        throw new Error(`Failed to fetch generated image: ${imageResponse.status}`);
+    }
+
+    const contentType = imageResponse.headers.get("content-type");
+    const extension = getImageExtension(contentType, opts.imageUrl);
+    const storagePath =
+        `${opts.projectId}/${opts.userId}/${new Date().toISOString().slice(0, 10)}/` +
+        `${opts.generationId}-${crypto.randomUUID()}.${extension}`;
+    const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
+
+    const { error: uploadError } = await opts.serviceSupabase.storage
+        .from(GENERATIONS_BUCKET)
+        .upload(storagePath, imageBuffer, {
+            contentType: contentType || "image/jpeg",
+            cacheControl: "31536000",
+            upsert: false,
+        });
+
+    if (uploadError) {
+        throw new Error(uploadError.message);
+    }
+
+    const { data: publicUrlData } = opts.serviceSupabase.storage
+        .from(GENERATIONS_BUCKET)
+        .getPublicUrl(storagePath);
+
+    return {
+        finalImageUrl: publicUrlData.publicUrl,
+        storagePath,
+        contentType: contentType || "image/jpeg",
+    };
+}
+
 async function fetchReplicatePrediction(predictionId: string) {
     const response = await fetch(`https://api.replicate.com/v1/predictions/${predictionId}`, {
         method: "GET",
@@ -224,6 +289,74 @@ export async function POST(request: NextRequest) {
         }
         userId = user.id;
 
+        const { data: existingPendingGeneration, error: existingPendingError } = await serviceSupabase
+            .from("generations")
+            .select("id, created_at, metadata")
+            .eq("project_id", projectId)
+            .eq("user_id", user.id)
+            .eq("status", "pending")
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+        if (existingPendingError) {
+            console.error("Failed to check existing pending generation:", existingPendingError);
+            return NextResponse.json({ error: "System busy, please try again", code: "SYSTEM_ERROR" }, { status: 500 });
+        }
+
+        if (existingPendingGeneration) {
+            const pendingCreatedAt = new Date(existingPendingGeneration.created_at).getTime();
+            const pendingAge = Date.now() - pendingCreatedAt;
+            const pendingMetadata =
+                existingPendingGeneration.metadata &&
+                typeof existingPendingGeneration.metadata === "object" &&
+                !Array.isArray(existingPendingGeneration.metadata)
+                    ? existingPendingGeneration.metadata as Record<string, unknown>
+                    : {};
+
+            if (pendingAge < ACTIVE_GENERATION_WINDOW_MS) {
+                return NextResponse.json(
+                    {
+                        error: "A generation is already in progress. Please wait for it to finish.",
+                        code: "GENERATION_IN_PROGRESS",
+                    },
+                    { status: 429 }
+                );
+            }
+
+            let staleRefunded = false;
+            let staleRefundError: string | null = null;
+            if (pendingMetadata.creditsDeducted === true && pendingMetadata.refunded !== true) {
+                const { error: staleRefundRpcError } = await supabase.rpc("decrease_credits", {
+                    p_user_id: user.id,
+                    p_amount: -CREDITS_PER_GENERATION,
+                    p_description: "Refund: stale AI generation recovered",
+                });
+
+                if (staleRefundRpcError) {
+                    staleRefundError = staleRefundRpcError.message;
+                    console.error("Stale generation refund RPC Error:", staleRefundRpcError);
+                } else {
+                    staleRefunded = true;
+                }
+            }
+
+            await serviceSupabase
+                .from("generations")
+                .update({
+                    status: "failed",
+                    metadata: {
+                        ...pendingMetadata,
+                        refunded: staleRefunded || pendingMetadata.refunded === true,
+                        refundError: staleRefundError,
+                        failureCode: "STALE_PENDING_RECOVERED",
+                        failureMessage: "Recovered a stale pending generation before creating a new one.",
+                    },
+                })
+                .eq("id", existingPendingGeneration.id)
+                .eq("project_id", projectId);
+        }
+
         // 2. Input Validation
         if (!image) {
             return NextResponse.json({ error: "Missing image", code: "MISSING_IMAGE" }, { status: 400 });
@@ -267,6 +400,15 @@ export async function POST(request: NextRequest) {
             .single();
 
         if (generationInsertError || !generationRow?.id) {
+            if (generationInsertError?.code === "23505") {
+                return NextResponse.json(
+                    {
+                        error: "A generation is already in progress. Please wait for it to finish.",
+                        code: "GENERATION_IN_PROGRESS",
+                    },
+                    { status: 429 }
+                );
+            }
             console.error("Failed to create pending generation log:", generationInsertError);
             return NextResponse.json({ error: "Could not initialize generation", code: "GENERATION_LOG_FAILED" }, { status: 500 });
         }
@@ -370,19 +512,43 @@ export async function POST(request: NextRequest) {
 
         const initialPrediction = await predictionResponse.json();
         const { prediction, resultImageUrl } = await waitForReplicateOutput(initialPrediction);
+        let finalImageUrl = resultImageUrl;
+        let storageTransferStatus = "replicate_fallback";
+        let storageTransferError: string | null = null;
+        let storagePath: string | null = null;
 
         console.log("Generated image URL/data length:", resultImageUrl.substring(0, 100) + "...");
+
+        try {
+            const storageUpload = await uploadGeneratedImageToStorage({
+                serviceSupabase,
+                projectId,
+                userId: user.id,
+                generationId: generationId!,
+                imageUrl: resultImageUrl,
+            });
+            finalImageUrl = storageUpload.finalImageUrl;
+            storageTransferStatus = "uploaded";
+            storagePath = storageUpload.storagePath;
+        } catch (storageError: any) {
+            storageTransferError = storageError?.message || "Unknown storage transfer error";
+            console.error("Failed to transfer generated image to Supabase Storage:", storageError);
+        }
 
         const { error: generationUpdateError } = await serviceSupabase
             .from("generations")
             .update({
-                image_url: resultImageUrl,
+                image_url: finalImageUrl,
                 status: "succeeded",
                 metadata: {
                     ...logContext,
                     creditsDeducted: true,
                     predictionId: prediction?.id || initialPrediction?.id || null,
                     predictionStatus: prediction?.status || initialPrediction?.status || "succeeded",
+                    storageTransferStatus,
+                    storageTransferError,
+                    storagePath,
+                    sourceImageUrl: resultImageUrl,
                 },
             })
             .eq("id", generationId)
@@ -392,7 +558,7 @@ export async function POST(request: NextRequest) {
             console.error("Failed to update generation log to succeeded:", generationUpdateError);
         }
 
-        return NextResponse.json({ url: resultImageUrl, success: true });
+        return NextResponse.json({ url: finalImageUrl, success: true });
 
     } catch (error: any) {
         console.error("Route Error:", error);
