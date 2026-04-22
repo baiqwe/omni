@@ -8,28 +8,28 @@ export default async function HomeHeroContent({ locale }: Props) {
   const t = await getTranslations({ locale, namespace: "hero" });
 
   return (
-    <div className="text-center space-y-5">
+    <div className="space-y-6 text-center">
       <div className="section-kicker">{t("badge")}</div>
-      <h1 className="mx-auto max-w-5xl text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
+      <h1 className="mx-auto max-w-6xl text-5xl font-black tracking-tight text-white sm:text-6xl md:text-7xl">
         {t("title")}{" "}
-        <span className="bg-gradient-to-r from-primary via-[#c66044] to-[#1ba393] bg-clip-text text-transparent">
+        <span className="bg-gradient-to-r from-cyan-200 via-white to-fuchsia-200 bg-clip-text text-transparent">
           {t("title_highlight")}
         </span>
       </h1>
-      <p className="mx-auto max-w-3xl text-lg leading-8 text-foreground/72 md:text-xl">
+      <p className="mx-auto max-w-3xl text-lg leading-8 text-white/68 md:text-xl">
         {t("subtitle")}
       </p>
-      <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-sm text-foreground/72">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/[0.94] px-4 py-2 shadow-sm">
-          <span className="h-2 w-2 rounded-full bg-[#1c9f6b]"></span>
+      <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-sm text-white/68">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 shadow-sm backdrop-blur-xl">
+          <span className="h-2 w-2 rounded-full bg-emerald-300"></span>
           {t("feature_1")}
         </div>
-        <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/[0.94] px-4 py-2 shadow-sm">
-          <span className="h-2 w-2 rounded-full bg-[#1ba393]"></span>
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 shadow-sm backdrop-blur-xl">
+          <span className="h-2 w-2 rounded-full bg-cyan-300"></span>
           {t("feature_2")}
         </div>
-        <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/[0.94] px-4 py-2 shadow-sm">
-          <span className="h-2 w-2 rounded-full bg-primary"></span>
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 shadow-sm backdrop-blur-xl">
+          <span className="h-2 w-2 rounded-full bg-fuchsia-300"></span>
           {t("feature_3")}
         </div>
       </div>

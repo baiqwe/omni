@@ -19,7 +19,7 @@ export type PricingPlan = {
     badgeZh?: string;
 };
 
-// 1 credit = 1 generation (new users start with a small free allowance)
+// Credits will eventually become dynamic by duration and resolution.
 export const CREDITS_PER_GENERATION = 1;
 
 // === 核心定价策略 ===
@@ -28,13 +28,13 @@ export const CREDITS_PER_GENERATION = 1;
 export const PLAN_MINI: PricingPlan = {
     id: "mini_refill",
     productId: "prod_6YOc0hnaYoimusgXJkh3a2",
-    name: "Starter Pack",
-    nameZh: "入门买断包",
+    name: "Creator Starter",
+    nameZh: "创作体验包",
     price: 4.99,
-    credits: 10,
+    credits: 40,
     type: 'one_time',
-    description: "A quick 10-credit drop for first-time tries.",
-    descriptionZh: "先试 10 次，适合轻量体验。",
+    description: "A small one-time pack for testing short Seedance workflows.",
+    descriptionZh: "适合轻量试水的单次买断包，用来体验短时长工作流。",
     originalPrice: 6.99
 };
 
@@ -45,14 +45,14 @@ export const PLAN_PRO_MONTHLY: PricingPlan = {
     name: "Pro Monthly",
     nameZh: "Pro 月订阅",
     price: 29.99,
-    credits: 100,
+    credits: 320,
     type: 'subscription',
     interval: 'month',
     label: "Most Popular",
     labelZh: "最受欢迎",
     isPopular: true,
-    description: "100 monthly credits plus all Pro privileges.",
-    descriptionZh: "每月 100 积分，并解锁全部 Pro 特权。",
+    description: "Monthly credits for consistent multi-modal video production.",
+    descriptionZh: "适合稳定产出的多模态视频创作月度额度。",
     originalPrice: 49.99,
     badge: "Save 40%",
     badgeZh: "立省 40%"
@@ -63,31 +63,31 @@ export const PLAN_PRO_YEARLY: PricingPlan = {
     productId: "prod_6Yo0APx53tCUDX0ph4RBWe",
     name: "Pro Yearly",
     nameZh: "Pro 年订阅",
-    price: 249.99,
-    credits: 1200,
+    price: 89.99,
+    credits: 4800,
     type: 'subscription',
     interval: 'year',
     label: "Best Value",
     labelZh: "最佳价值",
     isPopular: true,
-    description: "1200 yearly credits with the lowest per-image cost.",
-    descriptionZh: "每年 1200 积分，单次成本最低。",
-    originalPrice: 359.88,
-    badge: "2 Months Free",
-    badgeZh: "送 2 个月"
+    description: "Best-value plan for teams and high-frequency production.",
+    descriptionZh: "面向高频创作和团队协作的高性价比方案。",
+    originalPrice: 179.99,
+    badge: "Save 50%",
+    badgeZh: "立省 50%"
 };
 
 // 3. Buy-out: Creator Pack
 export const PLAN_ANCHOR: PricingPlan = {
     id: "lifetime_anchor",
     productId: "prod_74hGM82264trVHdwGAP897",
-    name: "Pro Pack",
-    nameZh: "Pro 买断包",
+    name: "Production Pack",
+    nameZh: "制作买断包",
     price: 19.99,
-    credits: 50,
+    credits: 180,
     type: 'one_time',
-    description: "A larger one-time pack with watermark-free exports.",
-    descriptionZh: "更大的单次买断包，并支持无水印导出。",
+    description: "A larger one-time pack for client demos and campaign tests.",
+    descriptionZh: "适合客户提案和营销试片的单次大包。",
     originalPrice: 24.99
 };
 

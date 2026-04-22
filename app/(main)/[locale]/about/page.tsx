@@ -14,8 +14,8 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
 
   const title = isZh ? `关于我们 | ${site.siteName}` : `About | ${site.siteName}`;
   const description = isZh
-    ? "我们打造照片转二次元的 AI 工具：更简单的工作流、更清晰的风格选择、更好的出图体验。"
-    : "We build Photo-to-Anime AI tools with simple workflows, clear style choices, and great results.";
+    ? "我们在把现有 AI 工具脚手架改造成 Seedance 2 风格的多模态视频生成工作台。"
+    : "We are transforming this AI starter into a Seedance-style multi-modal video creation workspace.";
 
   const ogImage = new URL(site.ogImagePath, site.siteUrl).toString();
 
@@ -73,13 +73,13 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
             </h1>
             <p className="text-lg text-muted-foreground">
               {isZh
-                ? "把你的照片转换成高质量的动漫风格图像，用于头像、社交分享、创作灵感。"
-                : "Turn your photos into high-quality anime-style images for avatars, sharing, and creative inspiration."}
+                ? "把图片、视频、音频与文本放进同一个创作工作台，服务更可控的视频生成流程。"
+                : "Bring images, videos, audio, and text into one workspace built for more controllable video generation."}
             </p>
             <p className="text-sm text-muted-foreground">
               {isZh
-                ? `${site.siteName} 是一个面向动漫爱好者、Coser、创作者和游戏玩家的独立工具站，专注于把真实照片快速转换成更稳定、更好看的二次元风格图像。`
-                : `${site.siteName} is an independent tool built for anime fans, cosplayers, creators, and gamers who want fast, high-quality anime transformations from real photos.`}
+                ? `${site.siteName} 当前聚焦于多模态输入、参考驱动控制、异步任务流和视频生产体验，而不是停留在单一 prompt 工具。`
+                : `${site.siteName} now focuses on multi-modal input, reference-driven control, async job orchestration, and a production-ready video workflow rather than a single-prompt toy.`}
             </p>
           </div>
 
@@ -88,11 +88,11 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Sparkles className="w-5 h-5 text-primary" />
-                  {isZh ? "风格优先" : "Style First"}
+                  {isZh ? "参考优先" : "Reference First"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground">
-                {isZh ? "围绕二次元用户的审美与细节偏好设计风格与参数。" : "Designed around anime aesthetics and creator expectations."}
+                {isZh ? "让图像、视频、音频和文字共同决定结果，而不是只靠一句 prompt。" : "Let images, video, audio, and text guide the output together instead of relying on one prompt."}
               </CardContent>
             </Card>
 
@@ -100,11 +100,11 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Zap className="w-5 h-5 text-primary" />
-                  {isZh ? "简单工作流" : "Simple Workflow"}
+                  {isZh ? "任务流优先" : "Workflow First"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground">
-                {isZh ? "上传 → 选风格 → 调浓度 → 生成下载。" : "Upload → pick a style → adjust intensity → generate & download."}
+                {isZh ? "工作台 → 素材 staging → 额度估算 → 异步生成 → 继续延展。" : "Workspace → staging → credit estimate → async generation → extend and iterate."}
               </CardContent>
             </Card>
 
@@ -117,8 +117,8 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground">
                 {isZh
-                  ? "为完成 AI 生成，我们会把图片发送到第三方 AI 服务处理；更多细节请见隐私政策。"
-                  : "To generate images, we send your uploads to a third-party AI service; see Privacy Policy for details."}
+                  ? "接入真实生成能力后，素材应先进入受控存储，再转发到选定的视频模型服务。"
+                  : "Once live generation is connected, uploads should be staged in controlled storage before provider handoff."}
               </CardContent>
             </Card>
           </div>
@@ -130,7 +130,7 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
                 : `For support, rights, or business inquiries, contact: ${site.supportEmail}`}
             </p>
             <Button asChild size="lg">
-              <Link href={`${localePrefix}`}>{isZh ? "开始生成" : "Start Generating"}</Link>
+              <Link href={`${localePrefix}`}>{isZh ? "打开工作台" : "Open Workspace"}</Link>
             </Button>
           </div>
         </div>

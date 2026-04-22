@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "[Free] Photo to Anime AI - 1-Click Anime Avatar Maker",
-    "description": "Turn your selfie into a stunning anime avatar in seconds. Free 1-click AI photo to anime converter with Ghibli, Webtoon, and 90s retro styles.",
-    "keywords": "photo to anime, turn photo into anime, ai anime generator, free anime avatar maker, one click anime filter, ghibli filter ai, anime character creator"
+    "title": "Seedance 2.0 - Multi-Modal AI Video Creation Workspace",
+    "description": "Build cinematic AI videos with text, image, video, and audio references in one workspace. Seedance 2.0 is designed for controllable, production-ready multi-modal generation.",
+    "keywords": "seedance 2, ai video generator, multi modal video ai, image to video, text to video, reference video generation, ai video workspace"
   },
   "nav": {
     "home": "Home",
@@ -15,15 +15,15 @@
     "sign_out": "Sign Out"
   },
   "hero": {
-    "badge": "Anime-First • Style Presets • High Quality",
-    "title": "Photo to Anime",
-    "title_highlight": "AI Converter",
-    "subtitle": "Upload a photo and turn it into anime art online. Pick a style, adjust intensity, and generate a clean 2D anime look in seconds.",
-    "feature_1": "Multiple styles",
-    "feature_2": "Intensity control",
-    "feature_3": "Download ready",
-    "tool_title": "Try it free",
-    "tool_subtitle": "Upload one photo and instantly explore your anime alter ego."
+    "badge": "Multi-Modal Input • Precision Motion • Video Extension",
+    "title": "Experience true",
+    "title_highlight": "multi-modal AI video creation",
+    "subtitle": "Combine images, videos, audio, and natural language in a single cinematic workspace designed for controllable Seedance-style generation.",
+    "feature_1": "Reference anything",
+    "feature_2": "Async-ready workflow",
+    "feature_3": "Built for production",
+    "tool_title": "Start creating",
+    "tool_subtitle": "Stage the workspace first, then wire the live generation pipeline."
   },
   "uploader": {
     "title": "Upload Your Image",
@@ -73,35 +73,35 @@
     "credits_last_chance": "Only 1 credit left"
   },
   "home_static": {
-    "f1_title": "Anime-First Styles",
-    "f1_desc": "Built for anime aesthetics—not generic cartoon filters.",
-    "f2_title": "Fast Workflow",
-    "f2_desc": "Upload → choose style → adjust intensity → generate.",
-    "f3_title": "Creator-Friendly",
-    "f3_desc": "Great for PFPs, cosplay edits, and sharing.",
-    "styles_title": "Popular Photo to Anime Styles",
-    "styles_subtitle": "Explore focused landing pages for specific anime filter looks.",
-    "styles_more": "See all styles",
-    "use_title": "Made for anime fans",
-    "use_subtitle": "For avatars, cosplay redraws, and creative edits.",
-    "u1_title": "Gamers & streamers",
-    "u1_desc": "Generate a standout anime PFP for Discord/Twitch.",
-    "u2_title": "Cosplayers",
-    "u2_desc": "Turn cosplay photos into polished anime art.",
-    "u3_title": "Creators",
-    "u3_desc": "Create consistent anime visuals for posts and projects.",
-    "faq_title": "FAQ",
-    "faq_subtitle": "Quick answers before you generate.",
-    "faq1_q": "Can I try it for free?",
-    "faq1_a": "Yes. New accounts get free generation credits, so you can test the photo to anime effect before upgrading.",
-    "faq2_q": "What styles do you support?",
-    "faq2_a": "Standard anime, Ghibli-inspired, cyberpunk, 90s retro, webtoon, and more.",
-    "faq3_q": "Can I keep my hair/eye color?",
-    "faq3_a": "Yes—enable the toggles to ask the model to preserve those colors.",
-    "faq4_q": "Is it safe to upload photos?",
-    "faq4_a": "Uploads are sent to a third-party AI service for generation. See our Privacy Policy for details.",
-    "cta_title": "Ready to go anime?",
-    "cta_subtitle": "Create an account and generate your first images.",
+    "f1_title": "Reference-driven creation",
+    "f1_desc": "Anchor the output with images, clips, motion, and audio instead of relying on prompt luck.",
+    "f2_title": "Tool-first workflow",
+    "f2_desc": "Open the site and start staging real production inputs immediately.",
+    "f3_title": "Async pipeline friendly",
+    "f3_desc": "Designed to grow into queued jobs, status polling, and resumable generation.",
+    "styles_title": "A controllable model needs legible capabilities",
+    "styles_subtitle": "The homepage should communicate what Seedance 2 does best: reference handling, motion precision, extension, and audio-aware generation.",
+    "styles_more": "Explore the workspace",
+    "use_title": "Built for creators who think in references",
+    "use_subtitle": "From marketing teams to previs artists, the product should feel closer to a workstation than a gimmick.",
+    "u1_title": "Advertising & campaigns",
+    "u1_desc": "Reuse proven shot language, product framing, and branded motion patterns.",
+    "u2_title": "Film previs & motion studies",
+    "u2_desc": "Prototype camera movement, scene continuity, and visual timing before production.",
+    "u3_title": "Social & creator systems",
+    "u3_desc": "Turn trends, music, and visual references into repeatable content pipelines.",
+    "faq_title": "How to create with Seedance 2",
+    "faq_subtitle": "This branch already stages the production UX before the provider integration lands.",
+    "faq1_q": "Upload your assets",
+    "faq1_a": "Start with stills, reference clips, and optional audio so the model has concrete material to follow.",
+    "faq2_q": "Describe the direction",
+    "faq2_a": "Use natural language to explain how each asset should influence motion, framing, pacing, and continuity.",
+    "faq3_q": "Generate and iterate",
+    "faq3_a": "Once the async job system is wired, users can generate, extend, and refine without restarting the entire flow.",
+    "faq4_q": "What happens to uploaded assets?",
+    "faq4_a": "Assets should be stored in project-scoped buckets and forwarded only to the selected generation provider. Privacy details belong in the final policy.",
+    "cta_title": "Ready to turn this scaffold into a real Seedance product?",
+    "cta_subtitle": "The product shell is in place. Next we wire storage, async jobs, credits, and the live model.",
     "cta_signup": "Create account",
     "cta_pricing": "View pricing"
   },
@@ -113,19 +113,19 @@
     "faq_title": "Frequently asked questions"
   },
   "footer": {
-    "tagline": "Anime-first photo conversion with AI",
+    "tagline": "Multi-modal AI video creation workspace for controllable cinematic output",
     "legal": "Legal",
     "link_privacy": "Privacy Policy",
     "link_terms": "Terms of Service",
     "link_about": "About",
     "link_contact": "Contact",
     "rights": "All rights reserved.",
-    "brand": "Our Site",
-    "built_by": "Built for creators"
+    "brand": "Seedance 2.0",
+    "built_by": "Built for creators shipping moving images"
   },
   "Contact": {
-    "meta_title": "Contact Us | Animeify",
-    "meta_desc": "Reach Animeify support for generation issues, billing questions, privacy requests, or account help.",
+    "meta_title": "Contact Us | Seedance 2.0",
+    "meta_desc": "Reach Seedance 2.0 support for workflow questions, billing, privacy requests, or rollout updates.",
     "home": "Back to Home",
     "title": "Contact Us",
     "p1": "If you have questions about results, billing, privacy, or account issues, we are here to help. We keep this page simple so you always have a clear place to reach support.",
@@ -135,10 +135,10 @@
     "p3": "We usually reply within 24 to 48 hours. If your request is about uploaded images or account data, mention that directly so we can route it correctly."
   },
   "Pricing": {
-    "eyebrow": "Creator Pricing",
-    "title": "Four cards. One obvious upgrade path.",
-    "subtitle": "Put buy-out packs and Pro subscriptions on the same plane, and the math starts selling for you. The lower the per-image cost and the richer the privileges, the easier the decision becomes.",
-    "artist_anchor": "Commissioning a human artist for a custom anime portrait can cost $30-$50 and take weeks. Animeify Pro gives you 100 studio-quality generations instantly for less than the price of one commission.",
+    "eyebrow": "Production Pricing",
+    "title": "One page, two buying behaviors, clear upgrade logic.",
+    "subtitle": "Keep the low-friction buy-out packs for first-time testing, then make the subscription math obviously better for serious video production.",
+    "artist_anchor": "Compared with traditional storyboarding, motion tests, or repeated freelance editing rounds, a strong Seedance subscription should feel like instant leverage rather than just another SaaS bill.",
     "buyout_label": "Buy-out",
     "subscription_label": "Pro",
     "one_time_payment": "One-time payment",
@@ -153,63 +153,63 @@
     "missing_features": "Missing features",
     "faq_kicker": "Why upgrade?",
     "checkout_failed": "Failed to start payment process.",
-    "refill_title": "Your anime journey continues! ⚡️",
-    "refill_subtitle": "Unlock Animeify Pro for 100 generations, faster checkout flow, and zero-watermark exports. Infinite imagination for the price of a coffee.",
+    "refill_title": "Keep the render queue moving.",
+    "refill_subtitle": "Use top-up packs for campaign tests, or unlock the subscription for repeatable high-volume video work.",
     "refill_upgrade": "Go Pro Monthly",
     "refill_mini": "Get 10 credits",
     "cards": {
       "starter": {
         "subtitle": "One-time payment",
-        "cta": "Buy 10 Credits",
+        "cta": "Buy Starter Pack",
         "features": {
-          "credits": "10 Credits",
-          "speed": "Standard GPU Speed",
-          "resolution": "Standard Resolution"
+          "credits": "40 Credits",
+          "speed": "Short-form generation budget",
+          "resolution": "Up to 720p experiments"
         },
         "missing": {
           "queue": "Priority Queue",
-          "upscale": "4K Upscaling",
-          "license": "Commercial License"
+          "upscale": "Long-form budget",
+          "license": "Team workflow perks"
         }
       },
       "pro_pack": {
         "subtitle": "One-time payment",
-        "cta": "Buy 50 Credits",
+        "cta": "Buy Production Pack",
         "features": {
-          "credits": "50 Credits",
-          "speed": "Standard GPU Speed",
-          "resolution": "Standard Resolution",
+          "credits": "180 Credits",
+          "speed": "Campaign test budget",
+          "resolution": "1080p support",
           "watermark": "No Watermark"
         },
         "missing": {
           "queue": "Priority Queue",
-          "upscale": "4K Upscaling",
-          "styles": "Exclusive Pro Styles"
+          "upscale": "Recurring monthly pool",
+          "styles": "Team collaboration perks"
         }
       },
       "monthly": {
         "subtitle": "Billed monthly. Cancel anytime.",
-        "anchor": "Save 40%",
+        "anchor": "Best for active creators",
         "cta": "Subscribe Now",
         "features": {
-          "credits": "100 Credits / month",
-          "queue": "Priority GPU Queue (Zero wait times)",
-          "upscale": "4K HD Upscale",
-          "styles": "Exclusive Pro Styles",
-          "license": "Commercial Use License",
+          "credits": "320 Credits / month",
+          "queue": "Priority queue budget",
+          "upscale": "High-res render access",
+          "styles": "Workflow presets",
+          "license": "Commercial-friendly usage",
           "watermark": "Zero Watermarks"
         }
       },
       "yearly": {
         "subtitle_prefix": "Equivalent to",
-        "anchor": "Best value. 2 months free.",
+        "anchor": "Save 50%",
         "cta": "Get Yearly Plan",
         "features": {
-          "credits": "1200 Credits / year",
+          "credits": "4800 Credits / year",
           "queue": "Priority GPU Queue",
-          "upscale": "4K HD Upscale",
-          "styles": "Exclusive Pro Styles",
-          "license": "Commercial Use License",
+          "upscale": "High-res render access",
+          "styles": "Workflow presets",
+          "license": "Commercial-friendly usage",
           "watermark": "Zero Watermarks"
         }
       }

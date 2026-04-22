@@ -1,10 +1,7 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
-import { AnimeImageEditor } from '@/components/feature/anime-image-editor';
-import type { AnimeStyleId } from '@/config/landing-pages';
-import { HeroStylePreview } from '@/components/gallery/HeroStylePreview';
+import { MultiModalWorkspace } from '@/components/feature/multi-modal-workspace';
 
 interface HomeInteractiveProps {
     onShowStaticContent: (show: boolean) => void;
@@ -24,23 +21,15 @@ function HeroWithUploadSection({
     onShowStaticContent: (show: boolean) => void;
     user?: any;
 }) {
-    const t = useTranslations('hero');
     const pathname = usePathname();
     const pathParts = pathname?.split('/') || [];
     const locale = (pathParts[1] === 'en' || pathParts[1] === 'zh') ? pathParts[1] : 'en';
 
+    void onShowStaticContent;
+    void user;
+
     return (
-        <AnimeImageEditor
-            locale={locale}
-            user={user}
-            title={t('tool_title')}
-            subtitle={t('tool_subtitle')}
-            defaultStyle={"standard" as AnimeStyleId}
-            hideStyleSelector={false}
-            onImageUploaded={(uploaded) => onShowStaticContent(!uploaded)}
-            compact={false}
-            emptyAside={<HeroStylePreview locale={locale} />}
-        />
+        <MultiModalWorkspace locale={locale} />
     );
 }
 

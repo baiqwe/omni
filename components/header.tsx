@@ -2,7 +2,6 @@
 
 import { signOutAction } from "@/app/actions";
 import { Button } from "./ui/button";
-import { ThemeSwitcher } from "./theme-switcher";
 import { Logo } from "./logo";
 import { usePathname } from "next/navigation";
 import { MobileNav } from "./mobile-nav";
@@ -28,9 +27,9 @@ export default function Header() {
   // Main navigation items
   const mainNavItems: NavItem[] = [
     { id: "home", label: t('home'), href: '/' },
-    { id: "tools", label: t('tools'), href: '/' },
+    { id: "tools", label: t('tools'), href: '/#showcase' },
     { id: "pricing", label: t('pricing'), href: '/pricing' },
-    { id: "about", label: t('about'), href: '/about' },
+    { id: "about", label: t('about'), href: '/#workspace' },
   ];
 
   // Dashboard items
@@ -82,7 +81,6 @@ export default function Header() {
             </Link>
           </div>
 
-          <ThemeSwitcher />
           {loading ? (
             <div className="hidden md:flex gap-2">
               <Skeleton className="h-9 w-20" />

@@ -10,8 +10,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     const title = locale === "zh" ? `价格方案 | ${site.siteName}` : `Pricing Plans | ${site.siteName}`;
     const description =
         locale === "zh"
-            ? "查看 Animeify 的积分包与专业版订阅方案，对比每张图片成本、生成额度与高级权益，选择最适合你的照片转二次元定价。"
-            : "Compare Animeify credit packs and Pro subscriptions by cost per generation, monthly credits, and premium features for your photo-to-anime workflow.";
+            ? "查看 Seedance 2 的买断包与订阅方案，比较不同视频工作流下的额度、成本和生产特权。"
+            : "Compare Seedance 2 buy-out packs and subscriptions by credits, workflow value, and production privileges.";
     const ogImage = new URL(site.ogImagePath, site.siteUrl).toString();
 
     return {
@@ -46,13 +46,13 @@ export default async function PricingPage({ params }: Props) {
 
     return (
         <div className="bg-background min-h-screen pt-20">
-            <section className="relative overflow-hidden border-b border-border/60 bg-[radial-gradient(circle_at_top,rgba(227,104,74,0.08),transparent_28%),linear-gradient(180deg,rgba(252,251,248,0.96),rgba(255,255,255,1))]">
+            <section className="relative overflow-hidden border-b border-border/60 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.12),transparent_28%),radial-gradient(circle_at_top_right,rgba(244,114,182,0.08),transparent_22%),linear-gradient(180deg,rgba(7,11,21,0.96),rgba(5,8,18,1))]">
                 <div className="mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 lg:px-8">
                     <span className="section-kicker">{t("eyebrow")}</span>
-                    <h1 className="mt-6 text-4xl font-black tracking-tight text-foreground sm:text-5xl">
+                    <h1 className="mt-6 text-4xl font-black tracking-tight text-white sm:text-5xl">
                         {t("title")}
                     </h1>
-                    <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">
+                    <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/68">
                         {t("subtitle")}
                     </p>
                 </div>

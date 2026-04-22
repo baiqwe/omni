@@ -5,8 +5,8 @@ export type SiteConfig = {
   supportEmail: string;
 };
 
-const PRODUCTION_SITE_URL = "https://animeify.co";
-const SUPPORT_EMAIL_FALLBACK = "hello@animeify.co";
+const PRODUCTION_SITE_URL = "https://seedance2.ai";
+const SUPPORT_EMAIL_FALLBACK = "hello@seedance2.ai";
 const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
 const PLACEHOLDER_SUPPORT_EMAILS = new Set(["support@example.com", "hello@example.com"]);
 
@@ -31,7 +31,7 @@ function normalizeSupportEmail(email?: string): string {
 }
 
 export const site: SiteConfig = {
-  siteName: process.env.NEXT_PUBLIC_SITE_NAME || "Photo to Anime AI",
+  siteName: process.env.NEXT_PUBLIC_SITE_NAME || "Seedance 2.0",
   siteUrl: normalizeSiteUrl(process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || PRODUCTION_SITE_URL),
   ogImagePath: process.env.NEXT_PUBLIC_OG_IMAGE_PATH || "/web-app-manifest-512x512.png",
   supportEmail: normalizeSupportEmail(process.env.NEXT_PUBLIC_SUPPORT_EMAIL),

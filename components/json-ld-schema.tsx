@@ -13,7 +13,7 @@ export async function SoftwareApplicationSchema({ locale }: { locale: string }) 
     const schema = {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": `${site.siteName} - Photo to Anime AI Converter`,
+        "name": `${site.siteName} - Multi-Modal AI Video Workspace`,
         "description": t('description'),
         "applicationCategory": "MultimediaApplication",
         "operatingSystem": "Web Browser",
@@ -23,11 +23,11 @@ export async function SoftwareApplicationSchema({ locale }: { locale: string }) 
             "priceCurrency": "USD"
         },
         "featureList": [
-            "Photo to anime AI conversion",
-            "Multiple anime styles (Ghibli-inspired, cyberpunk, 90s retro, webtoon)",
-            "Adjustable anime intensity",
-            "Preserve key colors (eyes/hair)",
-            "Download generated images"
+            "Multi-modal AI video generation workspace",
+            "Image, video, audio, and text references",
+            "Reference-driven motion and camera control",
+            "Async-ready generation queue",
+            "Video extension and production workflow planning"
         ],
         "screenshot": new URL(site.ogImagePath, site.siteUrl).toString(),
         "aggregateRating": {

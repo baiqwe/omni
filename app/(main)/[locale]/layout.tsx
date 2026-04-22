@@ -94,7 +94,7 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
 
         // ✅ 其他 SEO 相关
         category: 'technology',
-        classification: 'Image Processing Tool',
+        classification: 'AI Video Generation Tool',
     };
 }
 
@@ -120,8 +120,8 @@ export default async function LocaleLayout(props: {
             <NextIntlClientProvider messages={messages} locale={locale}>
                 <ThemeProvider
                     attribute="class"
-                    defaultTheme="system"
-                    enableSystem
+                    defaultTheme="dark"
+                    enableSystem={false}
                     disableTransitionOnChange
                 >
                     <div className="relative min-h-screen flex flex-col">

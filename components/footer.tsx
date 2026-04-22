@@ -4,7 +4,6 @@ import { Logo } from "./logo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { getLocalizedLandingPage } from "@/config/landing-pages";
 
 export function Footer() {
   const pathname = usePathname();
@@ -17,24 +16,17 @@ export function Footer() {
   const localePrefix = `/${currentLocale}`;
   const isZh = currentLocale === "zh";
 
-  const ghibliPage = getLocalizedLandingPage("ghibli-filter", currentLocale);
-  const animePfpPage = getLocalizedLandingPage("anime-pfp-generator", currentLocale);
-  const cyberpunkPage = getLocalizedLandingPage("cyberpunk-anime", currentLocale);
-  const retroPage = getLocalizedLandingPage("90s-anime-filter", currentLocale);
-  const webtoonPage = getLocalizedLandingPage("webtoon-ai", currentLocale);
-  const cosplayPage = getLocalizedLandingPage("cosplay-enhancer", currentLocale);
-
   const toolLinks = [
-    { label: isZh ? "照片转二次元" : "Photo to Anime", href: `${localePrefix}` },
-    { label: ghibliPage?.h1 || (isZh ? "吉卜力风格滤镜" : "Ghibli Filter"), href: `${localePrefix}/ghibli-filter` },
-    { label: animePfpPage?.h1 || (isZh ? "动漫头像生成器" : "Anime PFP Generator"), href: `${localePrefix}/anime-pfp-generator` },
-    { label: cyberpunkPage?.h1 || (isZh ? "赛博朋克动漫滤镜" : "Cyberpunk Anime Filter"), href: `${localePrefix}/cyberpunk-anime` },
+    { label: isZh ? "创作工作台" : "Workspace", href: `${localePrefix}/#workspace` },
+    { label: isZh ? "灵感画廊" : "Showcase", href: `${localePrefix}/#showcase` },
+    { label: isZh ? "价格方案" : "Pricing", href: `${localePrefix}/pricing` },
+    { label: isZh ? "控制台" : "Dashboard", href: `${localePrefix}/dashboard` },
   ];
 
   const styleLinks = [
-    { label: retroPage?.h1 || (isZh ? "90 年代复古动漫滤镜" : "90s Anime Filter"), href: `${localePrefix}/90s-anime-filter` },
-    { label: webtoonPage?.h1 || (isZh ? "韩漫风 AI 滤镜" : "Webtoon AI Filter"), href: `${localePrefix}/webtoon-ai` },
-    { label: cosplayPage?.h1 || (isZh ? "Cos 照增强器" : "Cosplay Enhancer"), href: `${localePrefix}/cosplay-enhancer` },
+    { label: isZh ? "图像转视频" : "Image to Video", href: `${localePrefix}/#workspace` },
+    { label: isZh ? "文本转视频" : "Text to Video", href: `${localePrefix}/#workspace` },
+    { label: isZh ? "多参考生成" : "Multi-Reference Video", href: `${localePrefix}/#workspace` },
   ];
 
   const legalLinks = [
@@ -50,8 +42,7 @@ export function Footer() {
         <div className="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row md:py-0">
           <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
             <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-              Built by{" "}
-              <span className="font-medium">Bai</span>
+              {isZh ? "Seedance 2 工作流改造中" : "Seedance 2 workflow in progress"}
             </p>
           </div>
         </div>
@@ -60,7 +51,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.3),rgba(255,255,255,0.86))]">
+    <footer className="border-t border-border/70 bg-[linear-gradient(180deg,rgba(7,11,21,0.92),rgba(5,8,18,0.98))]">
       <div className="container px-4 py-14 md:py-20">
         <div className="surface-panel px-6 py-8 md:px-8 md:py-10">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
@@ -72,8 +63,8 @@ export function Footer() {
             </p>
             <p className="mt-3 inline-flex rounded-full border border-border/80 bg-background/80 px-3 py-1.5 text-xs text-muted-foreground">
               {currentLocale === 'zh'
-                ? '提示：为生成效果，上传图片会发送到第三方 AI 服务处理。'
-                : 'Note: uploads are sent to a third-party AI service for generation.'}
+                ? '提示：真实视频能力接入后，素材会先进入受控存储，再转发到选定的视频模型服务。'
+                : 'Note: once live generation is connected, uploads should be staged in controlled storage before provider handoff.'}
             </p>
           </div>
 
