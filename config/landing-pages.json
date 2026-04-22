@@ -1,125 +1,115 @@
 {
-  "photo-to-anime": {
-    "slug": "photo-to-anime",
-    "targetKeyword": "photo to anime",
-    "title": "[Free] Photo to Anime AI - 1-Click Anime Avatar",
-    "description": "Turn your selfie into anime art in seconds with a free 1-click photo to anime AI. Try Ghibli, webtoon, cyberpunk, and retro styles from one upload.",
-    "h1": "Free Photo to Anime AI Converter",
-    "subtitle": "Turn any photo into anime art in seconds. Pick a style, adjust intensity, and generate your new anime look.",
-    "defaultStyle": "standard",
-    "hideStyleSelector": false,
+  "image-to-video": {
+    "slug": "image-to-video",
+    "targetKeyword": "image to video ai",
+    "title": "Image to Video AI Workspace - Turn Stills into Cinematic Motion",
+    "description": "Start from a still image, add camera intent and timing, then turn it into a controllable AI video workflow.",
+    "h1": "Image to Video AI Workspace",
+    "subtitle": "Transform still frames into motion-driven video shots with prompt control and cinematic pacing.",
+    "mode": "image_to_video",
     "faqs": [
       {
-        "question": "Do I need to sign up?",
-        "answer": "To generate images you'll need an account. New accounts get a small free allowance to try it."
+        "question": "What makes image to video usable in production?",
+        "answer": "The starting frame must stay stable while motion, timing, and continuity are easy to direct. The workflow matters as much as the model."
       },
       {
-        "question": "Will it look like me?",
-        "answer": "Our anime styles aim to preserve key facial features while transforming the overall look into a clean 2D anime aesthetic."
+        "question": "What inputs should I prepare?",
+        "answer": "Bring a clean opening frame, a clear motion brief, and optionally a reference clip if you need the camera move to feel specific."
       }
     ]
   },
-  "ghibli-filter": {
-    "slug": "ghibli-filter",
-    "targetKeyword": "convert photo to ghibli style",
-    "title": "[Free] Ghibli Filter AI - Turn Photos into Anime Art",
-    "description": "Upload a selfie and create a warm, storybook Ghibli-inspired portrait in one click. Get soft colors, hand-drawn mood, and a magical anime look fast.",
-    "h1": "Studio Ghibli AI Filter",
-    "subtitle": "Turn any photo into a warm, hand-drawn Ghibli-inspired masterpiece in seconds.",
-    "defaultStyle": "ghibli",
-    "hideStyleSelector": true,
+  "reference-video-generator": {
+    "slug": "reference-video-generator",
+    "targetKeyword": "reference video generator",
+    "title": "Reference Video Generator - Build AI Video from Real Inputs",
+    "description": "Use image, video, and audio references together so the output follows real creative direction instead of vague prompts.",
+    "h1": "Reference Video Generator",
+    "subtitle": "Blend reference images, clips, and soundtrack cues inside a single AI video generation workflow.",
+    "mode": "multi_modal_video",
     "faqs": [
       {
-        "question": "Is this a real Studio Ghibli product?",
-        "answer": "No. This is a fan-inspired AI style filter and is not affiliated with Studio Ghibli."
+        "question": "Why are references important?",
+        "answer": "References compress visual taste, motion language, and continuity into something the system can follow more reliably than text alone."
       },
       {
-        "question": "What photos work best?",
-        "answer": "Clear portraits and well-lit outdoor photos usually produce the best results."
+        "question": "Can I mix multiple input types?",
+        "answer": "Yes. The strongest workflows combine stills, example motion, and a detailed prompt so the system gets both structure and intention."
       }
     ]
   },
-  "anime-pfp-generator": {
-    "slug": "anime-pfp-generator",
-    "targetKeyword": "anime pfp generator",
-    "title": "[Free] Anime PFP Generator - Make a Custom Avatar",
-    "description": "Turn your selfie into a custom anime profile picture for Discord, Twitch, and social media. Fast, simple, and built for standout avatars.",
-    "h1": "Anime PFP Generator",
-    "subtitle": "Level up your profile with a custom anime avatar-made from your real photo.",
-    "defaultStyle": "standard",
-    "hideStyleSelector": false,
+  "dance-motion-transfer": {
+    "slug": "dance-motion-transfer",
+    "targetKeyword": "ai dance motion transfer",
+    "title": "AI Dance Motion Transfer - Clone Movement with New Characters",
+    "description": "Transfer choreography timing and energy from a reference dance clip into a new AI video with clearer control.",
+    "h1": "AI Dance Motion Transfer",
+    "subtitle": "Use a motion reference clip to carry choreography, rhythm, and body timing into a fresh output sequence.",
+    "mode": "multi_modal_video",
     "faqs": [
       {
-        "question": "Can I use it for Discord and Twitch?",
-        "answer": "Yes. The generated images are perfect for profile pictures on social platforms."
+        "question": "What should the source clip contain?",
+        "answer": "Choose footage with readable full-body motion, consistent framing, and clean timing so movement can be interpreted correctly."
       },
       {
-        "question": "Can I generate multiple variants?",
-        "answer": "Yes-try different styles and intensity levels to get your favorite look."
+        "question": "How do I keep identity consistent?",
+        "answer": "Add a strong character still or several visual references alongside the motion clip, then describe what must stay locked."
       }
     ]
   },
-  "90s-anime-filter": {
-    "slug": "90s-anime-filter",
-    "targetKeyword": "90s anime filter",
-    "title": "[Free] 90s Anime Filter - Make Retro Anime Portraits",
-    "description": "Give your photo a nostalgic 90s anime glow with retro cel shading, softer colors, and classic animation vibes in one quick upload.",
-    "h1": "90s Retro Anime Filter",
-    "subtitle": "A nostalgic cel-shaded anime look inspired by classic 90s animation.",
-    "defaultStyle": "retro_90s",
-    "hideStyleSelector": true,
+  "product-ad-generator": {
+    "slug": "product-ad-generator",
+    "targetKeyword": "ai product ad generator",
+    "title": "AI Product Ad Generator - Turn Product Frames into Campaign Video",
+    "description": "Generate polished product motion tests and campaign shots from still images, motion references, and commercial prompts.",
+    "h1": "AI Product Ad Generator",
+    "subtitle": "Turn product stills into glossy reveal shots, launch teasers, and campaign-ready visual loops.",
+    "mode": "multi_modal_video",
     "faqs": [
       {
-        "question": "What is a 90s anime style?",
-        "answer": "Think clean outlines, cel shading, and slightly softer color palettes typical of 90s animation."
+        "question": "What makes product video prompts work?",
+        "answer": "Product ads work best when the prompt describes camera movement, material response, lighting changes, and the intended brand mood."
+      },
+      {
+        "question": "Should I add reference footage?",
+        "answer": "Yes. Even a short reference for the dolly move or reveal style makes commercial outputs much more predictable."
       }
     ]
   },
-  "cyberpunk-anime": {
-    "slug": "cyberpunk-anime",
-    "targetKeyword": "cyberpunk anime filter",
-    "title": "[Free] Cyberpunk Anime Filter - Make Neon Anime Art",
-    "description": "Transform your selfie into a neon cyberpunk anime portrait with bold lights, futuristic mood, and high-impact sci-fi style in seconds.",
-    "h1": "Cyberpunk Anime Filter",
-    "subtitle": "Neon lights, futuristic mood, and bold anime lines-generated from your photo.",
-    "defaultStyle": "cyberpunk",
-    "hideStyleSelector": true,
+  "storyboard-to-video": {
+    "slug": "storyboard-to-video",
+    "targetKeyword": "storyboard to video ai",
+    "title": "Storyboard to Video AI - Extend Still Frames into Previs",
+    "description": "Convert storyboard frames or still compositions into moving previs shots for scene timing and camera exploration.",
+    "h1": "Storyboard to Video AI",
+    "subtitle": "Stretch still sequences into motion for previs, blocking, and scene continuity tests before production.",
+    "mode": "image_to_video",
     "faqs": [
       {
-        "question": "Does it add neon backgrounds?",
-        "answer": "Yes, the cyberpunk style tends to add futuristic lighting and mood. You can also add optional notes in the prompt."
+        "question": "Is this meant for final footage?",
+        "answer": "Usually no. This workflow is strongest for previs, shot planning, and creative alignment before committing to production."
+      },
+      {
+        "question": "How many frames should I supply?",
+        "answer": "One strong frame can work, but a sequence of key frames gives the system better guidance on scene continuity."
       }
     ]
   },
-  "webtoon-ai": {
-    "slug": "webtoon-ai",
-    "targetKeyword": "webtoon ai filter",
-    "title": "[Free] Webtoon AI Filter - Turn Photos into Webtoon Art",
-    "description": "Upload your photo and create a crisp webtoon-style portrait with clean lines, polished comic shading, and a modern character look.",
-    "h1": "Webtoon AI Filter",
-    "subtitle": "A crisp, modern comic look-simple shapes, clean lines, and readable shading.",
-    "defaultStyle": "webtoon",
-    "hideStyleSelector": true,
+  "video-extension": {
+    "slug": "video-extension",
+    "targetKeyword": "ai video extension",
+    "title": "AI Video Extension - Continue Existing Clips Smoothly",
+    "description": "Extend an existing clip with smoother continuity, matching scene logic, camera direction, and motion momentum.",
+    "h1": "AI Video Extension",
+    "subtitle": "Keep the same scene alive beyond the original clip by continuing motion and visual logic instead of restarting from scratch.",
+    "mode": "video_extension",
     "faqs": [
       {
-        "question": "Is webtoon style different from anime?",
-        "answer": "Yes-webtoon styles often favor cleaner shapes and flatter, readable shading compared to traditional anime rendering."
-      }
-    ]
-  },
-  "cosplay-enhancer": {
-    "slug": "cosplay-enhancer",
-    "targetKeyword": "cosplay enhancer ai",
-    "title": "[Free] Cosplay Enhancer AI - Turn Cosplay into Anime",
-    "description": "Upload a cosplay photo and turn it into polished anime artwork while keeping the spirit of your costume, character, and key visual details.",
-    "h1": "Cosplay Enhancer",
-    "subtitle": "Convert cosplay shots into anime art-great for sharing and profile pics.",
-    "defaultStyle": "cosplay",
-    "hideStyleSelector": false,
-    "faqs": [
+        "question": "What makes extension believable?",
+        "answer": "Believable extension depends on preserving the direction of movement, scene geography, and lighting continuity from the source clip."
+      },
       {
-        "question": "Will it keep my costume details?",
-        "answer": "It tries to preserve key shapes and colors. For best results, use high-quality, well-lit photos."
+        "question": "Can I add a target last frame?",
+        "answer": "Yes. A target end frame is often the best way to force continuity and give the model a destination instead of a vague continuation."
       }
     ]
   }

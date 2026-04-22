@@ -1,5 +1,7 @@
 import rawLandingPages from "./landing-pages.json";
+import type { VideoGenerationMode } from "@/utils/video-generation";
 
+// Legacy compatibility for still-present image editor components that are no longer mounted.
 export type AnimeStyleId = "standard" | "ghibli" | "cyberpunk" | "retro_90s" | "webtoon" | "cosplay";
 
 export type LandingPageFaq = { question: string; answer: string };
@@ -11,8 +13,7 @@ export type LandingPageConfig = {
   description: string;
   h1: string;
   subtitle: string;
-  defaultStyle: AnimeStyleId;
-  hideStyleSelector?: boolean;
+  mode: VideoGenerationMode;
   faqs: LandingPageFaq[];
 };
 
@@ -25,102 +26,67 @@ type LandingPageLocalizedCopy = {
 };
 
 export const landingPages = rawLandingPages as Record<string, LandingPageConfig>;
+export type LandingPageSlug = keyof typeof landingPages;
 
-const landingPagesZh: Record<string, LandingPageLocalizedCopy> = {
-  "photo-to-anime": {
-    titleZh: "【免费体验】照片转二次元 AI - 一键在线生成绝美动漫头像",
-    descriptionZh: "想要看到你的二次元分身吗？立即免费体验最懂你的 AI 照片转二次元生成器！只需上传自拍，一键解锁吉卜力、韩漫、90年代复古等多种动漫滤镜。",
-    h1Zh: "免费照片转二次元 AI 生成器",
-    subtitleZh: "几秒内把任意照片变成动漫风格作品。选择风格、调整浓度，生成你的全新二次元形象。",
+const landingPagesZh: Record<LandingPageSlug, LandingPageLocalizedCopy> = {
+  "image-to-video": {
+    titleZh: "图像转视频 AI 工作台 - 把静帧推进成镜头",
+    descriptionZh: "从一张静态图片出发，加入运镜、节奏和画面意图，把它变成更可控的 AI 视频工作流。",
+    h1Zh: "图像转视频 AI 工作台",
+    subtitleZh: "把静帧推进成有节奏的镜头，而不是随机动起来的短片段。",
     faqsZh: [
-      {
-        question: "需要注册吗？",
-        answer: "要生成图片仍然需要账号，不过新用户会有少量免费额度可以先体验。"
-      },
-      {
-        question: "生成后还会像我吗？",
-        answer: "我们的风格会尽量保留你的关键五官特征，同时把整体视觉转成更干净、更统一的二次元风格。"
-      }
+      { question: "什么样的图像适合作为起始帧？", answer: "主体清晰、构图明确、空间关系稳定的画面最适合做起始帧。" },
+      { question: "为什么要加运镜描述？", answer: "因为真正决定镜头质感的不只是会不会动，而是怎么动、动到哪里、节奏怎么推进。" }
     ]
   },
-  "ghibli-filter": {
-    titleZh: "【免费体验】吉卜力滤镜 AI - 一键把照片变成治愈动画感",
-    descriptionZh: "上传自拍，一键生成温暖治愈的吉卜力灵感动漫头像。手绘氛围、柔和色彩、电影感十足，轻松做出像动画场景一样的照片效果。",
-    h1Zh: "吉卜力风格 AI 滤镜",
-    subtitleZh: "把任意照片快速变成带有手绘感与治愈氛围的吉卜力风格作品。",
+  "reference-video-generator": {
+    titleZh: "多参考视频生成器 - 用真实素材而不是玄学 Prompt",
+    descriptionZh: "把图片、视频和音频参考放在一起，让结果跟随真实创作意图，而不是依赖模糊的文字描述。",
+    h1Zh: "多参考视频生成器",
+    subtitleZh: "把参考图、参考视频和音频节奏一起交给系统，生成更可控的视频结果。",
     faqsZh: [
-      {
-        question: "这是 Studio Ghibli 官方产品吗？",
-        answer: "不是。这是受吉卜力美学启发的 AI 风格滤镜，与 Studio Ghibli 没有官方关联。"
-      },
-      {
-        question: "什么样的照片效果最好？",
-        answer: "清晰的人像和光线充足的户外照片通常会得到更稳定、更自然的结果。"
-      }
+      { question: "为什么多参考比纯文本更重要？", answer: "因为参考素材能直接压缩镜头语言、画面质感和动作方向，比单句文字更可靠。" },
+      { question: "可以混合多种输入吗？", answer: "可以。图片负责身份与场景，视频负责动作和镜头，音频负责节奏提示。" }
     ]
   },
-  "anime-pfp-generator": {
-    titleZh: "【免费体验】动漫头像生成器 - 一键定制你的二次元 PFP",
-    descriptionZh: "上传自拍，一键生成适合 Discord、Twitch 和社交平台的动漫头像。快速出图，轻松打造更有辨识度的二次元形象。",
-    h1Zh: "动漫头像生成器",
-    subtitleZh: "用你的真实照片生成专属二次元头像，让个人主页更有辨识度。",
+  "dance-motion-transfer": {
+    titleZh: "AI 舞蹈动作迁移 - 复制节奏，替换主体",
+    descriptionZh: "把参考舞蹈视频里的动作节奏和能量迁移到新的角色或新的视频设定上。",
+    h1Zh: "AI 舞蹈动作迁移",
+    subtitleZh: "让动作参考带走节奏和编舞，同时把主体替换成新的角色或造型。",
     faqsZh: [
-      {
-        question: "可以用在 Discord 和 Twitch 吗？",
-        answer: "可以。生成结果非常适合做社交平台、游戏社区和直播平台头像。"
-      },
-      {
-        question: "可以一次多生成几种版本吗？",
-        answer: "可以，建议多尝试不同风格和浓度，挑出最适合你的版本。"
-      }
+      { question: "什么样的参考舞蹈视频最好？", answer: "全身清晰、动作连续、镜头不要切太碎的视频最适合做动作迁移。" },
+      { question: "怎么保证角色一致性？", answer: "同时上传角色参考图，并明确哪些服装、脸部和比例必须被锁定。" }
     ]
   },
-  "90s-anime-filter": {
-    titleZh: "【免费体验】90年代动漫滤镜 - 一键生成复古赛璐璐动画风",
-    descriptionZh: "上传照片，立即变成带有赛璐璐质感和怀旧配色的90年代复古动漫头像。适合想要老动画氛围、复古感和个性化头像的人。",
-    h1Zh: "90 年代复古动漫滤镜",
-    subtitleZh: "复古赛璐璐涂色、经典线条与怀旧配色，一键还原老动画氛围。",
+  "product-ad-generator": {
+    titleZh: "AI 产品广告生成器 - 把产品图变成广告镜头",
+    descriptionZh: "用产品静帧、运镜参考和商业化 Prompt，生成更像 campaign shot 的产品视频片段。",
+    h1Zh: "AI 产品广告生成器",
+    subtitleZh: "从产品静图出发，快速生成揭幕镜头、发售预告和视觉提案片段。",
     faqsZh: [
-      {
-        question: "什么是 90 年代动漫风？",
-        answer: "通常表现为更明显的线稿、赛璐璐式分层上色，以及比现代动漫更柔和的配色。"
-      }
+      { question: "产品广告 Prompt 最关键的是什么？", answer: "材质反应、光线变化、镜头路径和品牌气质，这些都要写清楚。" },
+      { question: "一定要加参考视频吗？", answer: "强烈建议加。哪怕只是一段短参考，也能显著提高镜头语言的一致性。" }
     ]
   },
-  "cyberpunk-anime": {
-    titleZh: "【免费体验】赛博朋克动漫滤镜 - 一键生成霓虹未来风照片",
-    descriptionZh: "上传自拍，快速生成霓虹灯感十足的赛博朋克动漫头像。未来感、强对比和科幻氛围一步到位，特别适合玩家和主播。",
-    h1Zh: "赛博朋克动漫滤镜",
-    subtitleZh: "霓虹、未来感、强对比线条，让你的照片拥有强烈的科幻动漫气质。",
+  "storyboard-to-video": {
+    titleZh: "分镜转视频 AI - 把静态分镜扩成预演镜头",
+    descriptionZh: "把分镜稿或关键帧扩成可移动的预演视频，用来测试运镜、节奏和场景连续性。",
+    h1Zh: "分镜转视频 AI",
+    subtitleZh: "让静态分镜不再只是平面图，而是可以用于预演和走位验证的动态镜头。",
     faqsZh: [
-      {
-        question: "会自动加上霓虹背景吗？",
-        answer: "通常会。赛博朋克风格会倾向加入未来感灯光和氛围，如果你有特殊需求也可以在附加要求里补充。"
-      }
+      { question: "这更适合成片还是预演？", answer: "更适合预演、提案和拍摄前验证，而不是直接替代最终成片。" },
+      { question: "只给一张图够吗？", answer: "可以，但如果有多张关键帧，系统会更容易理解连续性和镜头目标。" }
     ]
   },
-  "webtoon-ai": {
-    titleZh: "【免费体验】韩漫风 AI 滤镜 - 一键生成清爽高级感韩漫画风",
-    descriptionZh: "上传照片，立即生成线条干净、轮廓利落、气质高级的韩漫风头像。适合喜欢现代感、角色感和精致脸部表现的人像编辑。",
-    h1Zh: "韩漫风 AI 滤镜",
-    subtitleZh: "简洁造型、清晰线条、易读阴影，让照片拥有现代韩漫质感。",
+  "video-extension": {
+    titleZh: "AI 视频扩写 - 把已有镜头平滑延长",
+    descriptionZh: "沿着原始视频的运动方向、场景逻辑和情绪基调，把镜头继续自然延长。",
+    h1Zh: "AI 视频扩写",
+    subtitleZh: "不是重新生成一个新镜头，而是沿着原镜头的逻辑继续往前走。",
     faqsZh: [
-      {
-        question: "韩漫风和动漫风有什么区别？",
-        answer: "通常韩漫风会更强调干净轮廓和平面阴影，画面更利落；传统动漫则更强调层次和渲染感。"
-      }
-    ]
-  },
-  "cosplay-enhancer": {
-    titleZh: "【免费体验】Cos照增强器 - 一键把 Cos 照变成精修动漫插画",
-    descriptionZh: "上传 Cosplay 照片，快速生成更精致的动漫风插画效果，尽量保留角色气质和服装特征，适合发图、做头像和角色展示。",
-    h1Zh: "Cos 照增强器",
-    subtitleZh: "把 Cos 照快速转成更精致的二次元插画，适合分享、发帖和做角色头像。",
-    faqsZh: [
-      {
-        question: "会保留我的服装细节吗？",
-        answer: "模型会尽量保留关键轮廓和颜色。为了获得更稳定结果，建议使用清晰、光线充足的照片。"
-      }
+      { question: "什么决定扩写是否自然？", answer: "运动方向、空间关系、光线延续和主体状态是否前后一致。" },
+      { question: "可以加尾帧吗？", answer: "可以。尾帧能给系统一个明确目标，通常会比纯粹续写更稳定。" }
     ]
   }
 };
@@ -132,15 +98,9 @@ export function getLandingPage(slug: string): LandingPageConfig | null {
 export function getLocalizedLandingPage(slug: string, locale: string): LandingPageConfig | null {
   const page = getLandingPage(slug);
   if (!page) return null;
-
-  if (locale !== "zh") {
-    return page;
-  }
-
-  const zhCopy = landingPagesZh[slug];
-  if (!zhCopy) {
-    return page;
-  }
+  if (locale !== "zh") return page;
+  const zhCopy = landingPagesZh[slug as LandingPageSlug];
+  if (!zhCopy) return page;
 
   return {
     ...page,
@@ -153,4 +113,4 @@ export function getLocalizedLandingPage(slug: string, locale: string): LandingPa
 }
 
 export const landingPageSlugs = Object.keys(landingPages);
-export const indexableLandingPageSlugs = landingPageSlugs.filter((slug) => slug !== "photo-to-anime");
+export const indexableLandingPageSlugs = landingPageSlugs;

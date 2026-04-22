@@ -2,22 +2,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, PlayCircle } from "lucide-react";
 import { getLocalizedGalleryItems } from "@/config/gallery";
-import type { AnimeStyleId } from "@/config/landing-pages";
+import type { LandingPageSlug } from "@/config/landing-pages";
 
 type InspirationGalleryProps = {
   locale: string;
-  style?: AnimeStyleId;
+  useCase?: LandingPageSlug;
   anchorHrefPrefix?: string;
   maxItems?: number;
 };
 
 export function InspirationGallery({
   locale,
-  style,
+  useCase,
   anchorHrefPrefix,
   maxItems = 6,
 }: InspirationGalleryProps) {
-  const items = getLocalizedGalleryItems(locale, style).slice(0, maxItems);
+  const items = getLocalizedGalleryItems(locale, useCase).slice(0, maxItems);
 
   return (
     <section id="showcase" className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(6,10,20,0.98),rgba(5,8,18,0.92))] py-20">

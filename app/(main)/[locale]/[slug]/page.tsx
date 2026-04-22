@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { landingPageSlugs, getLocalizedLandingPage, landingPages } from "@/config/landing-pages";
-import { AnimeImageEditor } from "@/components/feature/anime-image-editor";
+import { MultiModalWorkspace } from "@/components/feature/multi-modal-workspace";
 import { site } from "@/config/site";
 import { locales } from "@/i18n/routing";
 import Link from "next/link";
@@ -28,13 +28,12 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
   const page = getLocalizedLandingPage(slug, locale);
   if (!page) return {};
 
-  const isPrimaryAlias = page.slug === "photo-to-anime";
-  const canonical = isPrimaryAlias ? `/${locale}` : `/${locale}/${page.slug}`;
+  const canonical = `/${locale}/${page.slug}`;
   const ogImage = new URL(site.ogImagePath, site.siteUrl).toString();
   const commonKeywords =
     locale === "zh"
-      ? ["照片转二次元", "动漫滤镜", "AI 动漫生成器"]
-      : ["photo to anime", "anime filter", "ai anime converter"];
+      ? ["AI 视频生成", "多模态视频生成", "视频工作流"]
+      : ["ai video generation", "multi-modal video ai", "video workflow"];
 
   return {
     title: page.title,
@@ -55,7 +54,7 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
       description: page.description,
       images: [ogImage],
     },
-    robots: isPrimaryAlias ? { index: false, follow: true } : { index: true, follow: true },
+    robots: { index: true, follow: true },
   };
 }
 
@@ -68,15 +67,14 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
 
   const t = await getTranslations({ locale, namespace: "landing" });
   const localePrefix = `/${locale}`;
-  const isPrimaryAlias = page.slug === "photo-to-anime";
   const relatedPages = Object.values(landingPages)
-    .filter((item) => item.slug !== page.slug && item.slug !== "photo-to-anime")
+    .filter((item) => item.slug !== page.slug)
     .slice(0, 3)
     .map((item) => getLocalizedLandingPage(item.slug, locale))
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
   const breadcrumbItems = [
     { name: locale === "zh" ? "首页" : "Home", href: `${localePrefix}` },
-    { name: page.h1, href: isPrimaryAlias ? `${localePrefix}` : `${localePrefix}/${page.slug}` },
+    { name: page.h1, href: `${localePrefix}/${page.slug}` },
   ];
   const howToSteps = [
     { name: t("how_step1"), text: t("how_step1") },
@@ -88,29 +86,28 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
     <div className="bg-background">
       <section id="anime-uploader" className="relative overflow-hidden py-12 lg:py-20">
         <div className="magic-mesh" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.5),transparent_30%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_30%),linear-gradient(180deg,rgba(4,7,16,0.94),rgba(6,9,18,0.98))]" />
         <div className="container px-4 md:px-6">
           <Breadcrumbs items={breadcrumbItems} className="mb-6" />
           <FAQSchema items={page.faqs} />
           <HowToSchema name={page.h1} description={page.description} steps={howToSteps} />
-          <ImageGallerySchema locale={locale} style={page.defaultStyle} />
-          <AnimeImageEditor
-            locale={locale}
-            title={page.h1}
-            subtitle={page.subtitle}
-            defaultStyle={page.defaultStyle}
-            hideStyleSelector={!!page.hideStyleSelector}
-          />
+          <ImageGallerySchema locale={locale} useCase={page.slug} />
+          <div className="mb-10 max-w-4xl space-y-4">
+            <div className="section-kicker">{locale === "zh" ? "Use Case" : "Use Case"}</div>
+            <h1 className="text-4xl font-black tracking-tight text-white sm:text-5xl">{page.h1}</h1>
+            <p className="max-w-3xl text-lg leading-8 text-white/64">{page.subtitle}</p>
+          </div>
+          <MultiModalWorkspace locale={locale} />
         </div>
       </section>
 
-      <InspirationGallery locale={locale} style={page.defaultStyle} anchorHrefPrefix={`/${locale}/${page.slug}`} maxItems={3} />
+      <InspirationGallery locale={locale} useCase={page.slug} anchorHrefPrefix={`/${locale}/${page.slug}`} maxItems={3} />
 
-      <section className="border-t border-border/70 bg-background/40 py-16">
+      <section className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(6,10,20,0.98),rgba(7,11,20,0.92))] py-20">
         <div className="container px-4 md:px-6">
           <div className="max-w-4xl mx-auto space-y-10">
             <div className="space-y-4">
-              <div className="section-kicker">{locale === "zh" ? "使用指南" : "How It Works"}</div>
+              <div className="section-kicker">{locale === "zh" ? "执行路径" : "Execution Flow"}</div>
               <h2 className="text-3xl font-bold tracking-tight">{t("how_title", { keyword: page.targetKeyword })}</h2>
               <ol className="grid gap-3 text-muted-foreground list-decimal pl-5">
                 <li>{t("how_step1")}</li>
@@ -120,13 +117,13 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
               <div className="surface-card p-6 text-sm leading-relaxed text-muted-foreground">
                 <p>
                   {locale === "zh"
-                    ? `${page.h1} 最适合清晰、光线良好的照片。正面或半侧面人像通常最稳定，复杂遮挡、模糊自拍或过暗背景更容易影响五官和发色还原。`
-                    : `${page.h1} works best with sharp, well-lit photos. Front-facing or slight-angle portraits tend to preserve facial features better, while heavy occlusion, blur, or dark backgrounds can reduce consistency.`}
+                    ? `${page.h1} 的关键不是“有没有结果”，而是能不能把参考素材、镜头方向和节奏目标组织成一个可重复执行的工作流。`
+                    : `${page.h1} is not about getting any result. It is about turning references, motion direction, and pacing into a workflow that can be repeated reliably.`}
                 </p>
                 <p className="mt-3">
                   {locale === "zh"
-                    ? "如果你在意头像可用性，建议先从较低浓度开始，再逐步提高风格强度；如果你想做更有表现力的视觉稿，可以尝试更高浓度和锁定风格页面。"
-                    : "If you care about profile-picture accuracy, start with lower intensity and increase gradually. If you want a more stylized result, try a locked style page with higher intensity."}
+                    ? "这一页更像是面向具体任务的工作流模板：你可以把它当作一个场景落地页，而不是一个单独的花式滤镜入口。"
+                    : "Treat this page as a workflow template for a specific production scenario, not as a one-off gimmick landing page."}
                 </p>
               </div>
             </div>
@@ -147,17 +144,17 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
             <div className="space-y-4">
               <div className="surface-card p-5">
                 <p className="text-sm text-muted-foreground">
-                  {locale === "zh" ? "想先试通用模式？" : "Want to start with the general converter?"}{" "}
+                  {locale === "zh" ? "想先从主工作台开始？" : "Want to start from the main workspace?"}{" "}
                   <Link href={`${localePrefix}`} className="font-medium text-primary hover:underline">
-                    {locale === "zh" ? "返回照片转二次元 AI 生成器首页" : "Go back to the Photo to Anime AI Converter home page"}
+                    {locale === "zh" ? "返回 Seedance 2 首页" : "Go back to the Seedance 2 homepage"}
                   </Link>
                   {locale === "zh"
-                    ? "，再根据结果切换到这个风格页做更强的定向生成。"
-                    : " and then switch back to this style page when you want a more targeted look."}
+                    ? "，再进入具体场景页继续做更强的定向生成。"
+                    : " and then come back to this scenario page when you need a more targeted workflow."}
                 </p>
               </div>
               <h2 className="text-3xl font-bold tracking-tight">
-                {locale === "zh" ? "相关动漫风格" : "Related Anime Styles"}
+                {locale === "zh" ? "相关视频工作流" : "Related Video Workflows"}
               </h2>
               <div className="grid gap-4 md:grid-cols-3">
                 {relatedPages.map((related) => (

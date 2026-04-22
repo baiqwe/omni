@@ -2,6 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { getProjectId } from "@/utils/supabase/project";
 import { NextResponse } from "next/server";
+import { estimateGenerationCredits } from "@/utils/video-generation";
 
 export const runtime = 'edge';
 
@@ -13,6 +14,27 @@ function jsonWithCache(body: unknown, init?: ResponseInit) {
 
 export async function GET(request: Request) {
     try {
+        const { searchParams } = new URL(request.url);
+        if (searchParams.get("estimate") === "1") {
+            const resolution = (searchParams.get("resolution") || "1080p") as "480p" | "720p" | "1080p";
+            const durationSeconds = Number(searchParams.get("durationSeconds") || "5") as 5 | 10 | 15;
+            const mode = (searchParams.get("mode") || "multi_modal_video") as "multi_modal_video" | "image_to_video" | "text_to_video" | "video_extension";
+            const audioCount = Number(searchParams.get("audioCount") || "0");
+
+            return jsonWithCache({
+                estimate: estimateGenerationCredits({
+                    mode,
+                    resolution,
+                    durationSeconds,
+                    audios: Array.from({ length: audioCount }, (_, index) => ({
+                        id: `audio-${index + 1}`,
+                        kind: "audio" as const,
+                        url: `placeholder://${index + 1}`,
+                    })),
+                }),
+            });
+        }
+
         const supabase = await createClient();
         const projectId = await getProjectId(supabase);
         const { data: { user }, error: authError } = await supabase.auth.getUser();

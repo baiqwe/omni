@@ -1,15 +1,15 @@
 import { site } from "@/config/site";
 import { getLocalizedGalleryItems } from "@/config/gallery";
-import type { AnimeStyleId } from "@/config/landing-pages";
+import type { LandingPageSlug } from "@/config/landing-pages";
 
 export function ImageGallerySchema({
   locale,
-  style,
+  useCase,
 }: {
   locale: string;
-  style?: AnimeStyleId;
+  useCase?: LandingPageSlug;
 }) {
-  const items = getLocalizedGalleryItems(locale, style);
+  const items = getLocalizedGalleryItems(locale, useCase);
 
   const schema = {
     "@context": "https://schema.org",
