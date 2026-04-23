@@ -25,6 +25,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/hooks/use-user";
 import {
   useMultiModalWorkspace,
   type WorkspaceAsset,
@@ -213,10 +215,61 @@ export function MultiModalWorkspace({ locale }: Props) {
     assets,
     notice,
     estimatedCredits,
+    isSubmitting,
+    activeGenerationId,
+    activeGenerationStatus,
     actions,
   } = useMultiModalWorkspace();
+  const { toast } = useToast();
+  const { user } = useUser();
 
   const promptLength = useMemo(() => prompt.length, [prompt]);
+
+  async function handleGenerate() {
+    if (!user) {
+      toast({
+        title: locale === "zh" ? "请先登录" : "Sign in required",
+        description:
+          locale === "zh"
+            ? "登录后才能创建视频任务并记录积分消耗。"
+            : "Sign in before creating a generation job and tracking credits.",
+      });
+      return;
+    }
+
+    const result = await actions.submitGeneration();
+    if (result.ok) {
+      toast({
+        title: locale === "zh" ? "任务已进入队列" : "Generation queued",
+        description:
+          locale === "zh"
+            ? "工作台已经创建异步任务，可以继续编辑素材或前往 Dashboard 查看状态。"
+            : "The workspace created an async job. You can keep editing or track it in the dashboard.",
+      });
+      return;
+    }
+
+    toast({
+      title: locale === "zh" ? "生成未启动" : "Generation not started",
+      description:
+        result.error === "missing_prompt"
+          ? locale === "zh"
+            ? "先补充 Prompt 再发起生成。"
+            : "Add a prompt before starting generation."
+          : result.error === "missing_references"
+            ? locale === "zh"
+              ? "至少准备一个图像或视频参考。"
+              : "Prepare at least one image or video reference."
+            : result.error === "uploads_in_progress"
+              ? locale === "zh"
+                ? "还有素材在上传中，等上传完成后再生成。"
+                : "Some assets are still uploading. Wait for them to finish first."
+              : locale === "zh"
+                ? "创建任务时出错，请稍后再试。"
+                : "Something went wrong while creating the generation.",
+      variant: "destructive",
+    });
+  }
 
   return (
     <div id="workspace" className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
@@ -346,12 +399,23 @@ export function MultiModalWorkspace({ locale }: Props) {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-2 text-sm text-white/70">
-              {copy.estimatedCredits}: <span className="font-semibold text-white">{estimatedCredits} credits</span>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-2 text-sm text-white/70">
+                {copy.estimatedCredits}: <span className="font-semibold text-white">{estimatedCredits} credits</span>
+              </div>
+              {activeGenerationId ? (
+                <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50">
+                  Job {activeGenerationStatus ?? "pending"} · {activeGenerationId.slice(0, 8)}
+                </div>
+              ) : null}
             </div>
-            <Button className="rounded-full bg-white px-7 py-6 text-sm font-black uppercase tracking-[0.2em] text-slate-950 hover:bg-cyan-100">
+            <Button
+              onClick={() => void handleGenerate()}
+              disabled={isSubmitting}
+              className="rounded-full bg-white px-7 py-6 text-sm font-black uppercase tracking-[0.2em] text-slate-950 hover:bg-cyan-100 disabled:cursor-not-allowed disabled:opacity-70"
+            >
               <WandSparkles className="mr-2 h-4 w-4" />
-              {copy.generate}
+              {isSubmitting ? (locale === "zh" ? "Submitting" : "Submitting") : copy.generate}
             </Button>
           </div>
         </div>
@@ -423,6 +487,13 @@ export function MultiModalWorkspace({ locale }: Props) {
             <QueueItem title="Image lane" detail={`${assets.image.length} queued references`} progress={assets.image.length > 0 ? "done" : "idle"} />
             <QueueItem title="Video lane" detail={`${assets.video.length} queued motion clips`} progress={assets.video.length > 0 ? "active" : "idle"} />
             <QueueItem title="Audio lane" detail={`${assets.audio.length} queued audio cues`} progress={assets.audio.length > 0 ? "done" : "idle"} />
+            {activeGenerationId ? (
+              <QueueItem
+                title="Provider job"
+                detail={`Async job ${activeGenerationId.slice(0, 8)} is ${activeGenerationStatus ?? "pending"}`}
+                progress="active"
+              />
+            ) : null}
           </div>
           <p className="mt-4 text-sm leading-7 text-white/48">{copy.queueHint}</p>
         </div>
@@ -559,7 +630,11 @@ function AssetRow({
       </div>
       <div className="mt-3 flex items-center justify-between">
         <div className="text-xs text-white/44">
-          {asset.status === "ready" ? "Ready for staging" : `${asset.progress}% uploaded`}
+          {asset.status === "ready"
+            ? "Ready for generation"
+            : asset.status === "error"
+              ? asset.error || "Upload failed"
+              : `${asset.progress}% uploaded`}
         </div>
         <div className="flex items-center gap-1">
           <IconButton disabled={!canMoveUp} onClick={() => onMove("up")}>
@@ -600,6 +675,7 @@ function AssetThumb({
         src={asset.previewUrl}
         muted
         playsInline
+        preload="metadata"
         className="h-14 w-14 rounded-[12px] border border-white/8 object-cover"
       />
     );

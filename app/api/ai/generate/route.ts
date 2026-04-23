@@ -9,6 +9,40 @@ export const runtime = "nodejs";
 
 const ACTIVE_GENERATION_WINDOW_MS = 10 * 60 * 1000;
 
+export async function GET(request: NextRequest) {
+  const supabase = await createClient();
+  const serviceSupabase = createServiceRoleClient();
+  const projectId = await getProjectId(serviceSupabase);
+  const url = new URL(request.url);
+  const limit = Math.min(Number(url.searchParams.get("limit") || "10"), 20);
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { data, error } = await serviceSupabase
+    .from("generations")
+    .select(
+      "id, status, status_detail, created_at, prompt, credits_cost, resolution, duration_seconds, aspect_ratio, generation_type, provider_job_id, output_video_url, metadata"
+    )
+    .eq("project_id", projectId)
+    .eq("user_id", user.id)
+    .in("status", ["pending", "processing"])
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    return NextResponse.json({ error: "Failed to load generations" }, { status: 500 });
+  }
+
+  return NextResponse.json({ generations: data || [] });
+}
+
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const serviceSupabase = createServiceRoleClient();

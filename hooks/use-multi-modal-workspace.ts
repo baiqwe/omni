@@ -4,7 +4,7 @@ import { useSyncExternalStore } from "react";
 import { estimateGenerationCredits, type VideoGenerationMode } from "@/utils/video-generation";
 
 export type WorkspaceAssetKind = "image" | "video" | "audio";
-export type WorkspaceAssetStatus = "queued" | "uploading" | "ready";
+export type WorkspaceAssetStatus = "queued" | "uploading" | "ready" | "error";
 
 export type WorkspaceAsset = {
   id: string;
@@ -12,8 +12,11 @@ export type WorkspaceAsset = {
   name: string;
   sizeLabel: string;
   previewUrl: string | null;
+  remoteUrl: string | null;
+  storagePath: string | null;
   progress: number;
   status: WorkspaceAssetStatus;
+  error: string | null;
 };
 
 type AssetBuckets = Record<WorkspaceAssetKind, WorkspaceAsset[]>;
@@ -28,6 +31,9 @@ type WorkspaceState = {
   returnLastFrame: boolean;
   assets: AssetBuckets;
   notice: string | null;
+  isSubmitting: boolean;
+  activeGenerationId: string | null;
+  activeGenerationStatus: string | null;
 };
 
 const MAX_ASSETS: Record<WorkspaceAssetKind, number> = {
@@ -50,6 +56,9 @@ const initialState: WorkspaceState = {
     audio: [],
   },
   notice: null,
+  isSubmitting: false,
+  activeGenerationId: null,
+  activeGenerationStatus: null,
 };
 
 let state: WorkspaceState = initialState;
@@ -88,25 +97,102 @@ function updateAsset(kind: WorkspaceAssetKind, id: string, updater: (asset: Work
   }));
 }
 
-function simulateUpload(kind: WorkspaceAssetKind, id: string) {
-  const timer = window.setInterval(() => {
-    const asset = state.assets[kind].find((item) => item.id === id);
-    if (!asset) {
-      window.clearInterval(timer);
-      return;
-    }
+async function prepareUpload(kind: WorkspaceAssetKind, file: File) {
+  const response = await fetch("/api/uploads/prepare", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      kind,
+      fileName: file.name,
+      contentType: file.type,
+      size: file.size,
+    }),
+  });
 
-    const nextProgress = Math.min(100, asset.progress + 20 + Math.floor(Math.random() * 25));
-    updateAsset(kind, id, (current) => ({
+  const payload = await response.json().catch(() => null);
+  if (!response.ok || !payload?.signedUrl || !payload?.publicUrl) {
+    throw new Error(payload?.error || "Failed to prepare upload");
+  }
+
+  return payload as {
+    path: string;
+    publicUrl: string;
+    signedUrl: string;
+  };
+}
+
+function uploadToSignedUrl(url: string, file: File, onProgress: (progress: number) => void) {
+  return new Promise<void>((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open("PUT", url);
+    request.setRequestHeader("x-upsert", "false");
+    if (file.type) {
+      request.setRequestHeader("Content-Type", file.type);
+    }
+    request.upload.onprogress = (event) => {
+      if (!event.lengthComputable) return;
+      const percent = 20 + Math.round((event.loaded / event.total) * 75);
+      onProgress(Math.min(percent, 95));
+    };
+    request.onload = () => {
+      if (request.status >= 200 && request.status < 300) {
+        onProgress(100);
+        resolve();
+        return;
+      }
+
+      reject(new Error(`Upload failed with status ${request.status}`));
+    };
+    request.onerror = () => reject(new Error("Network error during upload"));
+    request.send(file);
+  });
+}
+
+async function uploadAsset(kind: WorkspaceAssetKind, assetId: string, file: File) {
+  try {
+    updateAsset(kind, assetId, (current) => ({
       ...current,
-      progress: nextProgress,
-      status: nextProgress >= 100 ? "ready" : "uploading",
+      progress: 8,
+      status: "uploading",
+      error: null,
     }));
 
-    if (nextProgress >= 100) {
-      window.clearInterval(timer);
-    }
-  }, 220);
+    const prepared = await prepareUpload(kind, file);
+    updateAsset(kind, assetId, (current) => ({
+      ...current,
+      progress: 18,
+      storagePath: prepared.path,
+    }));
+
+    await uploadToSignedUrl(prepared.signedUrl, file, (progress) => {
+      updateAsset(kind, assetId, (current) => ({
+        ...current,
+        progress,
+        status: progress >= 100 ? "ready" : "uploading",
+      }));
+    });
+
+    updateAsset(kind, assetId, (current) => ({
+      ...current,
+      progress: 100,
+      status: "ready",
+      remoteUrl: prepared.publicUrl,
+      storagePath: prepared.path,
+      error: null,
+    }));
+  } catch (error: any) {
+    updateAsset(kind, assetId, (current) => ({
+      ...current,
+      status: "error",
+      error: error?.message || "Upload failed",
+    }));
+    setState((current) => ({
+      ...current,
+      notice: error?.message || "Upload failed",
+    }));
+  }
 }
 
 function createAsset(file: File, kind: WorkspaceAssetKind): WorkspaceAsset {
@@ -119,8 +205,11 @@ function createAsset(file: File, kind: WorkspaceAssetKind): WorkspaceAsset {
     name: file.name,
     sizeLabel: formatBytes(file.size),
     previewUrl,
-    progress: 12,
-    status: "uploading",
+    remoteUrl: null,
+    storagePath: null,
+    progress: 0,
+    status: "queued",
+    error: null,
   };
 }
 
@@ -175,7 +264,11 @@ export const workspaceActions = {
           : current.notice,
     }));
 
-    created.forEach((asset) => simulateUpload(kind, asset.id));
+    created.forEach((asset, index) => {
+      window.setTimeout(() => {
+        void uploadAsset(kind, asset.id, acceptedFiles[index]);
+      }, index * 140);
+    });
   },
   removeAsset(kind: WorkspaceAssetKind, id: string) {
     const asset = state.assets[kind].find((item) => item.id === id);
@@ -218,6 +311,100 @@ export const workspaceActions = {
       mode,
     }));
   },
+  async submitGeneration() {
+    const readyAssets = {
+      image: state.assets.image.filter((asset) => asset.status === "ready" && asset.remoteUrl),
+      video: state.assets.video.filter((asset) => asset.status === "ready" && asset.remoteUrl),
+      audio: state.assets.audio.filter((asset) => asset.status === "ready" && asset.remoteUrl),
+    };
+
+    if (!state.prompt.trim()) {
+      setState((current) => ({ ...current, notice: "Prompt is required before generating." }));
+      return { ok: false as const, error: "missing_prompt" };
+    }
+
+    if (
+      state.mode !== "text_to_video" &&
+      readyAssets.image.length === 0 &&
+      readyAssets.video.length === 0
+    ) {
+      setState((current) => ({
+        ...current,
+        notice: "Upload at least one image or video reference before generating.",
+      }));
+      return { ok: false as const, error: "missing_references" };
+    }
+
+    if (
+      state.assets.image.some((asset) => asset.status === "uploading") ||
+      state.assets.video.some((asset) => asset.status === "uploading") ||
+      state.assets.audio.some((asset) => asset.status === "uploading")
+    ) {
+      setState((current) => ({
+        ...current,
+        notice: "Please wait until all uploads finish before generating.",
+      }));
+      return { ok: false as const, error: "uploads_in_progress" };
+    }
+
+    setState((current) => ({
+      ...current,
+      isSubmitting: true,
+      notice: null,
+    }));
+
+    try {
+      const response = await fetch("/api/ai/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mode: state.mode,
+          prompt: state.prompt,
+          resolution: state.resolution,
+          durationSeconds: state.durationSeconds,
+          aspectRatio: state.aspectRatio,
+          containsRealPeople: state.containsRealPeople,
+          returnLastFrame: state.returnLastFrame,
+          images: readyAssets.image.map((asset) => ({
+            id: asset.id,
+            url: asset.remoteUrl,
+          })),
+          videos: readyAssets.video.map((asset) => ({
+            id: asset.id,
+            url: asset.remoteUrl,
+          })),
+          audios: readyAssets.audio.map((asset) => ({
+            id: asset.id,
+            url: asset.remoteUrl,
+          })),
+        }),
+      });
+
+      const payload = await response.json().catch(() => null);
+      if (!response.ok || !payload?.id) {
+        throw new Error(payload?.error || "Failed to create generation");
+      }
+
+      setState((current) => ({
+        ...current,
+        isSubmitting: false,
+        activeGenerationId: payload.id,
+        activeGenerationStatus: payload.status || "pending",
+        notice: "Generation queued. You can continue editing or monitor progress in the dashboard.",
+      }));
+
+      return { ok: true as const, id: payload.id };
+    } catch (error: any) {
+      setState((current) => ({
+        ...current,
+        isSubmitting: false,
+        notice: error?.message || "Failed to create generation",
+      }));
+      return { ok: false as const, error: error?.message || "submit_failed" };
+    }
+  },
 };
 
 export function useMultiModalWorkspace() {
@@ -232,7 +419,7 @@ export function useMultiModalWorkspace() {
       audios: current.assets.audio.map((asset) => ({
         id: asset.id,
         kind: "audio" as const,
-        url: asset.previewUrl || asset.name,
+        url: asset.remoteUrl || asset.previewUrl || asset.name,
       })),
     }),
     actions: workspaceActions,

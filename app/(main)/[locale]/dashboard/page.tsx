@@ -4,6 +4,7 @@ import { ensureProjectCustomer } from "@/utils/supabase/provision";
 import { redirect } from "next/navigation";
 import { SubscriptionStatusCard } from "@/components/dashboard/subscription-status-card";
 import { CreditsBalanceCard } from "@/components/dashboard/credits-balance-card";
+import { ProcessingGenerationsCard } from "@/components/dashboard/processing-generations-card";
 import type { Metadata } from "next";
 
 export const runtime = 'edge';
@@ -105,6 +106,8 @@ export default async function DashboardPage(props: { params: Promise<{ locale: s
                 <SubscriptionStatusCard subscription={subscription} />
                 <CreditsBalanceCard credits={credits} locale={locale} />
             </div>
+
+            <ProcessingGenerationsCard locale={locale} />
 
             {/* Account Details */}
             <div className="rounded-xl border bg-card p-6">

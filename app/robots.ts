@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/", "/_next/", "/*/sign-in", "/*/sign-up", "/*/forgot-password"],
     },
-    sitemap: `${site.siteUrl}/sitemap.xml`,
+    sitemap: [`${site.siteUrl}/sitemap.xml`, `${site.siteUrl}/video-sitemap.xml`],
     host: site.siteUrl,
   };
 }
