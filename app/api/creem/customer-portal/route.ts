@@ -2,7 +2,12 @@ import { createClient } from "@/utils/supabase/server";
 import { getProjectId } from "@/utils/supabase/project";
 import { NextResponse } from "next/server";
 
-export const runtime = 'edge';
+export const runtime = "nodejs";
+
+type CreemPortalResponse = {
+    url?: string;
+    error?: string;
+};
 
 export async function GET() {
     try {
@@ -43,7 +48,7 @@ export async function GET() {
             }),
         });
 
-        const data = await response.json();
+        const data = (await response.json()) as CreemPortalResponse;
 
         if (!response.ok) {
             console.error("Creem API Error:", data);

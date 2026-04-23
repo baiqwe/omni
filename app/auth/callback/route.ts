@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import { ensureProjectCustomer } from "@/utils/supabase/provision";
 
-export const runtime = 'edge';
+export const runtime = "nodejs";
 
 // 硬编码 locales 避免导入问题
 const LOCALES = ["en", "zh"];

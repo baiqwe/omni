@@ -167,6 +167,10 @@ export async function createCheckoutSession(
   discountCode?: string
 ) {
   try {
+    type CheckoutSessionResponse = {
+      checkout_url?: string;
+    };
+
     const requestBody: any = {
       product_id: productId,
       // request_id: `${userId}-${Date.now()}`, // use Unique request ID if you need
@@ -204,7 +208,7 @@ export async function createCheckoutSession(
       throw new Error("Failed to create checkout session");
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as CheckoutSessionResponse;
     return data.checkout_url;
   } catch (error) {
     console.error("Error creating checkout session:", error);

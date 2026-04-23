@@ -7,8 +7,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getLocalePath } from "@/utils/utils";
 
-export const runtime = 'edge';
-
 export default async function SignUp(props: {
   params: Promise<{ locale: string }>;
   searchParams: Promise<Message>;

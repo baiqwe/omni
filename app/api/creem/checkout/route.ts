@@ -2,7 +2,12 @@ import { createClient } from "@/utils/supabase/server";
 import { getAppKey } from "@/utils/supabase/project";
 import { NextResponse } from "next/server";
 
-export const runtime = 'edge';
+export const runtime = "nodejs";
+
+type CreemCheckoutResponse = {
+    checkout_url?: string;
+    error?: string;
+};
 
 export async function POST(request: Request) {
     try {
@@ -53,7 +58,7 @@ export async function POST(request: Request) {
             }),
         });
 
-        const data = await response.json();
+        const data = (await response.json()) as CreemCheckoutResponse;
 
         if (!response.ok) {
             console.error("Creem API Error:", data);

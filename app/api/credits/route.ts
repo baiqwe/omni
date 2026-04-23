@@ -4,7 +4,7 @@ import { getProjectId } from "@/utils/supabase/project";
 import { NextResponse } from "next/server";
 import { estimateGenerationCredits } from "@/utils/video-generation";
 
-export const runtime = 'edge';
+export const runtime = "nodejs";
 
 function jsonWithCache(body: unknown, init?: ResponseInit) {
     const response = NextResponse.json(body, init);
@@ -74,6 +74,11 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     try {
+        type SpendCreditsRequest = {
+            amount?: number;
+            operation?: string;
+        };
+
         const supabase = await createClient();
         const projectId = await getProjectId(supabase);
         const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -82,7 +87,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const body = await request.json();
+        const body = (await request.json()) as SpendCreditsRequest;
         const { amount, operation } = body;
 
         if (!amount || amount <= 0) {

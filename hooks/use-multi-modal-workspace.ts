@@ -98,6 +98,13 @@ function updateAsset(kind: WorkspaceAssetKind, id: string, updater: (asset: Work
 }
 
 async function prepareUpload(kind: WorkspaceAssetKind, file: File) {
+  type PrepareUploadResponse = {
+    path: string;
+    publicUrl: string;
+    signedUrl: string;
+    error?: string;
+  };
+
   const response = await fetch("/api/uploads/prepare", {
     method: "POST",
     headers: {
@@ -111,16 +118,12 @@ async function prepareUpload(kind: WorkspaceAssetKind, file: File) {
     }),
   });
 
-  const payload = await response.json().catch(() => null);
+  const payload = (await response.json().catch(() => null)) as PrepareUploadResponse | null;
   if (!response.ok || !payload?.signedUrl || !payload?.publicUrl) {
     throw new Error(payload?.error || "Failed to prepare upload");
   }
 
-  return payload as {
-    path: string;
-    publicUrl: string;
-    signedUrl: string;
-  };
+  return payload;
 }
 
 function uploadToSignedUrl(url: string, file: File, onProgress: (progress: number) => void) {
@@ -354,6 +357,12 @@ export const workspaceActions = {
     }));
 
     try {
+      type SubmitGenerationResponse = {
+        id?: string;
+        status?: string;
+        error?: string;
+      };
+
       const response = await fetch("/api/ai/generate", {
         method: "POST",
         headers: {
@@ -382,7 +391,7 @@ export const workspaceActions = {
         }),
       });
 
-      const payload = await response.json().catch(() => null);
+      const payload = (await response.json().catch(() => null)) as SubmitGenerationResponse | null;
       if (!response.ok || !payload?.id) {
         throw new Error(payload?.error || "Failed to create generation");
       }
@@ -390,7 +399,7 @@ export const workspaceActions = {
       setState((current) => ({
         ...current,
         isSubmitting: false,
-        activeGenerationId: payload.id,
+        activeGenerationId: payload.id ?? null,
         activeGenerationStatus: payload.status || "pending",
         notice: "Generation queued. You can continue editing or monitor progress in the dashboard.",
       }));

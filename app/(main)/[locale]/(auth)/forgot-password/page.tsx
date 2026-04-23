@@ -6,8 +6,6 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { getLocalePath } from "@/utils/utils";
 
-export const runtime = 'edge';
-
 export default async function ForgotPassword(props: {
   params: Promise<{ locale: string }>;
   searchParams: Promise<Message>;

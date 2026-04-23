@@ -19,6 +19,11 @@ interface UseCreditsResult {
   spendCredits: (amount: number, operation?: string) => Promise<boolean>;
 }
 
+type CreditsResponse = {
+  credits?: Credits;
+  error?: string;
+};
+
 export function useCredits(): UseCreditsResult {
   const { user } = useUser();
   const [credits, setCredits] = useState<Credits | null>(null);
@@ -38,7 +43,7 @@ export function useCredits(): UseCreditsResult {
       setError(null);
       
       const response = await fetch('/api/credits');
-      const data = await response.json();
+      const data = (await response.json()) as CreditsResponse;
 
       if (!response.ok) {
         // Handle 401 Unauthorized gracefully
@@ -50,7 +55,7 @@ export function useCredits(): UseCreditsResult {
         throw new Error(data.error || 'Failed to fetch credits');
       }
 
-      setCredits(data.credits);
+      setCredits(data.credits ?? null);
     } catch (err) {
       // Only log errors that aren't auth-related
       if (err instanceof Error && !err.message.includes('Unauthorized') && !err.message.includes('Failed to fetch')) {
@@ -86,13 +91,13 @@ export function useCredits(): UseCreditsResult {
         body: JSON.stringify({ amount, operation }),
       });
 
-      const data = await response.json();
+      const data = (await response.json()) as CreditsResponse;
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to spend credits');
       }
 
-      setCredits(data.credits);
+      setCredits(data.credits ?? null);
       return true;
     } catch (err) {
       console.error('Error spending credits:', err);

@@ -23,6 +23,12 @@ const LIMITS = {
 } as const;
 
 type UploadKind = keyof typeof LIMITS;
+type UploadPrepareBody = {
+  kind?: UploadKind;
+  fileName?: string;
+  contentType?: string;
+  size?: number | string;
+};
 
 function sanitizeName(name: string) {
   return name.replace(/[^a-zA-Z0-9._-]/g, "-").replace(/-+/g, "-");
@@ -48,11 +54,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await request.json();
-  const kind = body?.kind as UploadKind;
-  const fileName = typeof body?.fileName === "string" ? body.fileName : "";
-  const contentType = typeof body?.contentType === "string" ? body.contentType : "";
-  const size = Number(body?.size || 0);
+  const body = (await request.json()) as UploadPrepareBody;
+  const kind = body.kind as UploadKind;
+  const fileName = typeof body.fileName === "string" ? body.fileName : "";
+  const contentType = typeof body.contentType === "string" ? body.contentType : "";
+  const size = Number(body.size || 0);
 
   if (!kind || !LIMITS[kind]) {
     return NextResponse.json({ error: "Invalid upload kind" }, { status: 400 });

@@ -12,6 +12,11 @@ interface PricingClientProps {
     locale: string;
 }
 
+type CheckoutResponse = {
+    checkout_url?: string;
+    error?: string;
+};
+
 export default function PricingClient({ locale }: PricingClientProps) {
     const [loadingId, setLoadingId] = useState<string | null>(null);
     const { toast } = useToast();
@@ -39,7 +44,7 @@ export default function PricingClient({ locale }: PricingClientProps) {
                 return;
             }
 
-            const data = await response.json();
+            const data = (await response.json()) as CheckoutResponse;
 
             if (data.checkout_url) {
                 window.location.href = data.checkout_url;

@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+type PortalResponse = {
+    url?: string;
+};
+
 export function SubscriptionPortalDialog() {
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
@@ -16,7 +20,7 @@ export function SubscriptionPortalDialog() {
 
             if (!response.ok) throw new Error("Failed to get portal link");
 
-            const data = await response.json();
+            const data = (await response.json()) as PortalResponse;
             if (data.url) {
                 window.location.href = data.url;
             }

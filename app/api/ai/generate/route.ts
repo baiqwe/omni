@@ -54,7 +54,8 @@ export async function POST(request: NextRequest) {
 
   try {
     projectId = await getProjectId(serviceSupabase);
-    const payload = normalizeVideoGenerationRequest(await request.json());
+    const rawPayload = (await request.json()) as Record<string, unknown>;
+    const payload = normalizeVideoGenerationRequest(rawPayload);
 
     if (!payload.prompt) {
       return NextResponse.json({ error: "Prompt is required.", code: "MISSING_PROMPT" }, { status: 400 });

@@ -21,6 +21,11 @@ interface PricingSectionProps {
     hideIntro?: boolean;
 }
 
+type CheckoutResponse = {
+    checkout_url?: string;
+    error?: string;
+};
+
 type LocalizedPlan = PricingPlan & {
     displayName: string;
     displayLabel?: string;
@@ -68,7 +73,7 @@ export function PricingSection({ locale, hideIntro = false }: PricingSectionProp
                 body: formData,
             });
 
-            const data = await response.json();
+            const data = (await response.json()) as CheckoutResponse;
 
             if (!response.ok) {
                 throw new Error(data.error || "Checkout failed");

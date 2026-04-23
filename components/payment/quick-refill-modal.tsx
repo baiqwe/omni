@@ -14,6 +14,11 @@ interface QuickRefillModalProps {
     currentPath?: string;
 }
 
+type CheckoutResponse = {
+    checkout_url?: string;
+    error?: string;
+};
+
 export function QuickRefillModal({ isOpen, onClose, currentPath }: QuickRefillModalProps) {
     const t = useTranslations('Pricing');
     const [loadingPlanId, setLoadingPlanId] = useState<string | null>(null);
@@ -49,7 +54,7 @@ export function QuickRefillModal({ isOpen, onClose, currentPath }: QuickRefillMo
                 body: formData,
             });
 
-            const data = await response.json();
+            const data = (await response.json()) as CheckoutResponse;
 
             if (!response.ok) {
                 throw new Error(data.error || 'Checkout failed');

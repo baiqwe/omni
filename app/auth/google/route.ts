@@ -4,7 +4,7 @@ import { getRequestOrigin } from "@/utils/request";
 import { getAppKey } from "@/utils/supabase/project";
 import { getLocalePath, normalizeLocale } from "@/utils/utils";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 function parseCookies(cookieHeader: string): { name: string; value: string }[] {
   if (!cookieHeader) return [];

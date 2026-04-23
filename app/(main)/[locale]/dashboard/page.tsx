@@ -7,7 +7,6 @@ import { CreditsBalanceCard } from "@/components/dashboard/credits-balance-card"
 import { ProcessingGenerationsCard } from "@/components/dashboard/processing-generations-card";
 import type { Metadata } from "next";
 
-export const runtime = 'edge';
 export const metadata: Metadata = {
     robots: {
         index: false,

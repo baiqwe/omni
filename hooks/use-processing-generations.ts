@@ -28,6 +28,10 @@ export function useProcessingGenerations() {
   const supabase = useMemo(() => createClient(), []);
 
   const fetchGenerations = useCallback(async () => {
+    type ProcessingGenerationsResponse = {
+      generations?: ProcessingGeneration[];
+    };
+
     if (!user) {
       setGenerations([]);
       setLoading(false);
@@ -36,11 +40,12 @@ export function useProcessingGenerations() {
 
     try {
       const response = await fetch("/api/ai/generate?limit=8", { cache: "no-store" });
-      const data = await response.json();
+      const data = (await response.json()) as ProcessingGenerationsResponse;
       if (response.ok) {
-        setGenerations(data.generations || []);
+        const generations = data.generations ?? [];
+        setGenerations(generations);
         pollAttemptRef.current = Math.min(
-          data.generations?.length > 0 ? pollAttemptRef.current + 1 : 0,
+          generations.length > 0 ? pollAttemptRef.current + 1 : 0,
           12
         );
       }
