@@ -52,13 +52,19 @@ npx wrangler secret put CREEM_API_KEY
 npx wrangler secret put CREEM_WEBHOOK_SECRET
 ```
 
-5. Preview the Worker locally:
+5. Build the Worker bundle:
+
+```bash
+npm run build
+```
+
+6. Preview the Worker locally:
 
 ```bash
 npm run preview
 ```
 
-6. Deploy:
+7. Deploy:
 
 ```bash
 npm run deploy
