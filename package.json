@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "next dev",
     "next:build": "next build",
-    "build": "next build && opennextjs-cloudflare build --skipBuild",
+    "build": "next build && opennextjs-cloudflare build --skipBuild && node scripts/patch-opennext-cloudflare.mjs",
     "preview": "npm run build && opennextjs-cloudflare preview",
     "deploy": "wrangler deploy",
     "upload": "wrangler versions upload",
