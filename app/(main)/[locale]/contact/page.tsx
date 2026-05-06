@@ -86,6 +86,44 @@ export default async function ContactPage(props: { params: Promise<{ locale: str
             </CardContent>
           </Card>
 
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>{locale === "zh" ? "适合通过邮件处理的问题" : "Best Topics for Email Support"}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+                <p>
+                  {locale === "zh"
+                    ? "包括支付失败、退款说明、账号访问、生成失败、隐私请求、删除请求、积分异常、版权或商用说明。"
+                    : "This includes failed payments, refund requests, account access, generation failures, privacy requests, deletion requests, credit issues, and rights or commercial-use questions."}
+                </p>
+                <p>
+                  {locale === "zh"
+                    ? "如果你在邮件中附上注册邮箱、订单编号、任务 ID 或出错时间，我们通常能更快定位问题。"
+                    : "If you include your account email, order number, job ID, or timestamp, we can usually diagnose the issue faster."}
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>{locale === "zh" ? "商务与合作" : "Business and Partnerships"}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+                <p>
+                  {locale === "zh"
+                    ? "如果你希望讨论团队采购、渠道合作、模型接入、视频工作流定制、品牌内容生产或媒体合作，也可以通过同一邮箱联系。"
+                    : "If you want to discuss team purchasing, partnerships, provider integration, custom video workflows, branded production, or media inquiries, you can use the same contact address."}
+                </p>
+                <p>
+                  {locale === "zh"
+                    ? "我们会优先根据主题把邮件分发到支持、商务或合规相关流程。"
+                    : "We route messages into support, business, or compliance flows based on the topic of your request."}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
           <div className="rounded-[28px] border border-border/70 bg-card/90 p-6 shadow-[0_16px_40px_-24px_rgba(15,23,42,0.18)]">
             <div className="flex items-start gap-3">
               <MessageCircleHeart className="mt-0.5 h-5 w-5 text-primary" />

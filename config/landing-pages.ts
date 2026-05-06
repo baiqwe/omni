@@ -5,6 +5,12 @@ import type { VideoGenerationMode } from "@/utils/video-generation";
 export type AnimeStyleId = "standard" | "ghibli" | "cyberpunk" | "retro_90s" | "webtoon" | "cosplay";
 
 export type LandingPageFaq = { question: string; answer: string };
+export type LandingPageInsightBlock = {
+  bestFor: string[];
+  inputChecklist: string[];
+  commonPitfalls: string[];
+  outputNotes: string[];
+};
 
 export type LandingPageConfig = {
   slug: string;
@@ -23,6 +29,141 @@ type LandingPageLocalizedCopy = {
   h1Zh: string;
   subtitleZh: string;
   faqsZh: LandingPageFaq[];
+};
+
+const landingPageInsights: Record<LandingPageSlug, LandingPageInsightBlock> = {
+  "image-to-video": {
+    bestFor: [
+      "Character stills that need controlled camera motion",
+      "Mood frames, concept art, and product key visuals",
+      "Opening shots where continuity begins from a strong first frame",
+    ],
+    inputChecklist: [
+      "A clear starting image with stable composition",
+      "A short prompt that defines motion, lens feeling, and pacing",
+      "An optional reference clip if the camera move needs to feel specific",
+    ],
+    commonPitfalls: [
+      "Using a cluttered image with too many competing focal points",
+      "Asking for large motion without defining where the camera should travel",
+      "Ignoring subject continuity when extending past the first shot",
+    ],
+    outputNotes: [
+      "This workflow is strongest when the first frame is visually confident",
+      "Image to video works best as a shot-building workflow, not a random animation trick",
+      "Teams usually review motion direction before they scale duration or resolution",
+    ],
+  },
+  "reference-video-generator": {
+    bestFor: [
+      "Teams with existing visual references, previous edits, or shot boards",
+      "Campaign work where taste and pacing must match an established style",
+      "Multi-modal workflows that combine stills, clips, and soundtrack cues",
+    ],
+    inputChecklist: [
+      "Still references that lock subject, art direction, or scene tone",
+      "Reference clips that demonstrate motion, edit rhythm, or lens behavior",
+      "Prompt text explaining what should stay fixed and what may vary",
+    ],
+    commonPitfalls: [
+      "Uploading references that disagree with each other stylistically",
+      "Expecting text alone to override stronger visual reference signals",
+      "Mixing too many clips without clarifying which reference is primary",
+    ],
+    outputNotes: [
+      "Reference-driven video generation is ideal when brand language already exists",
+      "The best results usually come from a clear primary reference and one or two supporting references",
+      "This workflow often produces more stable tone than starting from text alone",
+    ],
+  },
+  "dance-motion-transfer": {
+    bestFor: [
+      "Dance and choreography experiments",
+      "Avatar or digital human workflows that need performance transfer",
+      "Music-driven outputs where body timing is more important than environment complexity",
+    ],
+    inputChecklist: [
+      "A readable full-body motion clip with clear timing",
+      "A strong character still or multiple identity references",
+      "Short notes about what must stay locked: face, costume, silhouette, or staging",
+    ],
+    commonPitfalls: [
+      "Using source footage with rapid cuts or obstructed limbs",
+      "Ignoring the difference between motion energy and identity consistency",
+      "Overloading the prompt with extra cinematic changes while expecting faithful choreography",
+    ],
+    outputNotes: [
+      "Motion transfer works best when the model can read the entire body path clearly",
+      "Identity references should usually be simpler and cleaner than the dance clip itself",
+      "Reviewing hands, feet, and rhythm alignment matters more than judging one key frame",
+    ],
+  },
+  "product-ad-generator": {
+    bestFor: [
+      "Commerce launches, campaign tests, and paid social creatives",
+      "Product reveal shots, premium material sweeps, and hero loops",
+      "Teams that already know the brand mood they want to mimic",
+    ],
+    inputChecklist: [
+      "A polished product still or several angle references",
+      "Optional motion references for the reveal, orbit, or dolly style",
+      "Prompt notes describing materials, lighting changes, and commercial tone",
+    ],
+    commonPitfalls: [
+      "Using low-quality packshots and expecting luxury ad behavior",
+      "Forgetting to specify how reflections or highlights should move",
+      "Combining conflicting brand moods in a single short clip",
+    ],
+    outputNotes: [
+      "Shorter shots with one clear camera action often outperform overly ambitious scripts",
+      "Product video prompts benefit from material language: chrome, glass, matte, translucent, soft touch",
+      "Teams usually validate motion style first, then scale into full campaign systems",
+    ],
+  },
+  "storyboard-to-video": {
+    bestFor: [
+      "Previs, pitch decks, and director alignment before production",
+      "Blocking, timing, and lens exploration from still frames",
+      "Studios that want quick motion studies before investing in final footage",
+    ],
+    inputChecklist: [
+      "One or more storyboard frames with readable composition",
+      "Prompt text describing the purpose of the shot, not just the visual objects",
+      "Optional clip references if the previs should imitate a known camera move",
+    ],
+    commonPitfalls: [
+      "Treating previs outputs as final broadcast-ready footage",
+      "Supplying disconnected frames without clarifying shot order or continuity",
+      "Leaving scene geography undefined when multiple characters are present",
+    ],
+    outputNotes: [
+      "This workflow shines when creative alignment matters more than perfect realism",
+      "Storyboard to video is usually about camera logic and pacing, not polished finishing",
+      "Adding two or three key moments often produces better continuity than relying on one still alone",
+    ],
+  },
+  "video-extension": {
+    bestFor: [
+      "Continuing existing shots instead of restarting them",
+      "Adding tail moments, exits, or resolution beats to a finished clip",
+      "Preserving scene logic when you only need more time, not a new concept",
+    ],
+    inputChecklist: [
+      "A source clip with readable motion direction and stable scene geography",
+      "An optional end-frame target if you need a specific landing point",
+      "Prompt notes about what continuity must survive into the extension",
+    ],
+    commonPitfalls: [
+      "Trying to change scene identity too aggressively during the extension",
+      "Extending clips whose source motion is already ambiguous or unstable",
+      "Ignoring lighting continuity and camera momentum from the source material",
+    ],
+    outputNotes: [
+      "Extension behaves best when it respects the momentum already present in the source",
+      "End-frame guidance usually improves control more than adding extra adjectives to the prompt",
+      "Teams often use video extension to prototype alternative endings or smoother transitions",
+    ],
+  },
 };
 
 export const landingPages = rawLandingPages as Record<string, LandingPageConfig>;
@@ -110,6 +251,147 @@ export function getLocalizedLandingPage(slug: string, locale: string): LandingPa
     subtitle: zhCopy.subtitleZh,
     faqs: zhCopy.faqsZh,
   };
+}
+
+const landingPageInsightsZh: Record<LandingPageSlug, LandingPageInsightBlock> = {
+  "image-to-video": {
+    bestFor: [
+      "需要稳定运镜的人像、角色立绘和产品主视觉",
+      "从强起始帧出发去做镜头推进、景深变化和节奏控制",
+      "先锁定一帧，再决定镜头应该怎么动的团队",
+    ],
+    inputChecklist: [
+      "一张构图稳定、主体明确的起始图",
+      "一句说明运镜、镜头感和节奏的短 prompt",
+      "如果你想让镜头更像某种已知风格，最好再加一段参考视频",
+    ],
+    commonPitfalls: [
+      "起始图过于复杂，画面里没有明确主次",
+      "要求大幅运动，却没有定义镜头应该往哪里走",
+      "只追求会动，却没有规划后续镜头连续性",
+    ],
+    outputNotes: [
+      "图生视频更适合作为“镜头搭建流程”，不是简单的动画小把戏",
+      "起始帧越有把握，后面的镜头可控性通常越高",
+      "很多团队会先审运镜，再决定是否拉长时长和提高分辨率",
+    ],
+  },
+  "reference-video-generator": {
+    bestFor: [
+      "已经有参考视频、旧 campaign、剪辑片段或镜头板的团队",
+      "需要输出风格和既有品牌语言保持一致的创意场景",
+      "同时用图、视频、音频来约束结果的多模态视频工作流",
+    ],
+    inputChecklist: [
+      "用于锁定主体、场景气质或美术方向的静态参考",
+      "用于说明动作、节奏和镜头语言的参考视频",
+      "说明哪些元素必须保留、哪些元素可以变化的文字指令",
+    ],
+    commonPitfalls: [
+      "多个参考之间风格冲突，却没有明确主参考",
+      "以为文字能完全覆盖更强的视觉参考信号",
+      "素材很多，但没有告诉系统哪一个参考优先级最高",
+    ],
+    outputNotes: [
+      "参考驱动的视频生成最适合已经有品牌视觉资产的团队",
+      "通常一个主参考加一到两个辅助参考，会比把所有素材一股脑塞进去更稳定",
+      "和纯文本起步相比，这种工作流更容易得到稳定的调性与节奏",
+    ],
+  },
+  "dance-motion-transfer": {
+    bestFor: [
+      "舞蹈、编舞、虚拟人表演和音乐类短视频实验",
+      "需要把动作迁移到新角色或数字人上的视频流程",
+      "动作节奏比环境复杂度更重要的场景",
+    ],
+    inputChecklist: [
+      "一段全身动作清楚、节奏明确的参考视频",
+      "一张强角色图或多张身份参考图",
+      "简短说明哪些元素必须锁定，例如脸、服装、轮廓或站位",
+    ],
+    commonPitfalls: [
+      "源视频剪得太碎，四肢经常被遮挡",
+      "只关心动作迁移，却忽略角色一致性",
+      "既想忠实复刻编舞，又同时加入太多额外镜头变化",
+    ],
+    outputNotes: [
+      "动作迁移最怕模型看不清全身路径，所以干净完整的源视频非常重要",
+      "角色参考通常应该比动作视频更干净、更稳定",
+      "评估这类结果时，手脚、节奏和重心会比单帧好不好看更关键",
+    ],
+  },
+  "product-ad-generator": {
+    bestFor: [
+      "电商上新、品牌 campaign、社媒投放和商业提案",
+      "产品揭幕镜头、材质扫光、主视觉延展和短广告片测试",
+      "对品牌气质有明确要求的内容团队",
+    ],
+    inputChecklist: [
+      "高质量产品主图或多个角度的参考图",
+      "如果有理想的 reveal 或 dolly 风格，最好加参考视频",
+      "说明材质、光线变化和商业氛围的 prompt",
+    ],
+    commonPitfalls: [
+      "产品素材本身质量不高，却期待高端广告质感",
+      "没有说明高光、反射和材质反馈应该怎么动",
+      "在同一个短视频里混入彼此冲突的品牌气质",
+    ],
+    outputNotes: [
+      "产品广告更适合一次只做一个明确镜头动作",
+      "材质语言非常重要，例如金属、玻璃、半透明、磨砂、柔触感",
+      "很多团队会先确认镜头语言，再扩成完整 campaign 体系",
+    ],
+  },
+  "storyboard-to-video": {
+    bestFor: [
+      "影视预演、提案、导演对齐和拍摄前验证",
+      "从静态分镜中探索运镜、节奏和场景连续性",
+      "需要在正式拍摄前快速验证镜头逻辑的团队",
+    ],
+    inputChecklist: [
+      "一张或多张构图清晰的分镜图",
+      "说明镜头目标和戏剧功能的 prompt，而不只是描述画面物体",
+      "如果想模拟某种运镜，最好附上一段参考片段",
+    ],
+    commonPitfalls: [
+      "把预演结果当成最终成片去要求",
+      "上传多张分镜，但没有说明顺序和连续性",
+      "角色或场景关系复杂，却没有定义空间地理关系",
+    ],
+    outputNotes: [
+      "这一流程最强的价值是创意对齐，而不是画面精修",
+      "分镜转视频本质上更接近镜头逻辑验证，不是终稿输出",
+      "与其只给一张图，不如给两三张关键帧去帮助系统理解前后关系",
+    ],
+  },
+  "video-extension": {
+    bestFor: [
+      "把已有镜头继续往下写，而不是重新开始一个新镜头",
+      "给已有视频增加尾段、收束动作或情绪延续",
+      "你只需要更多时长，而不是重新定义创意方向的场景",
+    ],
+    inputChecklist: [
+      "一段运动方向清楚、空间关系稳定的原始视频",
+      "如果你想让镜头落到明确终点，最好提供尾帧目标",
+      "说明哪些连续性必须保留，例如光线、主体状态和镜头动势",
+    ],
+    commonPitfalls: [
+      "在扩写时试图强行把场景身份完全改掉",
+      "原始素材本身运动不清楚，却还期待自然续写",
+      "忽略了原视频里的光线连续性和镜头惯性",
+    ],
+    outputNotes: [
+      "扩写最重要的是尊重原视频已经建立起来的动势",
+      "相比堆很多形容词，尾帧目标通常更能提升可控性",
+      "很多团队会用这个流程去测试不同结尾或更顺滑的转场",
+    ],
+  },
+};
+
+export function getLandingPageInsights(slug: string, locale: string): LandingPageInsightBlock | null {
+  const typedSlug = slug as LandingPageSlug;
+  if (!(typedSlug in landingPageInsights)) return null;
+  return locale === "zh" ? landingPageInsightsZh[typedSlug] : landingPageInsights[typedSlug];
 }
 
 export const landingPageSlugs = Object.keys(landingPages);

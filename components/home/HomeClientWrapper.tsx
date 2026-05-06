@@ -15,10 +15,9 @@ export default function HomeClientWrapper({ heroContent, staticContent }: HomeCl
 
     return (
         <div className="min-h-screen bg-background">
-            <section id="anime-uploader" className="relative overflow-hidden border-b border-white/10 py-12 lg:py-20">
-                <div className="magic-mesh" />
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_30%),linear-gradient(180deg,rgba(4,7,16,0.94),rgba(6,9,18,0.98))]" />
-                <div className="container px-4 md:px-6">
+            <section id="anime-uploader" className="relative overflow-hidden border-b border-white/6 py-12 lg:py-16">
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(58,92,255,0.08),transparent_22%),linear-gradient(180deg,rgba(14,14,18,0.3),rgba(17,17,22,0.12))]" />
+                <div className="relative z-10 container px-4 md:px-6">
                     <div className="mx-auto max-w-6xl space-y-10">
                         {heroContent}
                         <HomeInteractive onShowStaticContent={setShowStaticContent} user={user} />

@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "Seedance 2.0 - Multi-Modal AI Video Creation Workspace",
-    "description": "Build cinematic AI videos with text, image, video, and audio references in one workspace. Seedance 2.0 is designed for controllable, production-ready multi-modal generation.",
-    "keywords": "seedance 2, ai video generator, multi modal video ai, image to video, text to video, reference video generation, ai video workspace"
+    "title": "Seedance 2.0 - Multi-Modal AI Video Generator for Image, Text, Audio, and Video References",
+    "description": "Seedance 2.0 is a multi-modal AI video generator for image to video, text to video, reference-driven motion, video extension, and production-ready cinematic workflows.",
+    "keywords": "seedance 2, seedance 2.0, seedance 2 video, ai video generator, multi modal ai video, multi-modal ai video generator, image to video, text to video, video to video, reference video generator, video extension, cinematic ai video, ai video workspace"
   },
   "nav": {
     "home": "Home",
@@ -107,9 +107,9 @@
   },
   "landing": {
     "how_title": "How to use {keyword}",
-    "how_step1": "Upload a clear photo (portraits work best).",
-    "how_step2": "Choose a style and adjust anime intensity.",
-    "how_step3": "Generate and download your anime image.",
+    "how_step1": "Upload clear reference assets such as images, clips, or audio when relevant.",
+    "how_step2": "Set the workflow direction, reference emphasis, and output controls.",
+    "how_step3": "Generate the video result, review continuity, and iterate if needed.",
     "faq_title": "Frequently asked questions"
   },
   "footer": {

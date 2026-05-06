@@ -202,6 +202,41 @@ const RESOLUTIONS = ["480p", "720p", "1080p"] as const;
 const DURATIONS = [5, 10, 15] as const;
 const RATIOS = ["auto", "16:9", "9:16", "1:1", "4:3", "3:4", "21:9"] as const;
 
+const PREVIEW_REELS: Record<VideoGenerationMode, { src: string; label: string; headlineZh: string; headlineEn: string; bodyZh: string; bodyEn: string }> = {
+  multi_modal_video: {
+    src: "/videos/gallery/reference-led.mp4",
+    label: "Reference-led sample",
+    headlineZh: "多参考输入，不再只是一次猜测。",
+    headlineEn: "Multi-reference input, not a blind guess.",
+    bodyZh: "把图片、视频和音频放进同一条指令里，结果会更接近一个有意图的镜头，而不是随机可用的片段。",
+    bodyEn: "Bring stills, clips, and audio into one directive so the output feels intentional instead of merely acceptable.",
+  },
+  image_to_video: {
+    src: "/videos/gallery/image-to-video.mp4",
+    label: "Image seed sample",
+    headlineZh: "从静帧出发，把画面推成镜头。",
+    headlineEn: "Start from a still and push it into a shot.",
+    bodyZh: "更适合角色起始画面、产品图和概念海报，把视觉种子延展成连续运动。",
+    bodyEn: "Ideal for character stills, product imagery, and concept art that need to become continuous motion.",
+  },
+  text_to_video: {
+    src: "/videos/gallery/storyboard-previs.mp4",
+    label: "Storyboard sample",
+    headlineZh: "先建立语义，再补足镜头语言。",
+    headlineEn: "Establish the scene semantically, then build the shot language.",
+    bodyZh: "适合先用自然语言快速构思镜头，再用参数与参考素材逐步加深控制。",
+    bodyEn: "Useful when the first move is semantic direction, then references and settings refine the result.",
+  },
+  video_extension: {
+    src: "/videos/gallery/video-extension.mp4",
+    label: "Extension sample",
+    headlineZh: "沿着已有镜头，把叙事继续下去。",
+    headlineEn: "Continue the shot without breaking the scene logic.",
+    bodyZh: "更适合扩写现有片段、延续角色动作和保留空间关系，让生成结果更像真正的接续镜头。",
+    bodyEn: "Ideal for continuing an existing clip while preserving movement, identity, and spatial continuity.",
+  },
+};
+
 export function MultiModalWorkspace({ locale }: Props) {
   const copy = COPY[locale] ?? COPY.en;
   const {
@@ -224,6 +259,7 @@ export function MultiModalWorkspace({ locale }: Props) {
   const { user } = useUser();
 
   const promptLength = useMemo(() => prompt.length, [prompt]);
+  const activePreview = PREVIEW_REELS[mode];
 
   async function handleGenerate() {
     if (!user) {
@@ -272,27 +308,26 @@ export function MultiModalWorkspace({ locale }: Props) {
   }
 
   return (
-    <div id="workspace" className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+    <div id="workspace" className="mx-auto max-w-6xl rounded-[22px] border border-white/8 bg-[#1a1b20] p-4 shadow-[0_28px_80px_-42px_rgba(0,0,0,0.78)] md:p-5">
+      <div className="grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="surface-panel relative overflow-hidden border-white/8 bg-[linear-gradient(180deg,rgba(8,11,18,0.98),rgba(7,9,16,0.94))] p-5 sm:p-6"
+        className="rounded-[18px] border border-white/8 bg-[#24252c] p-4"
       >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(125,211,252,0.08),transparent_24%),radial-gradient(circle_at_top_left,rgba(249,168,212,0.06),transparent_28%)]" />
-
-        <div className="relative z-10 space-y-6">
-          <div className="flex flex-wrap items-center gap-3">
+        <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-2">
             {copy.tabs.map((tab) => (
               <button
                 key={tab.mode}
                 type="button"
                 onClick={() => actions.setMode(tab.mode)}
                 className={cn(
-                  "rounded-full border px-4 py-2 text-sm font-semibold transition-all",
+                  "rounded-lg border px-3 py-2 text-xs font-medium transition-all",
                   mode === tab.mode
-                    ? "border-white/20 bg-white text-slate-950"
-                    : "border-white/8 bg-white/[0.03] text-white/66 hover:border-white/16 hover:bg-white/[0.07]"
+                    ? "border-white/20 bg-white text-black"
+                    : "border-white/10 bg-[#2a2b33] text-white/82 hover:border-white/16 hover:bg-white/[0.05]"
                 )}
               >
                 {tab.label}
@@ -300,19 +335,24 @@ export function MultiModalWorkspace({ locale }: Props) {
             ))}
           </div>
 
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div className="space-y-2">
-              <p className="text-sm uppercase tracking-[0.28em] text-white/38">Seedance Workspace</p>
-              <h2 className="text-2xl font-black tracking-tight text-white sm:text-3xl">{copy.uploadTitle}</h2>
-              <p className="max-w-2xl text-sm leading-7 text-white/56">{copy.subtitle}</p>
+          <div className="space-y-3 rounded-[16px] border border-white/8 bg-[#1d1f26] p-3">
+            <div className="text-[11px] uppercase tracking-[0.18em] text-white/38">
+              {locale === "zh" ? "AI Model" : "AI Model"}
             </div>
-            <div className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/72">
-              {copy.uploadMeta}
+            <div className="flex items-center justify-between rounded-xl border border-white/8 bg-[#2a2b32] px-3 py-3">
+              <div className="flex items-center gap-3">
+                <span className="h-3 w-3 rounded-full bg-[linear-gradient(135deg,#5ad7ff,#7d57ff)]" />
+                <div>
+                  <div className="text-sm font-medium text-white">Seedance 2.0</div>
+                  <div className="text-xs text-white/42">{locale === "zh" ? "多模态输入 · 参考能力强化" : "Multi-modal input · reference enhanced"}</div>
+                </div>
+              </div>
+              <div className="text-xs text-white/42">{copy.uploadMeta}</div>
             </div>
           </div>
 
           {notice ? (
-            <div className="flex items-center gap-3 rounded-[20px] border border-amber-300/15 bg-amber-300/8 px-4 py-3 text-sm text-amber-100/90">
+            <div className="flex items-center gap-3 rounded-[14px] border border-amber-300/15 bg-amber-300/8 px-4 py-3 text-sm text-amber-100/90">
               <AlertCircle className="h-4 w-4 shrink-0" />
               <span className="flex-1">{notice}</span>
               <button type="button" onClick={actions.clearNotice} className="text-white/50 hover:text-white">
@@ -321,7 +361,7 @@ export function MultiModalWorkspace({ locale }: Props) {
             </div>
           ) : null}
 
-          <div className="grid gap-4 lg:grid-cols-3">
+          <div className="space-y-3">
             <UploadLane
               kind="image"
               title={copy.laneTitle.image}
@@ -332,29 +372,11 @@ export function MultiModalWorkspace({ locale }: Props) {
               onRemove={actions.removeAsset}
               emptyLabel={copy.noAssets}
             />
-            <UploadLane
-              kind="video"
-              title={copy.laneTitle.video}
-              hint={copy.laneHint.video}
-              assets={assets.video}
-              onAddFiles={actions.addFiles}
-              onMove={actions.moveAsset}
-              onRemove={actions.removeAsset}
-              emptyLabel={copy.noAssets}
-            />
-            <UploadLane
-              kind="audio"
-              title={copy.laneTitle.audio}
-              hint={copy.laneHint.audio}
-              assets={assets.audio}
-              onAddFiles={actions.addFiles}
-              onMove={actions.moveAsset}
-              onRemove={actions.removeAsset}
-              emptyLabel={copy.noAssets}
-            />
+            <UploadLane kind="video" title={copy.laneTitle.video} hint={copy.laneHint.video} assets={assets.video} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
+            <UploadLane kind="audio" title={copy.laneTitle.audio} hint={copy.laneHint.audio} assets={assets.audio} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="space-y-2">
             <TogglePill active={containsRealPeople} onClick={actions.toggleContainsRealPeople}>
               {copy.containsRealPeople}
             </TogglePill>
@@ -363,32 +385,31 @@ export function MultiModalWorkspace({ locale }: Props) {
             </TogglePill>
           </div>
 
-          <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
+          <div className="rounded-[16px] border border-white/8 bg-[#1d1f26] p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <Label>{copy.promptLabel}</Label>
-              <span className="text-xs uppercase tracking-[0.24em] text-white/38">{promptLength}/5000</span>
+              <span className="text-[11px] text-white/36">{promptLength}/5000</span>
             </div>
             <Textarea
               value={prompt}
               onChange={(event) => actions.setPrompt(event.target.value)}
               placeholder={copy.promptPlaceholder}
-              className="min-h-[150px] resize-none rounded-[18px] border-white/8 bg-black/20 text-base text-white placeholder:text-white/24 focus-visible:ring-cyan-300/30"
+              className="min-h-[110px] resize-none rounded-[12px] border-white/10 bg-[#111318] text-sm leading-7 text-white placeholder:text-white/32 focus-visible:ring-[#2563ff]/40"
             />
-            <div className="mt-3 text-sm text-white/42">{copy.promptCounter}</div>
+            <div className="mt-3 text-xs text-white/42">{copy.promptCounter}</div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-3">
             <OptionGroup
               title={copy.resolution}
               options={RESOLUTIONS}
               value={resolution}
               onChange={(next) => actions.setResolution(next as typeof resolution)}
             />
-            <OptionGroup
+            <DurationSlider
               title={copy.duration}
-              options={DURATIONS.map((value) => `${value}s`)}
-              value={`${durationSeconds}s`}
-              onChange={(next) => actions.setDurationSeconds(Number(next.replace("s", "")) as typeof durationSeconds)}
+              value={durationSeconds}
+              onChange={(next) => actions.setDurationSeconds(next as typeof durationSeconds)}
             />
             <OptionGroup
               title={copy.aspectRatio}
@@ -398,13 +419,13 @@ export function MultiModalWorkspace({ locale }: Props) {
             />
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-3">
-              <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-2 text-sm text-white/70">
+              <div className="rounded-lg border border-white/10 bg-[#1d1f26] px-4 py-2 text-sm text-white/78">
                 {copy.estimatedCredits}: <span className="font-semibold text-white">{estimatedCredits} credits</span>
               </div>
               {activeGenerationId ? (
-                <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-50">
+                <div className="rounded-lg border border-[#2563ff]/20 bg-[#2563ff]/10 px-4 py-2 text-sm text-white">
                   Job {activeGenerationStatus ?? "pending"} · {activeGenerationId.slice(0, 8)}
                 </div>
               ) : null}
@@ -412,7 +433,7 @@ export function MultiModalWorkspace({ locale }: Props) {
             <Button
               onClick={() => void handleGenerate()}
               disabled={isSubmitting}
-              className="rounded-full bg-white px-7 py-6 text-sm font-black uppercase tracking-[0.2em] text-slate-950 hover:bg-cyan-100 disabled:cursor-not-allowed disabled:opacity-70"
+              className="h-12 w-full rounded-[12px] bg-[linear-gradient(90deg,#8b8b95,#6d28d9)] text-sm font-medium text-white hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
             >
               <WandSparkles className="mr-2 h-4 w-4" />
               {isSubmitting ? (locale === "zh" ? "Submitting" : "Submitting") : copy.generate}
@@ -427,63 +448,75 @@ export function MultiModalWorkspace({ locale }: Props) {
         transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
         className="space-y-6"
       >
-        <div className="surface-panel overflow-hidden border-white/8 bg-[linear-gradient(180deg,rgba(8,11,18,0.98),rgba(8,10,16,0.92))] p-5">
+        <div className="rounded-[18px] border border-white/8 bg-[#24252c] p-4">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm uppercase tracking-[0.24em] text-white/38">{copy.previewTitle}</p>
-              <h3 className="mt-2 text-2xl font-black text-white">{copy.previewSubtitle}</h3>
+              <p className="text-xs uppercase tracking-[0.18em] text-white/38">{copy.previewTitle}</p>
+              <h3 className="mt-2 text-xl font-semibold text-white">{copy.previewSubtitle}</h3>
             </div>
             <PlayCircle className="h-6 w-6 text-white/66" />
           </div>
 
-          <div className="mt-5 overflow-hidden rounded-[24px] border border-white/8 bg-[radial-gradient(circle_at_20%_10%,rgba(125,211,252,0.18),transparent_26%),radial-gradient(circle_at_80%_20%,rgba(249,168,212,0.12),transparent_24%),linear-gradient(160deg,#090f1c_0%,#101726_52%,#060811_100%)] p-6">
-            <div className="flex items-center justify-between text-xs uppercase tracking-[0.26em] text-white/40">
-              <span>Preview timeline</span>
+          <div className="mt-4 rounded-[16px] border border-white/8 bg-[#1d1f26] p-3">
+            <div className="flex items-center justify-between px-1 pb-3 pt-1 text-[11px] uppercase tracking-[0.16em] text-white/40">
+              <span>{activePreview.label}</span>
               <span>{resolution} · {durationSeconds}s · {aspectRatio}</span>
             </div>
-            <div className="mt-16 max-w-sm space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-3 py-1 text-xs text-white/90">
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                Cinematic reference lock
-              </div>
-              <div className="text-4xl font-black tracking-tight text-white">
-                Quiet interface,
-                <br />
-                visible output.
-              </div>
-              <p className="text-sm leading-7 text-white/58">
-                The surface should feel closer to a production console than a decorative AI dashboard.
-              </p>
+            <div className="overflow-hidden rounded-[14px] border border-white/6 bg-black">
+              <video
+                key={activePreview.src}
+                src={activePreview.src}
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                controls
+                className="aspect-[4/5] w-full object-cover"
+              />
             </div>
-            <div className="mt-16 flex items-center gap-3">
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
-                <div className="h-full w-[68%] rounded-full bg-[linear-gradient(90deg,#7dd3fc,#f9a8d4)]" />
+            <div className="space-y-4 p-4 pb-3">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3 py-1 text-xs text-white/92">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                {locale === "zh" ? "样例预览已就位" : "Preview reel loaded"}
               </div>
-              <span className="text-sm text-white/44">68%</span>
+              <div className="text-2xl font-semibold tracking-tight text-white">
+                {locale === "zh" ? activePreview.headlineZh : activePreview.headlineEn}
+              </div>
+              <p className="text-sm leading-7 text-white/74">
+                {locale === "zh" ? activePreview.bodyZh : activePreview.bodyEn}
+              </p>
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
             {copy.stats.map((stat) => (
-              <div key={stat.label} className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4">
-                <div className="text-xs uppercase tracking-[0.22em] text-white/36">{stat.label}</div>
-                <div className="mt-2 text-base font-semibold text-white">{stat.value}</div>
+              <div key={stat.label} className="rounded-[14px] border border-white/8 bg-[#1d1f26] p-4">
+                <div className="text-[11px] uppercase tracking-[0.16em] text-white/36">{stat.label}</div>
+                <div className="mt-2 text-sm font-medium text-white">{stat.value}</div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="surface-panel border-white/8 bg-[linear-gradient(180deg,rgba(8,11,18,0.98),rgba(8,10,16,0.92))] p-5">
-          <div className="flex items-center justify-between gap-3">
+        <div className="rounded-[18px] border border-white/8 bg-[#24252c] p-4">
+          <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-sm uppercase tracking-[0.24em] text-white/38">{copy.queueTitle}</p>
-              <h3 className="mt-2 text-xl font-black text-white">{copy.queueEta}</h3>
+              <p className="text-xs uppercase tracking-[0.16em] text-white/38">{locale === "zh" ? "Multi Reference Guide" : "Multi Reference Guide"}</p>
+              <h3 className="mt-2 text-base font-semibold text-white">{locale === "zh" ? "上传多个参考素材，分别控制角色、动作和节奏。" : "Use multiple references to separately control identity, motion, and timing."}</h3>
             </div>
-            <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-sm text-white/70">
-              {assets.image.length + assets.video.length + assets.audio.length} assets loaded
-            </div>
+            <MonitorPlay className="h-5 w-5 text-white/40" />
           </div>
-          <div className="mt-5 space-y-4">
+          <div className="mt-4 rounded-[14px] border border-white/8 bg-[#1d1f26] p-4 text-sm leading-7 text-white/74">
+            <p>{copy.queueHint}</p>
+            <ul className="mt-3 list-disc space-y-1 pl-5">
+              <li>{locale === "zh" ? "最多 9 张参考图片" : "Up to 9 reference images"}</li>
+              <li>{locale === "zh" ? "最多 3 段参考视频，总时长 15 秒" : "Up to 3 reference videos, 15 seconds total"}</li>
+              <li>{locale === "zh" ? "最多 3 段参考音频，总时长 15 秒" : "Up to 3 reference audios, 15 seconds total"}</li>
+              <li>{locale === "zh" ? "至少提供图片或视频之一" : "At least one image or video reference is required"}</li>
+            </ul>
+          </div>
+          <div className="mt-4 space-y-3">
             <QueueItem title="Image lane" detail={`${assets.image.length} queued references`} progress={assets.image.length > 0 ? "done" : "idle"} />
             <QueueItem title="Video lane" detail={`${assets.video.length} queued motion clips`} progress={assets.video.length > 0 ? "active" : "idle"} />
             <QueueItem title="Audio lane" detail={`${assets.audio.length} queued audio cues`} progress={assets.audio.length > 0 ? "done" : "idle"} />
@@ -495,10 +528,9 @@ export function MultiModalWorkspace({ locale }: Props) {
               />
             ) : null}
           </div>
-          <p className="mt-4 text-sm leading-7 text-white/48">{copy.queueHint}</p>
         </div>
 
-        <div className="surface-panel border-white/8 bg-[linear-gradient(180deg,rgba(8,11,18,0.98),rgba(8,10,16,0.92))] p-5">
+        <div className="rounded-[18px] border border-white/8 bg-[#24252c] p-4">
           <Label>{copy.quickPresetsTitle}</Label>
           <div className="mt-4 space-y-3">
             {copy.presets.map((preset) => (
@@ -506,9 +538,9 @@ export function MultiModalWorkspace({ locale }: Props) {
                 key={preset.name}
                 type="button"
                 onClick={() => actions.loadPreset(preset.prompt, preset.mode)}
-                className="w-full rounded-[18px] border border-white/8 bg-white/[0.03] p-4 text-left transition-colors hover:border-white/16 hover:bg-white/[0.06]"
+                className="w-full rounded-[14px] border border-white/6 bg-[#151518] p-4 text-left transition-colors hover:border-white/14 hover:bg-white/[0.04]"
               >
-                <div className="flex items-center gap-2 text-sm font-semibold text-white">
+                <div className="flex items-center gap-2 text-sm font-medium text-white">
                   <Sparkles className="h-4 w-4 text-white/70" />
                   {preset.name}
                 </div>
@@ -518,6 +550,7 @@ export function MultiModalWorkspace({ locale }: Props) {
           </div>
         </div>
       </motion.div>
+      </div>
     </div>
   );
 }
@@ -555,13 +588,13 @@ function UploadLane({
   });
 
   return (
-    <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-4">
+    <div className="rounded-[16px] border border-white/8 bg-[#1d1f26] p-3.5">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-base font-semibold text-white">{title}</div>
-          <div className="mt-1 text-sm text-white/44">{hint}</div>
+          <div className="text-sm font-medium text-white">{title}</div>
+          <div className="mt-1 text-xs text-white/44">{hint}</div>
         </div>
-        <div className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-xs uppercase tracking-[0.18em] text-white/42">
+        <div className="rounded-full border border-white/8 bg-white/[0.03] px-2.5 py-1 text-[11px] uppercase tracking-[0.14em] text-white/42">
           {assets.length}
         </div>
       </div>
@@ -569,13 +602,13 @@ function UploadLane({
       <div
         {...getRootProps()}
         className={cn(
-          "mt-4 rounded-[18px] border border-dashed px-4 py-5 text-center transition-colors",
-          isDragActive ? "border-white/20 bg-white/[0.06]" : "border-white/10 bg-black/10"
+          "mt-3 rounded-[12px] border border-dashed px-4 py-5 text-center transition-colors",
+          isDragActive ? "border-[#2563ff]/50 bg-[#2563ff]/8" : "border-white/12 bg-[#121318]"
         )}
       >
         <input {...getInputProps()} />
-        <UploadCloud className="mx-auto h-5 w-5 text-white/46" />
-        <div className="mt-3 text-sm text-white/70">Drop {kind}s here or click to browse</div>
+        <UploadCloud className="mx-auto h-5 w-5 text-[#5b8cff]" />
+        <div className="mt-3 text-sm text-white/82">Click to upload {kind}s</div>
       </div>
 
       <div className="mt-4 space-y-3">
@@ -612,7 +645,7 @@ function AssetRow({
     asset.kind === "image" ? ImagePlus : asset.kind === "video" ? Film : Mic2;
 
   return (
-    <div className="rounded-[16px] border border-white/8 bg-black/10 p-3">
+    <div className="rounded-[12px] border border-white/8 bg-[#15171d] p-3">
       <div className="flex gap-3">
         <AssetThumb asset={asset} icon={icon} />
         <div className="min-w-0 flex-1">
@@ -620,9 +653,9 @@ function AssetRow({
           <div className="mt-1 text-xs uppercase tracking-[0.18em] text-white/36">
             {asset.kind} · {asset.sizeLabel}
           </div>
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
+          <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/10">
             <div
-              className="h-full rounded-full bg-[linear-gradient(90deg,#7dd3fc,#f9a8d4)] transition-all"
+              className="h-full rounded-full bg-[linear-gradient(90deg,#2563ff,#8b5cf6)] transition-all"
               style={{ width: `${asset.progress}%` }}
             />
           </div>
@@ -689,7 +722,7 @@ function AssetThumb({
 }
 
 function Label({ children }: { children: ReactNode }) {
-  return <div className="text-sm font-semibold uppercase tracking-[0.24em] text-white/46">{children}</div>;
+  return <div className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/46">{children}</div>;
 }
 
 function TogglePill({
@@ -706,12 +739,14 @@ function TogglePill({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-all",
-        active ? "border-white/16 bg-white/10 text-white" : "border-white/8 bg-white/[0.03] text-white/60"
+        "flex w-full items-center justify-between rounded-[12px] border px-4 py-3 text-sm transition-all",
+        active ? "border-white/18 bg-white/[0.08] text-white" : "border-white/10 bg-[#1d1f26] text-white/82"
       )}
     >
-      <span className={cn("h-2.5 w-2.5 rounded-full", active ? "bg-emerald-300" : "bg-white/24")} />
-      {children}
+      <span>{children}</span>
+      <span className={cn("flex h-5 w-9 items-center rounded-full p-0.5 transition-colors", active ? "bg-white/18" : "bg-white/8")}>
+        <span className={cn("h-4 w-4 rounded-full transition-transform", active ? "translate-x-4 bg-white" : "translate-x-0 bg-white/55")} />
+      </span>
     </button>
   );
 }
@@ -728,7 +763,7 @@ function OptionGroup({
   onChange: (next: string) => void;
 }) {
   return (
-    <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+    <div className="rounded-[16px] border border-white/8 bg-[#1d1f26] p-4">
       <Label>{title}</Label>
       <div className="mt-3 flex flex-wrap gap-2">
         {options.map((option) => (
@@ -737,16 +772,46 @@ function OptionGroup({
             type="button"
             onClick={() => onChange(option)}
             className={cn(
-              "rounded-full border px-3 py-1.5 text-sm transition-colors",
+              title.toLowerCase().includes("aspect") || title.includes("画幅")
+                ? "flex h-14 w-14 flex-col items-center justify-center rounded-xl border text-[11px] transition-colors"
+                : "rounded-lg border px-3 py-1.5 text-sm transition-colors",
               value === option
                 ? "border-white bg-white text-slate-950"
-                : "border-white/8 bg-transparent text-white/58 hover:bg-white/[0.05]"
+                : "border-white/10 bg-[#15171d] text-white/76 hover:bg-white/[0.05]"
             )}
           >
             {option}
           </button>
         ))}
       </div>
+    </div>
+  );
+}
+
+function DurationSlider({
+  title,
+  value,
+  onChange,
+}: {
+  title: string;
+  value: number;
+  onChange: (next: number) => void;
+}) {
+  return (
+    <div className="rounded-[16px] border border-white/8 bg-[#1d1f26] p-4">
+      <div className="flex items-center justify-between">
+        <Label>{title}</Label>
+        <span className="text-sm text-white">{value}s</span>
+      </div>
+      <input
+        type="range"
+        min={5}
+        max={15}
+        step={5}
+        value={value}
+        onChange={(event) => onChange(Number(event.target.value))}
+        className="mt-4 h-2 w-full accent-[#2563ff]"
+      />
     </div>
   );
 }
@@ -764,10 +829,10 @@ function QueueItem({
     progress === "done" ? "bg-emerald-300" : progress === "active" ? "bg-cyan-300" : "bg-white/20";
 
   return (
-    <div className="flex items-start gap-3 rounded-[18px] border border-white/8 bg-white/[0.03] p-4">
+    <div className="flex items-start gap-3 rounded-[12px] border border-white/8 bg-[#1d1f26] p-4">
       <span className={cn("mt-1 h-2.5 w-2.5 rounded-full", dotClass)} />
       <div>
-        <div className="font-semibold text-white">{title}</div>
+        <div className="font-medium text-white">{title}</div>
         <div className="mt-1 text-sm text-white/50">{detail}</div>
       </div>
     </div>
@@ -788,7 +853,7 @@ function IconButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="rounded-full border border-white/8 bg-white/[0.03] p-2 text-white/54 transition-colors hover:bg-white/[0.07] hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+      className="rounded-lg border border-white/8 bg-white/[0.03] p-2 text-white/54 transition-colors hover:bg-white/[0.07] hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
     >
       {children}
     </button>

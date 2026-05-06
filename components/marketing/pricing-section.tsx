@@ -143,26 +143,26 @@ export function PricingSection({ locale, hideIntro = false }: PricingSectionProp
         const costPerImage = calculateCostPerGeneration(plan);
 
         const cardClass = isYearly
-            ? "border-slate-800 bg-[radial-gradient(circle_at_top,rgba(227,104,74,0.14),transparent_24%),radial-gradient(circle_at_100%_0%,rgba(27,163,147,0.16),transparent_20%),linear-gradient(180deg,#111827_0%,#020617_100%)] text-white shadow-[0_35px_120px_-35px_rgba(15,23,42,0.9)]"
+            ? "border-white/12 bg-[radial-gradient(circle_at_top,rgba(98,86,255,0.18),transparent_30%),radial-gradient(circle_at_100%_0%,rgba(37,99,255,0.16),transparent_24%),linear-gradient(180deg,#161924_0%,#0d111a_100%)] text-white shadow-[0_35px_120px_-35px_rgba(2,6,23,0.95)]"
             : isMonthly
-                ? "border-primary/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(255,247,243,0.95))] shadow-[0_30px_110px_-40px_rgba(227,104,74,0.3)]"
-                : "border-border/70 bg-white/92 shadow-[0_24px_70px_-42px_rgba(15,23,42,0.3)]";
+                ? "border-primary/20 bg-[radial-gradient(circle_at_top,rgba(37,99,255,0.12),transparent_28%),linear-gradient(180deg,#1a1d28_0%,#11141c_100%)] text-white shadow-[0_30px_110px_-40px_rgba(2,6,23,0.75)]"
+                : "border-white/10 bg-[linear-gradient(180deg,#1d2029_0%,#12151d_100%)] text-white shadow-[0_24px_70px_-42px_rgba(2,6,23,0.7)]";
 
         const badgeClass = isYearly
             ? "bg-amber-300 text-slate-950"
             : isMonthly
                 ? "bg-primary text-white"
-                : "bg-muted text-foreground";
+                : "bg-white/10 text-white";
 
         const buttonClass = isYearly
             ? "bg-white text-slate-950 hover:bg-slate-100"
             : isMonthly
                 ? "group relative overflow-hidden bg-primary text-primary-foreground hover:bg-primary/90"
-                : "border border-border bg-background text-foreground hover:bg-muted";
+                : "border border-white/10 bg-white/[0.05] text-white hover:bg-white/[0.08]";
 
-        const textMuted = isYearly ? "text-slate-300" : "text-muted-foreground";
-        const divider = isYearly ? "border-white/10" : "border-border/60";
-        const anchorClass = isYearly ? "text-emerald-300" : isMonthly ? "text-primary" : "text-foreground";
+        const textMuted = isYearly ? "text-slate-300" : isMonthly ? "text-slate-300" : "text-white/62";
+        const divider = "border-white/10";
+        const anchorClass = isYearly ? "text-emerald-300" : isMonthly ? "text-primary" : "text-white";
 
         const coreFeatures = isStarter
             ? [
@@ -260,7 +260,7 @@ export function PricingSection({ locale, hideIntro = false }: PricingSectionProp
                         </p>
                     )}
 
-                    <div className={cn("rounded-2xl border px-4 py-4", isYearly ? "border-white/10 bg-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" : isMonthly ? "border-primary/15 bg-primary/5" : "border-border/60 bg-muted/20")}>
+                    <div className={cn("rounded-2xl border px-4 py-4", isYearly ? "border-white/10 bg-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" : isMonthly ? "border-primary/15 bg-primary/8" : "border-white/10 bg-white/[0.04]")}>
                         <p className={cn("text-xs font-semibold uppercase tracking-[0.22em]", textMuted)}>
                             {t("price_per_image")}
                         </p>
@@ -282,7 +282,7 @@ export function PricingSection({ locale, hideIntro = false }: PricingSectionProp
                     {renderFeatures(coreFeatures, { yearly: isYearly })}
 
                     {missingFeatures.length > 0 ? (
-                        <div className={cn("mt-5 rounded-2xl border px-4 py-4", isYearly ? "border-white/10 bg-white/5" : "border-border/50 bg-muted/20")}>
+                        <div className={cn("mt-5 rounded-2xl border px-4 py-4", isYearly ? "border-white/10 bg-white/5" : "border-white/10 bg-white/[0.04]")}>
                             <p className={cn("mb-3 text-xs font-semibold uppercase tracking-[0.22em]", textMuted)}>
                                 {t("missing_features")}
                             </p>
@@ -316,8 +316,8 @@ export function PricingSection({ locale, hideIntro = false }: PricingSectionProp
 
     return (
         <section className="relative isolate overflow-visible">
-            <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_15%_10%,rgba(227,104,74,0.12),transparent_24%),radial-gradient(circle_at_85%_10%,rgba(27,163,147,0.12),transparent_22%),linear-gradient(180deg,#fcfbf8_0%,#ffffff_42%,#f8f5ef_100%)]" />
-            <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(15,23,42,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.035)_1px,transparent_1px)] bg-[size:34px_34px] [mask-image:radial-gradient(circle_at_center,black,transparent_85%)]" />
+            <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_15%_10%,rgba(37,99,255,0.12),transparent_24%),radial-gradient(circle_at_85%_10%,rgba(139,92,246,0.12),transparent_22%),linear-gradient(180deg,#0b0f18_0%,#10141d_42%,#0c1018_100%)]" />
+            <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:34px_34px] [mask-image:radial-gradient(circle_at_center,black,transparent_85%)]" />
 
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
                 {!hideIntro ? (
@@ -325,8 +325,8 @@ export function PricingSection({ locale, hideIntro = false }: PricingSectionProp
                         <span className="section-kicker">
                             {t("eyebrow")}
                         </span>
-                        <h2 className="mt-6 text-4xl font-black tracking-tight sm:text-5xl">{t("title")}</h2>
-                        <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">{t("subtitle")}</p>
+                        <h2 className="mt-6 text-4xl font-black tracking-tight text-white sm:text-5xl">{t("title")}</h2>
+                        <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/68">{t("subtitle")}</p>
                     </div>
                 ) : null}
 
@@ -336,9 +336,9 @@ export function PricingSection({ locale, hideIntro = false }: PricingSectionProp
                     </div>
                 </div>
 
-                <div className="mt-12 rounded-[28px] border border-amber-300/50 bg-[linear-gradient(180deg,rgba(255,251,235,0.95),rgba(255,247,228,0.9))] px-6 py-5 shadow-[0_20px_50px_-36px_rgba(217,119,6,0.35)]">
-                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-800">{t("faq_kicker")}</p>
-                    <p className="mt-3 text-base leading-8 text-amber-950">{t("artist_anchor")}</p>
+                <div className="mt-12 rounded-[28px] border border-amber-300/20 bg-[linear-gradient(180deg,rgba(245,158,11,0.08),rgba(255,255,255,0.02))] px-6 py-5 shadow-[0_20px_50px_-36px_rgba(217,119,6,0.22)]">
+                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-200">{t("faq_kicker")}</p>
+                    <p className="mt-3 text-base leading-8 text-white/78">{t("artist_anchor")}</p>
                 </div>
             </div>
         </section>

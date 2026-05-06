@@ -42,7 +42,7 @@ function GoogleAnalyticsPageTracker({ gaId }: { gaId: string }) {
 }
 
 export function GoogleAnalytics() {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID || "G-D6FWM9N40Z";
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   if (!gaId) {
     return null;

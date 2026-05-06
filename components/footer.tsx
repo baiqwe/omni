@@ -4,6 +4,7 @@ import { Logo } from "./logo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { site } from "@/config/site";
 
 export function Footer() {
   const pathname = usePathname();
@@ -24,10 +25,14 @@ export function Footer() {
   ];
 
   const styleLinks = [
-    { label: isZh ? "图像转视频" : "Image to Video", href: `${localePrefix}/#workspace` },
-    { label: isZh ? "文本转视频" : "Text to Video", href: `${localePrefix}/#workspace` },
-    { label: isZh ? "多参考生成" : "Multi-Reference Video", href: `${localePrefix}/#workspace` },
+    { label: isZh ? "图像转视频" : "Image to Video", href: `${localePrefix}/image-to-video`, id: "image-to-video" },
+    { label: isZh ? "参考视频生成" : "Reference Video", href: `${localePrefix}/reference-video-generator`, id: "reference-video-generator" },
+    { label: isZh ? "视频延展" : "Video Extension", href: `${localePrefix}/video-extension`, id: "video-extension" },
   ];
+  const communityLinks = [
+    { label: "LinkedIn", href: site.socialLinks.linkedin },
+    { label: "Reddit", href: site.socialLinks.reddit },
+  ].filter((link): link is { label: string; href: string } => Boolean(link.href));
 
   const legalLinks = [
     { label: t('link_privacy'), href: `${localePrefix}/privacy` },
@@ -94,7 +99,7 @@ export function Footer() {
             <nav className="flex flex-col gap-2">
               {styleLinks.map((link) => (
                 <Link
-                  key={link.href}
+                  key={link.id}
                   href={link.href}
                   className="text-sm text-muted-foreground transition-all hover:translate-x-0.5 hover:text-primary"
                 >
@@ -119,6 +124,27 @@ export function Footer() {
               ))}
             </nav>
           </div>
+
+          {communityLinks.length > 0 ? (
+            <div className="flex flex-col gap-3">
+              <h3 className="text-sm font-semibold">
+                {currentLocale === 'zh' ? '社区与外部入口' : 'Community'}
+              </h3>
+              <nav className="flex flex-col gap-2">
+                {communityLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm text-muted-foreground transition-all hover:translate-x-0.5 hover:text-primary"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          ) : null}
         </div>
 
         {/* Bottom */}

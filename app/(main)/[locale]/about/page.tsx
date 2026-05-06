@@ -14,8 +14,8 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
 
   const title = isZh ? `关于我们 | ${site.siteName}` : `About | ${site.siteName}`;
   const description = isZh
-    ? "我们在把现有 AI 工具脚手架改造成 Seedance 2 风格的多模态视频生成工作台。"
-    : "We are transforming this AI starter into a Seedance-style multi-modal video creation workspace.";
+    ? "了解 Seedance 2 背后的产品定位、适用人群、工作流设计原则，以及我们如何把多模态 AI 视频生成做得更可控。"
+    : "Learn what Seedance 2 is, who it serves, and how we approach controllable multi-modal AI video generation workflows.";
 
   const ogImage = new URL(site.ogImagePath, site.siteUrl).toString();
 
@@ -73,13 +73,13 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
             </h1>
             <p className="text-lg text-muted-foreground">
               {isZh
-                ? "把图片、视频、音频与文本放进同一个创作工作台，服务更可控的视频生成流程。"
-                : "Bring images, videos, audio, and text into one workspace built for more controllable video generation."}
+                ? "Seedance 2 是一个面向多模态 AI 视频生成的产品站与工作台，核心目标不是“随便生成一条视频”，而是让参考图、参考视频、音频和文字指令能真正组织成一个更可控的生产流程。"
+                : "Seedance 2 is a product site and workspace for multi-modal AI video generation. The goal is not to produce any clip at random, but to turn reference images, video clips, audio, and natural-language direction into a more controllable production workflow."}
             </p>
             <p className="text-sm text-muted-foreground">
               {isZh
-                ? `${site.siteName} 当前聚焦于多模态输入、参考驱动控制、异步任务流和视频生产体验，而不是停留在单一 prompt 工具。`
-                : `${site.siteName} now focuses on multi-modal input, reference-driven control, async job orchestration, and a production-ready video workflow rather than a single-prompt toy.`}
+                ? "我们把它设计成一个更接近视频工作站的系统，而不是一个只展示几句提示词、几个按钮和一张结果图的轻量玩具。"
+                : "We are designing it to feel closer to a video workstation than to a lightweight toy that only exposes a prompt box, a few buttons, and a single result frame."}
             </p>
           </div>
 
@@ -92,7 +92,7 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground">
-                {isZh ? "让图像、视频、音频和文字共同决定结果，而不是只靠一句 prompt。" : "Let images, video, audio, and text guide the output together instead of relying on one prompt."}
+                {isZh ? "让图像、视频、音频和文字共同决定结果，而不是把动作、镜头和连续性交给一句 prompt 的运气。" : "Let images, video, audio, and text guide the output together instead of leaving motion, framing, and continuity to prompt luck alone."}
               </CardContent>
             </Card>
 
@@ -104,7 +104,7 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground">
-                {isZh ? "工作台 → 素材 staging → 额度估算 → 异步生成 → 继续延展。" : "Workspace → staging → credit estimate → async generation → extend and iterate."}
+                {isZh ? "工作台 → 素材 staging → 积分估算 → 异步任务 → 视频延展与复用。这套结构更适合真实团队持续生产。" : "Workspace → asset staging → credit estimate → async jobs → extension and reuse. The structure is designed for repeatable team workflows."}
               </CardContent>
             </Card>
 
@@ -117,8 +117,46 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground">
                 {isZh
-                  ? "接入真实生成能力后，素材应先进入受控存储，再转发到选定的视频模型服务。"
-                  : "Once live generation is connected, uploads should be staged in controlled storage before provider handoff."}
+                  ? "上传、支付、权限和模型调用都应该被单独说明。我们会尽量把产品能力、限制、数据流和支持方式写清楚，而不是让用户自己猜。"
+                  : "Uploads, billing, permissions, and provider handoff should be described explicitly. We aim to document capabilities, limits, data flow, and support pathways instead of making users guess."}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">{isZh ? "这套产品适合谁" : "Who Seedance 2 Is For"}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+                <p>
+                  {isZh
+                    ? "Seedance 2 适合广告与营销团队、影视预演团队、短视频工作室、品牌内容团队，以及任何需要把参考素材系统化地转成视频结果的人。"
+                    : "Seedance 2 is built for ad and marketing teams, previs artists, short-form studios, brand content groups, and anyone who needs to turn references into repeatable video output."}
+                </p>
+                <p>
+                  {isZh
+                    ? "如果你的工作依赖镜头参考、角色一致性、动作参考、产品展示或音视频同步，这类多模态工作流会比单一 prompt 模式更有效。"
+                    : "If your work depends on shot references, character consistency, motion transfer, product presentation, or audio-aware timing, a multi-modal workflow is usually stronger than a single-prompt setup."}
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">{isZh ? "我们如何判断内容是否足够好" : "How We Think About Quality"}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+                <p>
+                  {isZh
+                    ? "我们更关注可控性、结果连续性、工作流清晰度和团队可复用性，而不只是单次 demo 的“惊艳一帧”。"
+                    : "We care more about controllability, temporal continuity, workflow clarity, and reusability than about a single impressive frame from a demo."}
+                </p>
+                <p>
+                  {isZh
+                    ? "这也是为什么首页会同时强调 use cases、信任页面、支付说明、FAQ 和公开视频样例，而不是只堆一堆视觉特效。"
+                    : "That is also why the site emphasizes use cases, trust pages, billing context, FAQs, and public examples instead of relying only on visual flair."}
+                </p>
               </CardContent>
             </Card>
           </div>

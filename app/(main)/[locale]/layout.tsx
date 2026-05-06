@@ -95,6 +95,11 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
         // ✅ 其他 SEO 相关
         category: 'technology',
         classification: 'AI Video Generation Tool',
+        verification: site.googleSiteVerification
+            ? {
+                google: site.googleSiteVerification,
+            }
+            : undefined,
     };
 }
 

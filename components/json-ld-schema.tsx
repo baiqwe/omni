@@ -10,6 +10,18 @@ import { galleryItems } from '@/config/gallery';
 
 export async function SoftwareApplicationSchema({ locale }: { locale: string }) {
     const t = await getTranslations({ locale, namespace: 'metadata' });
+    const sameAs = [site.socialLinks.linkedin, site.socialLinks.reddit].filter(
+        (value): value is string => Boolean(value)
+    );
+
+    const organizationSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": site.siteName,
+        "url": site.siteUrl,
+        "email": site.supportEmail,
+        ...(sameAs.length ? { sameAs } : {}),
+    };
 
     const appSchema = {
         "@context": "https://schema.org",
@@ -35,6 +47,11 @@ export async function SoftwareApplicationSchema({ locale }: { locale: string }) 
             "@type": "AggregateRating",
             "ratingValue": "4.8",
             "ratingCount": "1250"
+        },
+        "provider": {
+            "@type": "Organization",
+            "name": site.siteName,
+            "url": site.siteUrl
         }
     };
 
@@ -53,7 +70,7 @@ export async function SoftwareApplicationSchema({ locale }: { locale: string }) 
         }
     }));
 
-    const schema = [appSchema, ...videoSchemas];
+    const schema = [organizationSchema, appSchema, ...videoSchemas];
 
     return (
         <script

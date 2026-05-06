@@ -13,6 +13,10 @@ export type GalleryItem = {
   altZh: string;
   afterImage: string;
   beforeThumb: string;
+  videoUrl: string;
+  durationLabel: string;
+  aspectRatioLabel: string;
+  promptLabel: string;
 };
 
 const SHARED_AFTER = "/images/gallery/hero-after.jpg";
@@ -32,6 +36,10 @@ export const galleryItems: GalleryItem[] = [
     altZh: "用于展示产品广告生成工作流的 AI 视频案例卡片。",
     afterImage: "/images/gallery/generated/ghibli.jpg",
     beforeThumb: SHARED_BEFORE,
+    videoUrl: "/videos/gallery/product-reveal.mp4",
+    durationLabel: "05s",
+    aspectRatioLabel: "4:5",
+    promptLabel: "Prompt + refs",
   },
   {
     id: "dance-transfer",
@@ -46,6 +54,10 @@ export const galleryItems: GalleryItem[] = [
     altZh: "用于展示舞蹈动作迁移工作流的 AI 视频案例卡片。",
     afterImage: "/images/gallery/generated/webtoon.jpg",
     beforeThumb: SHARED_BEFORE,
+    videoUrl: "/videos/gallery/dance-motion.mp4",
+    durationLabel: "05s",
+    aspectRatioLabel: "9:16",
+    promptLabel: "Motion ref",
   },
   {
     id: "storyboard-previs",
@@ -60,6 +72,10 @@ export const galleryItems: GalleryItem[] = [
     altZh: "用于展示分镜到预演视频工作流的 AI 视频案例卡片。",
     afterImage: "/images/gallery/generated/retro_90s.jpg",
     beforeThumb: SHARED_BEFORE,
+    videoUrl: "/videos/gallery/storyboard-previs.mp4",
+    durationLabel: "05s",
+    aspectRatioLabel: "4:5",
+    promptLabel: "Storyboard",
   },
   {
     id: "image-video-seed",
@@ -74,6 +90,10 @@ export const galleryItems: GalleryItem[] = [
     altZh: "用于展示图像转视频工作流的 AI 视频案例卡片。",
     afterImage: "/images/gallery/generated/cyberpunk.jpg",
     beforeThumb: SHARED_BEFORE,
+    videoUrl: "/videos/gallery/image-to-video.mp4",
+    durationLabel: "05s",
+    aspectRatioLabel: "16:9",
+    promptLabel: "Image seed",
   },
   {
     id: "reference-anything",
@@ -88,6 +108,10 @@ export const galleryItems: GalleryItem[] = [
     altZh: "用于展示多参考视频生成工作流的 AI 视频案例卡片。",
     afterImage: "/images/gallery/generated/standard.jpg",
     beforeThumb: SHARED_BEFORE,
+    videoUrl: "/videos/gallery/reference-led.mp4",
+    durationLabel: "05s",
+    aspectRatioLabel: "4:5",
+    promptLabel: "Audio + refs",
   },
   {
     id: "video-extension",
@@ -102,6 +126,10 @@ export const galleryItems: GalleryItem[] = [
     altZh: "用于展示视频平滑扩写工作流的 AI 视频案例卡片。",
     afterImage: "/images/gallery/generated/cosplay.jpg",
     beforeThumb: SHARED_BEFORE,
+    videoUrl: "/videos/gallery/video-extension.mp4",
+    durationLabel: "05s",
+    aspectRatioLabel: "9:16",
+    promptLabel: "Scene extend",
   },
 ];
 
