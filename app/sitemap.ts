@@ -3,7 +3,7 @@ import { site } from "@/config/site";
 import { locales } from "@/i18n/routing";
 import { indexableLandingPageSlugs } from "@/config/landing-pages";
 
-const staticPages = ["", "pricing", "privacy", "terms", "about", "contact"];
+const staticPages = ["", "creative-center", "guides", "pricing", "privacy", "terms", "about", "contact"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

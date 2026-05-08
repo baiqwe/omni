@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Clapperboard, Layers3, Sparkles } from "lucide-react";
 import { InspirationGallery } from "@/components/gallery/InspirationGallery";
 import { PricingSection } from "@/components/marketing/pricing-section";
+import { FAQSchema } from "@/components/breadcrumb-schema";
 
 type Props = { locale: string };
 
@@ -59,6 +60,7 @@ export default async function HomeStaticContent({ locale }: Props) {
     { href: `${localePrefix}/privacy`, label: isZh ? "隐私政策" : "Privacy Policy" },
     { href: `${localePrefix}/terms`, label: isZh ? "服务条款" : "Terms of Service" },
     { href: `${localePrefix}/contact`, label: isZh ? "联系我们" : "Contact" },
+    { href: `${localePrefix}/guides`, label: isZh ? "帮助中心" : "Help Center" },
   ];
   const buyerFaqs = [
     {
@@ -89,6 +91,7 @@ export default async function HomeStaticContent({ locale }: Props) {
 
   return (
     <>
+      <FAQSchema items={buyerFaqs} />
       <section className="border-t border-white/6 bg-[linear-gradient(180deg,#060918_0%,#0b1026_100%)] py-20">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-5xl text-center">
@@ -155,6 +158,15 @@ export default async function HomeStaticContent({ locale }: Props) {
                     {isZh
                       ? "因此首页不能只展示一个黑色工作台壳子，还需要把能力边界、适用团队、输入类型、输出方式、定价逻辑和隐私说明都讲清楚。"
                       : "That means the homepage cannot stop at a dark workspace shell. It also has to explain capability boundaries, target teams, input types, output controls, pricing logic, and privacy expectations."}
+                  </p>
+                  <p>
+                    {isZh
+                      ? "如果你想看更完整的使用方法、素材准备建议和结果评估标准，可以继续进入帮助中心。"
+                      : "If you need more detailed workflow guidance, input preparation notes, or review criteria, continue into the help center."}{" "}
+                    <Link href={`${localePrefix}/guides`} className="font-medium text-primary hover:underline">
+                      {isZh ? "查看 Seedance 2 使用指南" : "Read the Seedance 2 guides"}
+                    </Link>
+                    。
                   </p>
                 </div>
               </div>
@@ -263,13 +275,18 @@ export default async function HomeStaticContent({ locale }: Props) {
                       ? "很多 AI 视频工具能在演示里给你一段惊艳片段，但真正进入广告、短剧、角色一致性、分镜预演或产品展示流程之后，团队更看重的是参考控制、输入组织方式、镜头可重复性和任务恢复能力。"
                       : "Many AI video tools can produce one impressive demo clip, but once the workflow moves into advertising, short-form production, character consistency, previs, or product content, teams care more about reference control, input structure, repeatability, and recoverable jobs."}
                   </p>
-                  <p>
-                    {isZh
-                      ? "这也是为什么这个站点会把 use cases、FAQ、法务页、支付页、公开视频示例和工作台放在同一个信息结构里。"
-                      : "That is why this site keeps use cases, FAQ content, legal pages, pricing, public examples, and the workspace inside one coherent information architecture."}
-                  </p>
-                </div>
+                <p>
+                  {isZh
+                    ? "这也是为什么这个站点会把 use cases、FAQ、法务页、支付页、公开视频示例和工作台放在同一个信息结构里。"
+                    : "That is why this site keeps use cases, FAQ content, legal pages, pricing, public examples, and the workspace inside one coherent information architecture."}
+                </p>
+                <p>
+                  {isZh
+                    ? "接下来还会由帮助中心继续承接“怎么做、怎么评估、什么情况下要谨慎”的内容层。"
+                    : "The help center extends that structure with content about how to work, how to review outputs, and where teams should slow down and check carefully."}
+                </p>
               </div>
+            </div>
 
               <div className="surface-panel px-6 py-7 md:px-8">
                 <div className="section-kicker">{isZh ? "Buyer FAQ" : "Buyer FAQ"}</div>

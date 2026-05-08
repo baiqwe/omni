@@ -68,25 +68,21 @@ html {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     background-image:
-      radial-gradient(circle at 50% 0%, rgba(41, 98, 255, 0.12), transparent 22%),
-      radial-gradient(circle at 12% 18%, rgba(94, 234, 212, 0.05), transparent 20%),
-      radial-gradient(circle at 88% 10%, rgba(139, 92, 246, 0.06), transparent 18%),
-      linear-gradient(180deg, rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(180deg, #0f1013 0%, #111217 45%, #0c0d12 100%);
-    background-size: auto, auto, auto, 32px 32px, 32px 32px, auto;
-    background-position: center top, 12% 18%, 88% 10%, center top, center top, center top;
+      radial-gradient(circle at 50% -12%, rgba(66, 110, 255, 0.15), transparent 28%),
+      radial-gradient(circle at 8% 16%, rgba(90, 219, 205, 0.04), transparent 18%),
+      radial-gradient(circle at 88% 12%, rgba(127, 92, 255, 0.05), transparent 18%),
+      linear-gradient(180deg, #101116 0%, #12141a 42%, #0d0f14 100%);
+    background-size: auto, auto, auto, auto;
+    background-position: center top, 8% 16%, 88% 12%, center top;
   }
   .dark body {
     background-image:
-      radial-gradient(circle at 50% 0%, rgba(41, 98, 255, 0.12), transparent 22%),
-      radial-gradient(circle at 12% 18%, rgba(94, 234, 212, 0.05), transparent 20%),
-      radial-gradient(circle at 88% 10%, rgba(139, 92, 246, 0.06), transparent 18%),
-      linear-gradient(180deg, rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(180deg, #0f1013 0%, #111217 45%, #0c0d12 100%);
-    background-size: auto, auto, auto, 32px 32px, 32px 32px, auto;
-    background-position: center top, 12% 18%, 88% 10%, center top, center top, center top;
+      radial-gradient(circle at 50% -12%, rgba(66, 110, 255, 0.15), transparent 28%),
+      radial-gradient(circle at 8% 16%, rgba(90, 219, 205, 0.04), transparent 18%),
+      radial-gradient(circle at 88% 12%, rgba(127, 92, 255, 0.05), transparent 18%),
+      linear-gradient(180deg, #101116 0%, #12141a 42%, #0d0f14 100%);
+    background-size: auto, auto, auto, auto;
+    background-position: center top, 8% 16%, 88% 12%, center top;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: "SF Pro Display", "Avenir Next", "PingFang SC", "Segoe UI", sans-serif;

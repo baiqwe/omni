@@ -1,5 +1,5 @@
 import HomeClientWrapper from '@/components/home/HomeClientWrapper';
-import HomeHeroContent from '@/components/home/HomeHeroContent';
+import HomeHeroContent, { HomeHeroSupport } from '@/components/home/HomeHeroContent';
 import HomeStaticContent from '@/components/home/HomeStaticContent';
 import type { Metadata } from "next";
 import { getMessages } from "next-intl/server";
@@ -44,13 +44,14 @@ export default async function HomePage(props: { params: Promise<{ locale: string
     const { locale } = params;
 
     // Server-rendered static content for better LCP and SEO
-    const heroContent = await HomeHeroContent({ locale });
+    const heroHeading = await HomeHeroContent({ locale });
+    const heroSupport = await HomeHeroSupport({ locale });
     const staticContent = await HomeStaticContent({ locale });
 
     return (
         <>
             <ImageGallerySchema locale={locale} />
-            <HomeClientWrapper heroContent={heroContent} staticContent={staticContent} />
+            <HomeClientWrapper heroHeading={heroHeading} heroSupport={heroSupport} staticContent={staticContent} />
         </>
     );
 }

@@ -26,9 +26,9 @@ export default function Header() {
 
   // Main navigation items
   const mainNavItems: NavItem[] = [
-    { id: "video", label: currentLocale === "zh" ? "AI Video" : "AI Video", href: '/#workspace' },
+    { id: "creative-center", label: currentLocale === "zh" ? "创作中心" : "Creation Center", href: '/creative-center' },
     { id: "image", label: currentLocale === "zh" ? "AI Image" : "AI Image", href: '/image-to-video' },
-    { id: "guide", label: currentLocale === "zh" ? "Guide" : "Guide", href: '/#guide' },
+    { id: "guide", label: currentLocale === "zh" ? "指南" : "Guides", href: '/guides' },
     { id: "pricing", label: t('pricing'), href: '/pricing' },
   ];
 

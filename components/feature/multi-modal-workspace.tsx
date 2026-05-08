@@ -10,7 +10,9 @@ import {
   ArrowDown,
   ArrowUp,
   AudioLines,
+  Check,
   CheckCircle2,
+  ChevronDown,
   Clapperboard,
   Film,
   ImagePlus,
@@ -40,8 +42,14 @@ type WorkspaceCopy = {
   uploadTitle: string;
   uploadHint: string;
   uploadMeta: string;
+  modelLabel: string;
+  modelName: string;
+  modelDescription: string;
+  modelBadges: string[];
   containsRealPeople: string;
+  containsRealPeopleHint: string;
   returnLastFrame: string;
+  returnLastFrameHint: string;
   promptLabel: string;
   promptPlaceholder: string;
   promptCounter: string;
@@ -53,6 +61,7 @@ type WorkspaceCopy = {
   queueTitle: string;
   queueEta: string;
   queueHint: string;
+  queueBullets: string[];
   previewTitle: string;
   previewSubtitle: string;
   stats: Array<{ label: string; value: string }>;
@@ -60,6 +69,8 @@ type WorkspaceCopy = {
   presets: Array<{ name: string; prompt: string; mode: VideoGenerationMode }>;
   laneTitle: Record<WorkspaceAssetKind, string>;
   laneHint: Record<WorkspaceAssetKind, string>;
+  laneAction: Record<WorkspaceAssetKind, string>;
+  laneEmptyMeta: Record<WorkspaceAssetKind, string>;
   estimatedCredits: string;
   noAssets: string;
 };
@@ -76,12 +87,18 @@ const COPY: Record<string, WorkspaceCopy> = {
       { label: "文本转视频", mode: "text_to_video" },
     ],
     subtitle:
-      "把图片、视频、音频和文本放进同一个创作台，让界面为画面让路。输入与输出都按电影级工作流组织。",
+      "把图片、视频、音频和文本放进同一个创作台，让输入关系更清楚、输出更可控，也让界面真正服务于镜头结果。",
     uploadTitle: "拖入你的多模态素材",
-    uploadHint: "每种模态独立排队、独立进度、可拖拽排序。这样后面接分片上传和真正的 staging 时不会推倒重来。",
+    uploadHint: "把图像、动作参考和音频线索拆开管理，角色、镜头和节奏就能更清楚地分别控制。",
     uploadMeta: "Images 9 · Videos 3 · Audios 3",
+    modelLabel: "AI 模型",
+    modelName: "Seedance 2.0 Multi-Reference",
+    modelDescription: "优先理解图像、视频、音频与文字之间的关系，适合做角色一致性、动作继承和镜头延展。",
+    modelBadges: ["参考优先", "动作理解", "镜头延展"],
     containsRealPeople: "包含真人素材",
+    containsRealPeopleHint: "启用后，会优先把人物身份、皮肤细节和镜头安全边界处理得更稳。",
     returnLastFrame: "添加尾帧目标",
+    returnLastFrameHint: "给模型一个明确的终点画面，适合做延展、收束动作和更稳定的转场。",
     promptLabel: "Prompt",
     promptPlaceholder:
       "例如：以 image-01 作为首帧角色，沿用 video-02 的推轨与镜头节奏，5 秒内从中景推进到近景，保留冷色夜景霓虹和电子鼓点推进感。",
@@ -90,12 +107,18 @@ const COPY: Record<string, WorkspaceCopy> = {
     duration: "时长",
     aspectRatio: "画幅",
     advanced: "高级选项",
-    generate: "Generate",
+    generate: "生成视频",
     queueTitle: "渲染队列",
     queueEta: "工作台状态已就绪",
-    queueHint: "现在这里展示的是前端层的真实队列状态。接入后端后，这个面板会自然承接 provider job、轮询和失败恢复。",
-    previewTitle: "Output Preview",
-    previewSubtitle: "让结果成为视觉中心，让界面退后。",
+    queueHint: "这个区域现在先模拟创作工作流里的素材队列和任务状态，后面接真实后端时会平滑过渡到异步生成与失败恢复。",
+    queueBullets: [
+      "最多 9 张参考图片，用来锁定角色、场景和关键帧。",
+      "最多 3 段参考视频，总时长 15 秒，用来定义动作、运镜和镜头节奏。",
+      "最多 3 段参考音频，总时长 15 秒，用来提示节拍、氛围和声音情绪。",
+      "至少提供图片或视频其中一种，纯音频不会单独触发生成。",
+    ],
+    previewTitle: "预览样片",
+    previewSubtitle: "让结果成为视觉中心，让界面退后一步。",
     stats: [
       { label: "输入模态", value: "图 / 视 / 音 / 文" },
       { label: "控制维度", value: "参考 + Prompt + 队列" },
@@ -125,9 +148,19 @@ const COPY: Record<string, WorkspaceCopy> = {
       audio: "音频参考",
     },
     laneHint: {
-      image: "首帧、角色、场景、尾帧",
+      image: "角色设定、首帧、场景、尾帧",
       video: "动作、运镜、节奏、连续性",
-      audio: "节拍、氛围、声音线索",
+      audio: "节拍、氛围、情绪提示",
+    },
+    laneAction: {
+      image: "上传图片",
+      video: "上传视频",
+      audio: "上传音频",
+    },
+    laneEmptyMeta: {
+      image: "最多 9 张",
+      video: "最多 3 段 / 合计 15 秒",
+      audio: "最多 3 段 / 合计 15 秒",
     },
     estimatedCredits: "预计扣费",
     noAssets: "当前还没有素材进入这一队列",
@@ -139,13 +172,19 @@ const COPY: Record<string, WorkspaceCopy> = {
       { label: "Text to Video", mode: "text_to_video" },
     ],
     subtitle:
-      "Bring images, clips, audio, and text into one production-grade surface. The interface should step back so the media can lead.",
+      "Bring images, clips, audio, and text into one production-grade surface so identity, motion, and timing can be controlled more intentionally.",
     uploadTitle: "Drop your multi-modal assets",
     uploadHint:
-      "Each modality has its own queue, progress state, and order controls. That keeps the UX ready for chunked upload and real staging later.",
+      "Separate stills, motion clips, and audio cues so identity, camera behavior, and timing can be directed more clearly.",
     uploadMeta: "Images 9 · Videos 3 · Audios 3",
+    modelLabel: "AI Model",
+    modelName: "Seedance 2.0 Multi-Reference",
+    modelDescription: "Built to interpret images, clips, audio, and text together, with stronger control over identity, motion transfer, and shot extension.",
+    modelBadges: ["Reference-first", "Motion-aware", "Extendable"],
     containsRealPeople: "Contains real people",
+    containsRealPeopleHint: "Use this when human identity, skin detail, and safer portrait behavior need extra stability.",
     returnLastFrame: "Add target last frame",
+    returnLastFrameHint: "Give the model a visual destination for endings, transitions, and more stable clip extension.",
     promptLabel: "Prompt",
     promptPlaceholder:
       "Example: use image-01 as the opening character frame, borrow the push-in and pacing from video-02, move from medium shot to close-up in 5 seconds, and keep the cold neon night tone with an electronic beat ramp.",
@@ -157,7 +196,13 @@ const COPY: Record<string, WorkspaceCopy> = {
     generate: "Generate",
     queueTitle: "Render Queue",
     queueEta: "Workspace state is live",
-    queueHint: "This panel now reflects real front-end queue state. Once backend orchestration lands, it can naturally expand into provider jobs, polling, and retry handling.",
+    queueHint: "This panel currently mirrors the front-end queue and task state. Once backend orchestration lands, it can transition naturally into async jobs, polling, and recovery.",
+    queueBullets: [
+      "Up to 9 reference images for identity, scene layout, and keyframe control.",
+      "Up to 3 reference videos, 15 seconds total, for motion, camera movement, and pacing.",
+      "Up to 3 reference audio clips, 15 seconds total, for beat, atmosphere, and timing cues.",
+      "At least one image or video is required. Audio alone is not enough to start a generation.",
+    ],
     previewTitle: "Output Preview",
     previewSubtitle: "Let the output become the focus and the interface recede.",
     stats: [
@@ -189,9 +234,19 @@ const COPY: Record<string, WorkspaceCopy> = {
       audio: "Audio References",
     },
     laneHint: {
-      image: "opening frame, character, scene, end frame",
-      video: "motion, camera, timing, continuity",
-      audio: "beat, atmosphere, sound cues",
+      image: "identity, opening frame, scene, end frame",
+      video: "motion, camera, pacing, continuity",
+      audio: "beat, atmosphere, cue timing",
+    },
+    laneAction: {
+      image: "Upload images",
+      video: "Upload videos",
+      audio: "Upload audio",
+    },
+    laneEmptyMeta: {
+      image: "Up to 9 files",
+      video: "Up to 3 clips / 15s total",
+      audio: "Up to 3 clips / 15s total",
     },
     estimatedCredits: "Estimated Cost",
     noAssets: "No assets in this queue yet",
@@ -308,7 +363,7 @@ export function MultiModalWorkspace({ locale }: Props) {
   }
 
   return (
-    <div id="workspace" className="mx-auto max-w-6xl rounded-[22px] border border-white/8 bg-[#1a1b20] p-4 shadow-[0_28px_80px_-42px_rgba(0,0,0,0.78)] md:p-5">
+    <div id="workspace" className="mx-auto max-w-6xl rounded-[24px] border border-white/10 bg-[#181a1f]/96 p-4 shadow-[0_28px_70px_-36px_rgba(0,0,0,0.72)] backdrop-blur-xl md:p-5">
       <div className="grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
       <motion.div
         initial={{ opacity: 0, y: 18 }}
@@ -335,20 +390,33 @@ export function MultiModalWorkspace({ locale }: Props) {
             ))}
           </div>
 
-          <div className="space-y-3 rounded-[16px] border border-white/8 bg-[#1d1f26] p-3">
-            <div className="text-[11px] uppercase tracking-[0.18em] text-white/38">
-              {locale === "zh" ? "AI Model" : "AI Model"}
-            </div>
-            <div className="flex items-center justify-between rounded-xl border border-white/8 bg-[#2a2b32] px-3 py-3">
-              <div className="flex items-center gap-3">
-                <span className="h-3 w-3 rounded-full bg-[linear-gradient(135deg,#5ad7ff,#7d57ff)]" />
-                <div>
-                  <div className="text-sm font-medium text-white">Seedance 2.0</div>
-                  <div className="text-xs text-white/42">{locale === "zh" ? "多模态输入 · 参考能力强化" : "Multi-modal input · reference enhanced"}</div>
+          <div className="space-y-3 rounded-[18px] border border-white/8 bg-[#1c1f26] p-3.5">
+            <div className="text-[11px] uppercase tracking-[0.18em] text-white/38">{copy.modelLabel}</div>
+            <button
+              type="button"
+              className="flex w-full items-center justify-between rounded-[14px] border border-white/10 bg-[linear-gradient(180deg,#2a2d36_0%,#242730_100%)] px-3.5 py-3.5 text-left transition-colors hover:border-white/16"
+            >
+              <div className="flex min-w-0 items-start gap-3">
+                <span className="mt-1 h-3 w-3 shrink-0 rounded-full bg-[linear-gradient(135deg,#5ad7ff,#7d57ff)] shadow-[0_0_18px_rgba(93,103,255,0.55)]" />
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <div className="truncate text-sm font-medium text-white">{copy.modelName}</div>
+                    <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-emerald-200">
+                      {locale === "zh" ? "已启用" : "Active"}
+                    </span>
+                  </div>
+                  <div className="mt-1 text-xs leading-5 text-white/46">{copy.modelDescription}</div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {copy.modelBadges.map((badge) => (
+                      <span key={badge} className="rounded-full border border-white/8 bg-white/[0.05] px-2.5 py-1 text-[11px] text-white/68">
+                        {badge}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div className="text-xs text-white/42">{copy.uploadMeta}</div>
-            </div>
+              <ChevronDown className="h-4 w-4 shrink-0 text-white/38" />
+            </button>
           </div>
 
           {notice ? (
@@ -361,28 +429,41 @@ export function MultiModalWorkspace({ locale }: Props) {
             </div>
           ) : null}
 
+          <div className="rounded-[16px] border border-white/8 bg-[#1d1f26] p-4">
+            <div className="text-sm font-medium text-white">{copy.uploadTitle}</div>
+            <p className="mt-2 text-sm leading-7 text-white/56">{copy.uploadHint}</p>
+          </div>
+
           <div className="space-y-3">
             <UploadLane
               kind="image"
               title={copy.laneTitle.image}
               hint={copy.laneHint.image}
+              actionLabel={copy.laneAction.image}
+              limitLabel={copy.laneEmptyMeta.image}
               assets={assets.image}
               onAddFiles={actions.addFiles}
               onMove={actions.moveAsset}
               onRemove={actions.removeAsset}
               emptyLabel={copy.noAssets}
             />
-            <UploadLane kind="video" title={copy.laneTitle.video} hint={copy.laneHint.video} assets={assets.video} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
-            <UploadLane kind="audio" title={copy.laneTitle.audio} hint={copy.laneHint.audio} assets={assets.audio} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
+            <UploadLane kind="video" title={copy.laneTitle.video} hint={copy.laneHint.video} actionLabel={copy.laneAction.video} limitLabel={copy.laneEmptyMeta.video} assets={assets.video} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
+            <UploadLane kind="audio" title={copy.laneTitle.audio} hint={copy.laneHint.audio} actionLabel={copy.laneAction.audio} limitLabel={copy.laneEmptyMeta.audio} assets={assets.audio} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
           </div>
 
-          <div className="space-y-2">
-            <TogglePill active={containsRealPeople} onClick={actions.toggleContainsRealPeople}>
-              {copy.containsRealPeople}
-            </TogglePill>
-            <TogglePill active={returnLastFrame} onClick={actions.toggleReturnLastFrame}>
-              {copy.returnLastFrame}
-            </TogglePill>
+          <div className="space-y-2.5">
+            <TogglePill
+              active={containsRealPeople}
+              onClick={actions.toggleContainsRealPeople}
+              label={copy.containsRealPeople}
+              hint={copy.containsRealPeopleHint}
+            />
+            <TogglePill
+              active={returnLastFrame}
+              onClick={actions.toggleReturnLastFrame}
+              label={copy.returnLastFrame}
+              hint={copy.returnLastFrameHint}
+            />
           </div>
 
           <div className="rounded-[16px] border border-white/8 bg-[#1d1f26] p-4">
@@ -426,7 +507,7 @@ export function MultiModalWorkspace({ locale }: Props) {
               </div>
               {activeGenerationId ? (
                 <div className="rounded-lg border border-[#2563ff]/20 bg-[#2563ff]/10 px-4 py-2 text-sm text-white">
-                  Job {activeGenerationStatus ?? "pending"} · {activeGenerationId.slice(0, 8)}
+                  {locale === "zh" ? "任务" : "Job"} {activeGenerationStatus ?? "pending"} · {activeGenerationId.slice(0, 8)}
                 </div>
               ) : null}
             </div>
@@ -436,7 +517,7 @@ export function MultiModalWorkspace({ locale }: Props) {
               className="h-12 w-full rounded-[12px] bg-[linear-gradient(90deg,#8b8b95,#6d28d9)] text-sm font-medium text-white hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
             >
               <WandSparkles className="mr-2 h-4 w-4" />
-              {isSubmitting ? (locale === "zh" ? "Submitting" : "Submitting") : copy.generate}
+              {isSubmitting ? (locale === "zh" ? "提交中" : "Submitting") : copy.generate}
             </Button>
           </div>
         </div>
@@ -509,21 +590,27 @@ export function MultiModalWorkspace({ locale }: Props) {
           </div>
           <div className="mt-4 rounded-[14px] border border-white/8 bg-[#1d1f26] p-4 text-sm leading-7 text-white/74">
             <p>{copy.queueHint}</p>
-            <ul className="mt-3 list-disc space-y-1 pl-5">
-              <li>{locale === "zh" ? "最多 9 张参考图片" : "Up to 9 reference images"}</li>
-              <li>{locale === "zh" ? "最多 3 段参考视频，总时长 15 秒" : "Up to 3 reference videos, 15 seconds total"}</li>
-              <li>{locale === "zh" ? "最多 3 段参考音频，总时长 15 秒" : "Up to 3 reference audios, 15 seconds total"}</li>
-              <li>{locale === "zh" ? "至少提供图片或视频之一" : "At least one image or video reference is required"}</li>
+            <ul className="mt-3 space-y-2">
+              {copy.queueBullets.map((item) => (
+                <li key={item} className="flex gap-3">
+                  <Check className="mt-1 h-4 w-4 shrink-0 text-cyan-300" />
+                  <span>{item}</span>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="mt-4 space-y-3">
-            <QueueItem title="Image lane" detail={`${assets.image.length} queued references`} progress={assets.image.length > 0 ? "done" : "idle"} />
-            <QueueItem title="Video lane" detail={`${assets.video.length} queued motion clips`} progress={assets.video.length > 0 ? "active" : "idle"} />
-            <QueueItem title="Audio lane" detail={`${assets.audio.length} queued audio cues`} progress={assets.audio.length > 0 ? "done" : "idle"} />
+            <QueueItem title={copy.laneTitle.image} detail={`${assets.image.length} ${locale === "zh" ? "个参考素材在队列中" : "queued references"}`} progress={assets.image.length > 0 ? "done" : "idle"} />
+            <QueueItem title={copy.laneTitle.video} detail={`${assets.video.length} ${locale === "zh" ? "个动作片段在队列中" : "queued motion clips"}`} progress={assets.video.length > 0 ? "active" : "idle"} />
+            <QueueItem title={copy.laneTitle.audio} detail={`${assets.audio.length} ${locale === "zh" ? "个音频线索在队列中" : "queued audio cues"}`} progress={assets.audio.length > 0 ? "done" : "idle"} />
             {activeGenerationId ? (
               <QueueItem
-                title="Provider job"
-                detail={`Async job ${activeGenerationId.slice(0, 8)} is ${activeGenerationStatus ?? "pending"}`}
+                title={locale === "zh" ? "异步任务" : "Provider job"}
+                detail={
+                  locale === "zh"
+                    ? `任务 ${activeGenerationId.slice(0, 8)} 当前状态为 ${activeGenerationStatus ?? "pending"}`
+                    : `Async job ${activeGenerationId.slice(0, 8)} is ${activeGenerationStatus ?? "pending"}`
+                }
                 progress="active"
               />
             ) : null}
@@ -559,6 +646,8 @@ function UploadLane({
   kind,
   title,
   hint,
+  actionLabel,
+  limitLabel,
   assets,
   emptyLabel,
   onAddFiles,
@@ -568,6 +657,8 @@ function UploadLane({
   kind: WorkspaceAssetKind;
   title: string;
   hint: string;
+  actionLabel: string;
+  limitLabel: string;
   assets: WorkspaceAsset[];
   emptyLabel: string;
   onAddFiles: (kind: WorkspaceAssetKind, files: File[]) => void;
@@ -594,21 +685,25 @@ function UploadLane({
           <div className="text-sm font-medium text-white">{title}</div>
           <div className="mt-1 text-xs text-white/44">{hint}</div>
         </div>
-        <div className="rounded-full border border-white/8 bg-white/[0.03] px-2.5 py-1 text-[11px] uppercase tracking-[0.14em] text-white/42">
-          {assets.length}
+        <div className="space-y-1 text-right">
+          <div className="rounded-full border border-white/8 bg-white/[0.03] px-2.5 py-1 text-[11px] uppercase tracking-[0.14em] text-white/42">
+            {assets.length}
+          </div>
+          <div className="text-[11px] text-white/30">{limitLabel}</div>
         </div>
       </div>
 
       <div
         {...getRootProps()}
         className={cn(
-          "mt-3 rounded-[12px] border border-dashed px-4 py-5 text-center transition-colors",
+          "mt-3 rounded-[14px] border border-dashed px-4 py-5 text-center transition-colors",
           isDragActive ? "border-[#2563ff]/50 bg-[#2563ff]/8" : "border-white/12 bg-[#121318]"
         )}
-      >
+        >
         <input {...getInputProps()} />
-        <UploadCloud className="mx-auto h-5 w-5 text-[#5b8cff]" />
-        <div className="mt-3 text-sm text-white/82">Click to upload {kind}s</div>
+        <UploadCloud className="mx-auto h-5 w-5 text-[#76a3ff]" />
+        <div className="mt-3 text-sm font-medium text-white/86">{actionLabel}</div>
+        <div className="mt-1 text-xs text-white/36">{limitLabel}</div>
       </div>
 
       <div className="mt-4 space-y-3">
@@ -728,24 +823,33 @@ function Label({ children }: { children: ReactNode }) {
 function TogglePill({
   active,
   onClick,
-  children,
+  label,
+  hint,
 }: {
   active: boolean;
   onClick: () => void;
-  children: ReactNode;
+  label: ReactNode;
+  hint: ReactNode;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        "flex w-full items-center justify-between rounded-[12px] border px-4 py-3 text-sm transition-all",
-        active ? "border-white/18 bg-white/[0.08] text-white" : "border-white/10 bg-[#1d1f26] text-white/82"
+        "flex w-full items-center justify-between rounded-[14px] border px-4 py-3.5 text-sm transition-all",
+        active
+          ? "border-cyan-300/28 bg-[linear-gradient(180deg,rgba(93,211,255,0.12),rgba(255,255,255,0.04))] text-white"
+          : "border-white/10 bg-[#1d1f26] text-white/82 hover:border-white/16"
       )}
     >
-      <span>{children}</span>
-      <span className={cn("flex h-5 w-9 items-center rounded-full p-0.5 transition-colors", active ? "bg-white/18" : "bg-white/8")}>
-        <span className={cn("h-4 w-4 rounded-full transition-transform", active ? "translate-x-4 bg-white" : "translate-x-0 bg-white/55")} />
+      <span className="min-w-0 pr-4 text-left">
+        <span className="block text-sm font-medium text-white">{label}</span>
+        <span className="mt-1 block text-xs leading-5 text-white/50">{hint}</span>
+      </span>
+      <span className={cn("flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 transition-colors", active ? "bg-cyan-300/30" : "bg-white/8")}>
+        <span className={cn("flex h-5 w-5 items-center justify-center rounded-full transition-transform", active ? "translate-x-5 bg-white text-slate-950" : "translate-x-0 bg-white/65 text-transparent")}>
+          <Check className="h-3 w-3" />
+        </span>
       </span>
     </button>
   );
@@ -774,10 +878,10 @@ function OptionGroup({
             className={cn(
               title.toLowerCase().includes("aspect") || title.includes("画幅")
                 ? "flex h-14 w-14 flex-col items-center justify-center rounded-xl border text-[11px] transition-colors"
-                : "rounded-lg border px-3 py-1.5 text-sm transition-colors",
+                : "rounded-xl border px-3.5 py-2 text-sm transition-colors",
               value === option
-                ? "border-white bg-white text-slate-950"
-                : "border-white/10 bg-[#15171d] text-white/76 hover:bg-white/[0.05]"
+                ? "border-cyan-300/30 bg-white text-slate-950 shadow-[0_6px_20px_-10px_rgba(255,255,255,0.85)]"
+                : "border-white/10 bg-[#15171d] text-white/76 hover:border-white/16 hover:bg-white/[0.05]"
             )}
           >
             {option}
@@ -810,7 +914,7 @@ function DurationSlider({
         step={5}
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
-        className="mt-4 h-2 w-full accent-[#2563ff]"
+        className="mt-4 h-2 w-full accent-[#5da3ff]"
       />
     </div>
   );

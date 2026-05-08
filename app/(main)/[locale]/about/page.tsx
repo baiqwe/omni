@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Sparkles, Shield, Zap } from "lucide-react";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
+import { FAQSchema } from "@/components/breadcrumb-schema";
 import { buildLocaleAlternates } from "@/utils/seo/metadata";
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -45,9 +46,24 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
   const { locale } = params;
   const isZh = locale === "zh";
   const localePrefix = `/${locale}`;
+  const teamFaqs = [
+    {
+      question: isZh ? "Seedance 2 团队最在意什么？" : "What does the Seedance 2 team care about most?",
+      answer: isZh
+        ? "我们最在意的是可控性、可复用性和可解释性。比起单次 demo 的惊艳感，我们更看重团队能不能稳定复用输入素材、镜头逻辑和节奏判断。"
+        : "We care most about controllability, repeatability, and explainability. Instead of chasing one-off demo magic, we prioritize whether teams can reliably reuse references, camera logic, and pacing decisions.",
+    },
+    {
+      question: isZh ? "为什么要做这么多信任和说明页面？" : "Why invest in so many trust and explanation pages?",
+      answer: isZh
+        ? "因为多模态 AI 视频并不是纯娱乐玩具。只要涉及真人、品牌、客户素材、广告投放或商用内容，团队就会关心数据流、权利边界、支持方式和产品责任。"
+        : "Because multi-modal AI video is not just a toy. Once real people, brand assets, client material, ads, or commercial output enter the workflow, teams need clarity around data flow, rights, support, and product responsibility.",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
+      <FAQSchema items={teamFaqs} />
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container px-4 md:px-6 py-4">
           <Button asChild variant="ghost" size="sm" className="gap-2">
@@ -159,6 +175,65 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
                 </p>
               </CardContent>
             </Card>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">{isZh ? "我们如何做内容与方法说明" : "How we explain the product and its methods"}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+                <p>
+                  {isZh
+                    ? "我们尽量把首页、use-case 页面、公开视频页、价格页、帮助页和法务页连成一个完整的信息结构，而不是把所有事情都塞进一个“试试这个 AI 很酷”的首页里。"
+                    : "We try to connect the homepage, use-case pages, public video pages, pricing, help content, and legal pages into one coherent information architecture instead of compressing everything into a flashy homepage."}
+                </p>
+                <p>
+                  {isZh
+                    ? "这不仅是为了 SEO，更是为了让第一次接触 Seedance 2 的用户知道：这是谁做的、为什么这样设计、以及在什么场景下它值得被信任。"
+                    : "This is not just an SEO choice. It helps first-time visitors understand who built Seedance 2, why it is designed this way, and in which scenarios it deserves trust."}
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">{isZh ? "我们如何看待风险与边界" : "How we think about boundaries and risk"}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+                <p>
+                  {isZh
+                    ? "如果工作流涉及真人、品牌、客户资产或商业素材，我们认为产品有责任把上传、权限、支持和商用边界讲清楚，而不是把这些问题都留给用户自己承担。"
+                    : "If the workflow involves real people, brand assets, client materials, or commercial media, we believe the product should explain uploads, permissions, support, and usage boundaries instead of pushing all of that ambiguity onto users."}
+                </p>
+                <p>
+                  {isZh
+                    ? "因此 Seedance 2 的长期方向不只是“更会生成”，也包括更清晰的文档、更明确的政策和更稳的生产体验。"
+                    : "That is why the long-term direction is not only better generation quality, but also clearer documentation, more explicit policy language, and a steadier production experience."}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="rounded-3xl border border-border/70 bg-card/60 p-6 md:p-8">
+            <div className="text-sm font-medium text-primary">
+              {isZh ? "团队方法论" : "Team methodology"}
+            </div>
+            <h2 className="mt-3 text-2xl font-semibold tracking-tight">
+              {isZh ? "我们宁可把工作流讲清楚，也不想只靠一句宣传语赢得点击。" : "We would rather explain the workflow clearly than win the click with a slogan alone."}
+            </h2>
+            <div className="mt-4 space-y-4 text-sm leading-8 text-muted-foreground">
+              <p>
+                {isZh
+                  ? "如果一个 AI 视频产品只展示几段很酷的 demo，却没有说明输入边界、适用团队、版权风险、支付逻辑、公开页面和帮助入口，它在真实团队里通常很难长期被采用。"
+                  : "If an AI video product only shows impressive demo clips but fails to explain input boundaries, target teams, rights considerations, billing logic, public pages, and help pathways, it usually struggles to earn long-term adoption inside real teams."}
+              </p>
+              <p>
+                {isZh
+                  ? `这也是为什么 ${site.siteName} 会把首页、创作中心、价格、关于我们、隐私、条款、联系页和帮助中心一起建设。对搜索引擎来说，这提高了可理解性；对用户来说，这降低了试错成本。`
+                  : `That is why ${site.siteName} is built as a connected system of homepage, creation center, pricing, about, privacy, terms, contact, and help content. Search engines get more context, and users face less ambiguity.`}
+              </p>
+            </div>
           </div>
 
           <div className="text-center">

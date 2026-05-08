@@ -5,6 +5,7 @@ import { ArrowUpRight, Clapperboard, Disc3, PlayCircle, Sparkles, WandSparkles }
 import { buildLocaleAlternates } from "@/utils/seo/metadata";
 import { getPublicGenerationById } from "@/utils/public-generation";
 import { site } from "@/config/site";
+import { toSchemaDateTime } from "@/utils/seo/date";
 
 type Props = {
   params: Promise<{
@@ -113,7 +114,7 @@ export default async function PublicVideoPage({ params }: Props) {
     thumbnailUrl: thumbnailUrl ? [thumbnailUrl] : undefined,
     contentUrl: generation.output_video_url,
     embedUrl: new URL(`/${locale}/video/${generation.id}`, site.siteUrl).toString(),
-    uploadDate: generation.created_at,
+    uploadDate: toSchemaDateTime(generation.created_at),
     duration:
       generation.duration_seconds && generation.duration_seconds > 0
         ? `PT${generation.duration_seconds}S`
@@ -209,7 +210,7 @@ export default async function PublicVideoPage({ params }: Props) {
                 </div>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link
-                    href={`/${locale}#workspace`}
+                    href={`/${locale}/creative-center`}
                     className="inline-flex items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-950 transition-colors hover:bg-cyan-100"
                   >
                     <WandSparkles className="mr-2 h-4 w-4" />

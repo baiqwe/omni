@@ -18,8 +18,8 @@ export function Footer() {
   const isZh = currentLocale === "zh";
 
   const toolLinks = [
-    { label: isZh ? "创作工作台" : "Workspace", href: `${localePrefix}/#workspace` },
-    { label: isZh ? "灵感画廊" : "Showcase", href: `${localePrefix}/#showcase` },
+    { label: isZh ? "创作中心" : "Creation Center", href: `${localePrefix}/creative-center` },
+    { label: isZh ? "使用指南" : "Guides", href: `${localePrefix}/guides` },
     { label: isZh ? "价格方案" : "Pricing", href: `${localePrefix}/pricing` },
     { label: isZh ? "控制台" : "Dashboard", href: `${localePrefix}/dashboard` },
   ];
@@ -39,6 +39,7 @@ export function Footer() {
     { label: t('link_terms'), href: `${localePrefix}/terms` },
     { label: t('link_about'), href: `${localePrefix}/about` },
     { label: t('link_contact'), href: `${localePrefix}/contact` },
+    { label: isZh ? "帮助中心" : "Help Center", href: `${localePrefix}/guides` },
   ];
 
   if (isDashboard) {
