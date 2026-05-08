@@ -106,7 +106,7 @@ export default async function HomeStaticContent({ locale }: Props) {
           </div>
         </div>
         <div className="mt-12">
-          <InspirationGallery locale={locale} maxItems={6} />
+          <InspirationGallery locale={locale} maxItems={8} />
         </div>
       </section>
 

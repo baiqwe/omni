@@ -4,6 +4,7 @@ import { site } from "@/config/site";
 import { buildLocaleAlternates } from "@/utils/seo/metadata";
 import { Breadcrumbs } from "@/components/seo/breadcrumbs";
 import { MultiModalWorkspace } from "@/components/feature/multi-modal-workspace";
+import { WorkspaceQuerySync } from "@/components/feature/workspace-query-sync";
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }): Promise<Metadata> {
     const params = await props.params;
@@ -60,6 +61,7 @@ export default async function CreativeCenterPage(props: { params: Promise<{ loca
                 </div>
 
                 <div className="rounded-[28px] border border-white/10 bg-black/24 p-3 shadow-[0_26px_80px_-46px_rgba(0,0,0,0.82)] backdrop-blur-sm">
+                    <WorkspaceQuerySync />
                     <MultiModalWorkspace locale={locale} />
                 </div>
             </div>

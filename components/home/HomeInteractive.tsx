@@ -77,8 +77,8 @@ function HeroWithUploadSection({
     onShowStaticContent: (show: boolean) => void;
     user?: any;
 }) {
-    const pathname = usePathname();
     const router = useRouter();
+    const pathname = usePathname();
     const pathParts = pathname?.split('/') || [];
     const locale = (pathParts[1] === 'en' || pathParts[1] === 'zh') ? pathParts[1] : 'en';
     const isZh = locale === 'zh';
@@ -106,7 +106,7 @@ function HeroWithUploadSection({
         params.set('duration', duration);
 
         const query = params.toString();
-        router.push(query ? `/${locale}/creative-center?${query}` : `/${locale}/creative-center`);
+        router.push(query ? `/creative-center?${query}` : `/creative-center`);
     };
 
     return (

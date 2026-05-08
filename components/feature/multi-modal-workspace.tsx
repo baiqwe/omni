@@ -12,7 +12,6 @@ import {
   AudioLines,
   Check,
   CheckCircle2,
-  ChevronDown,
   Clapperboard,
   Film,
   ImagePlus,
@@ -25,6 +24,13 @@ import {
   WandSparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -257,6 +263,53 @@ const RESOLUTIONS = ["480p", "720p", "1080p"] as const;
 const DURATIONS = [5, 10, 15] as const;
 const RATIOS = ["auto", "16:9", "9:16", "1:1", "4:3", "3:4", "21:9"] as const;
 
+const MODEL_META: Record<string, Record<VideoGenerationMode, { name: string; description: string; badges: string[] }>> = {
+  zh: {
+    multi_modal_video: {
+      name: "Seedance 2.0 Multi-Reference",
+      description: "优先理解图像、视频、音频与文字之间的关系，适合做角色一致性、动作继承和镜头延展。",
+      badges: ["参考优先", "动作理解", "镜头延展"],
+    },
+    image_to_video: {
+      name: "Seedance 2.0 Image to Video",
+      description: "更适合从首帧、产品图和角色设定图出发，把静态画面延展成连续镜头。",
+      badges: ["首帧驱动", "角色一致性", "镜头生长"],
+    },
+    text_to_video: {
+      name: "Seedance 2.0 Text to Video",
+      description: "适合先用自然语言搭建场景、镜头和节奏，再逐步补足参考素材。",
+      badges: ["语义优先", "概念验证", "镜头构思"],
+    },
+    video_extension: {
+      name: "Seedance 2.0 Video Extension",
+      description: "适合延展已有镜头，保持动作、光线和空间关系，让镜头自然续上。",
+      badges: ["连续性", "接续镜头", "叙事延展"],
+    },
+  },
+  en: {
+    multi_modal_video: {
+      name: "Seedance 2.0 Multi-Reference",
+      description: "Built to interpret images, clips, audio, and text together, with stronger control over identity, motion transfer, and shot extension.",
+      badges: ["Reference-first", "Motion-aware", "Extendable"],
+    },
+    image_to_video: {
+      name: "Seedance 2.0 Image to Video",
+      description: "Best when a still, a product frame, or a hero character image needs to evolve into a continuous shot.",
+      badges: ["Frame-led", "Identity-safe", "Cinematic motion"],
+    },
+    text_to_video: {
+      name: "Seedance 2.0 Text to Video",
+      description: "Ideal for semantic direction first, then deeper control through references, pacing, and aspect ratio.",
+      badges: ["Prompt-first", "Concept testing", "Shot language"],
+    },
+    video_extension: {
+      name: "Seedance 2.0 Video Extension",
+      description: "Extend an existing shot while preserving movement, lighting, and scene continuity.",
+      badges: ["Continuity", "Shot extension", "Scene-safe"],
+    },
+  },
+};
+
 const PREVIEW_REELS: Record<VideoGenerationMode, { src: string; label: string; headlineZh: string; headlineEn: string; bodyZh: string; bodyEn: string }> = {
   multi_modal_video: {
     src: "/videos/gallery/reference-led.mp4",
@@ -294,6 +347,7 @@ const PREVIEW_REELS: Record<VideoGenerationMode, { src: string; label: string; h
 
 export function MultiModalWorkspace({ locale }: Props) {
   const copy = COPY[locale] ?? COPY.en;
+  const modelMeta = MODEL_META[locale] ?? MODEL_META.en;
   const {
     mode,
     prompt,
@@ -315,6 +369,7 @@ export function MultiModalWorkspace({ locale }: Props) {
 
   const promptLength = useMemo(() => prompt.length, [prompt]);
   const activePreview = PREVIEW_REELS[mode];
+  const activeModel = modelMeta[mode];
 
   async function handleGenerate() {
     if (!user) {
@@ -392,22 +447,37 @@ export function MultiModalWorkspace({ locale }: Props) {
 
           <div className="space-y-3 rounded-[18px] border border-white/8 bg-[#1c1f26] p-3.5">
             <div className="text-[11px] uppercase tracking-[0.18em] text-white/38">{copy.modelLabel}</div>
-            <button
-              type="button"
-              className="flex w-full items-center justify-between rounded-[14px] border border-white/10 bg-[linear-gradient(180deg,#2a2d36_0%,#242730_100%)] px-3.5 py-3.5 text-left transition-colors hover:border-white/16"
-            >
-              <div className="flex min-w-0 items-start gap-3">
-                <span className="mt-1 h-3 w-3 shrink-0 rounded-full bg-[linear-gradient(135deg,#5ad7ff,#7d57ff)] shadow-[0_0_18px_rgba(93,103,255,0.55)]" />
-                <div className="min-w-0">
+            <div className="rounded-[14px] border border-white/10 bg-[linear-gradient(180deg,#2a2d36_0%,#242730_100%)] p-3.5">
+              <div className="flex items-start gap-3">
+                <span className="mt-3 h-3 w-3 shrink-0 rounded-full bg-[linear-gradient(135deg,#5ad7ff,#7d57ff)] shadow-[0_0_18px_rgba(93,103,255,0.55)]" />
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <div className="truncate text-sm font-medium text-white">{copy.modelName}</div>
+                    <div className="truncate text-sm font-medium text-white">{activeModel.name}</div>
                     <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-emerald-200">
                       {locale === "zh" ? "已启用" : "Active"}
                     </span>
                   </div>
-                  <div className="mt-1 text-xs leading-5 text-white/46">{copy.modelDescription}</div>
+                  <div className="mt-3">
+                    <Select value={mode} onValueChange={(value) => actions.setMode(value as VideoGenerationMode)}>
+                      <SelectTrigger className="h-11 rounded-[12px] border-white/10 bg-[#171920] text-left text-sm text-white focus:ring-[#2563ff]/35 focus:ring-offset-0">
+                        <SelectValue placeholder={locale === "zh" ? "选择模型模式" : "Choose a model mode"} />
+                      </SelectTrigger>
+                      <SelectContent className="border-white/10 bg-[#171920] text-white">
+                        {copy.tabs.map((tab) => (
+                          <SelectItem
+                            key={tab.mode}
+                            value={tab.mode}
+                            className="rounded-[10px] py-2.5 pl-8 pr-3 text-sm text-white focus:bg-white/[0.08] focus:text-white"
+                          >
+                            {tab.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="mt-3 text-xs leading-5 text-white/46">{activeModel.description}</div>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {copy.modelBadges.map((badge) => (
+                    {activeModel.badges.map((badge) => (
                       <span key={badge} className="rounded-full border border-white/8 bg-white/[0.05] px-2.5 py-1 text-[11px] text-white/68">
                         {badge}
                       </span>
@@ -415,8 +485,7 @@ export function MultiModalWorkspace({ locale }: Props) {
                   </div>
                 </div>
               </div>
-              <ChevronDown className="h-4 w-4 shrink-0 text-white/38" />
-            </button>
+            </div>
           </div>
 
           {notice ? (

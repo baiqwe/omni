@@ -36,6 +36,18 @@ type WorkspaceState = {
   activeGenerationStatus: string | null;
 };
 
+type WorkspaceHydrationPayload = Partial<{
+  mode: string;
+  prompt: string;
+  resolution: string;
+  duration: string;
+  durationSeconds: string;
+  aspectRatio: string;
+  ratio: string;
+  containsRealPeople: string;
+  returnLastFrame: string;
+}>;
+
 const MAX_ASSETS: Record<WorkspaceAssetKind, number> = {
   image: 9,
   video: 3,
@@ -80,6 +92,29 @@ function subscribe(listener: () => void) {
 
 function snapshot() {
   return state;
+}
+
+function isMode(value: string): value is VideoGenerationMode {
+  return value === "multi_modal_video" || value === "image_to_video" || value === "text_to_video" || value === "video_extension";
+}
+
+function isResolution(value: string): value is WorkspaceState["resolution"] {
+  return value === "480p" || value === "720p" || value === "1080p";
+}
+
+function isDuration(value: number): value is WorkspaceState["durationSeconds"] {
+  return value === 5 || value === 10 || value === 15;
+}
+
+function isAspectRatio(value: string): value is WorkspaceState["aspectRatio"] {
+  return value === "16:9" || value === "9:16" || value === "1:1" || value === "4:3" || value === "3:4" || value === "21:9" || value === "auto";
+}
+
+function parseBoolean(value: string | undefined) {
+  if (value === undefined) return undefined;
+  if (value === "true" || value === "1") return true;
+  if (value === "false" || value === "0") return false;
+  return undefined;
 }
 
 function formatBytes(bytes: number) {
@@ -217,6 +252,54 @@ function createAsset(file: File, kind: WorkspaceAssetKind): WorkspaceAsset {
 }
 
 export const workspaceActions = {
+  hydrateFromQuery(payload: WorkspaceHydrationPayload) {
+    setState((current) => {
+      const nextState = { ...current };
+      const nextMode =
+        payload.mode === "seedance-2"
+          ? "multi_modal_video"
+          : payload.mode === "image-to-video"
+            ? "image_to_video"
+            : payload.mode === "text-to-video"
+              ? "text_to_video"
+              : payload.mode;
+      const nextRatio = payload.ratio ?? payload.aspectRatio;
+      const nextDurationValue = payload.durationSeconds ?? payload.duration;
+      const parsedDuration = nextDurationValue ? Number.parseInt(nextDurationValue.replace(/s$/i, ""), 10) : NaN;
+
+      if (nextMode && isMode(nextMode) && nextState.mode !== nextMode) {
+        nextState.mode = nextMode;
+      }
+
+      if (typeof payload.prompt === "string" && payload.prompt.trim()) {
+        nextState.prompt = payload.prompt.slice(0, 5000);
+      }
+
+      if (payload.resolution && isResolution(payload.resolution)) {
+        nextState.resolution = payload.resolution;
+      }
+
+      if (Number.isFinite(parsedDuration) && isDuration(parsedDuration)) {
+        nextState.durationSeconds = parsedDuration;
+      }
+
+      if (nextRatio && isAspectRatio(nextRatio)) {
+        nextState.aspectRatio = nextRatio;
+      }
+
+      const realPeople = parseBoolean(payload.containsRealPeople);
+      if (typeof realPeople === "boolean") {
+        nextState.containsRealPeople = realPeople;
+      }
+
+      const lastFrame = parseBoolean(payload.returnLastFrame);
+      if (typeof lastFrame === "boolean") {
+        nextState.returnLastFrame = lastFrame;
+      }
+
+      return nextState;
+    });
+  },
   setMode(mode: VideoGenerationMode) {
     setState((current) => ({ ...current, mode }));
   },

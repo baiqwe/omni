@@ -7,6 +7,14 @@ import { hasSupabaseEnv } from './utils/supabase/env'
 const intlMiddleware = createIntlMiddleware(routing)
 
 export async function middleware(request: NextRequest) {
+  const duplicateLocaleMatch = request.nextUrl.pathname.match(/^\/(en|zh)(?:\/(en|zh))+?(?=\/|$)/)
+  if (duplicateLocaleMatch) {
+    const normalizedPathname = request.nextUrl.pathname.replace(/^\/(en|zh)(?:\/(?:en|zh))+/, `/${duplicateLocaleMatch[1]}`)
+    const normalizedUrl = request.nextUrl.clone()
+    normalizedUrl.pathname = normalizedPathname || `/${duplicateLocaleMatch[1]}`
+    return NextResponse.redirect(normalizedUrl, 308)
+  }
+
   // 1. 先运行 intl 中间件，获取基础 Response (包含语言 Cookie 和重定向逻辑)
   let response = intlMiddleware(request)
 
