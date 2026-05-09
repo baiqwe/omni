@@ -19,10 +19,46 @@ export type GalleryItem = {
   promptLabel: string;
 };
 
-const SHARED_AFTER = "/images/gallery/hero-after.jpg";
-const SHARED_BEFORE = "/images/gallery/hero-before.jpg";
+const SHARED_AFTER = "/images/gallery/hero-after.png";
+const SHARED_BEFORE = "/images/gallery/hero-before.png";
 
 export const galleryItems: GalleryItem[] = [
+  {
+    id: "seedance-hero-4",
+    useCase: "image-to-video",
+    slug: "image-to-video",
+    category: "Performance",
+    title: "Balance beam motion study",
+    titleZh: "平衡木动作镜头",
+    description: "A compact performance clip that works well as a keyframe-to-motion example for Seedance 2 image-to-video workflows.",
+    descriptionZh: "一条更适合图生视频场景的动作样片：先锁住角色起始画面，再把运动感逐步推出来。",
+    alt: "Seedance 2 video sample showing a gymnast walking across a balance beam.",
+    altZh: "用于展示 Seedance 2 图生视频工作流的平衡木动作视频样例。",
+    afterImage: "/images/gallery/custom/seedance-hero-4.png",
+    beforeThumb: SHARED_BEFORE,
+    videoUrl: "/videos/gallery/seedance-hero-4.mp4",
+    durationLabel: "05s",
+    aspectRatioLabel: "16:9",
+    promptLabel: "Image seed",
+  },
+  {
+    id: "seedance-hero-6",
+    useCase: "ai-short-drama-maker",
+    slug: "ai-short-drama-maker",
+    category: "Narrative",
+    title: "Street rush sequence",
+    titleZh: "街头追逐片段",
+    description: "A fast narrative moment that fits short-drama, storyboard, and text-led video ideation with stronger urgency.",
+    descriptionZh: "一条更有叙事冲突感的街头奔跑样片，适合短剧、分镜预演和文本驱动的镜头构思。",
+    alt: "Seedance 2 narrative video sample showing a man running through a crowded street.",
+    altZh: "用于展示 Seedance 2 短剧与叙事镜头生成的街头奔跑视频样例。",
+    afterImage: "/images/gallery/custom/seedance-hero-6.png",
+    beforeThumb: SHARED_AFTER,
+    videoUrl: "/videos/gallery/seedance-hero-6.mp4",
+    durationLabel: "05s",
+    aspectRatioLabel: "16:9",
+    promptLabel: "Narrative clip",
+  },
   {
     id: "seedance-space-travel",
     useCase: "reference-video-generator",
