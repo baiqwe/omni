@@ -27,6 +27,7 @@ export function Footer() {
   const styleLinks = [
     { label: isZh ? "图像转视频" : "Image to Video", href: `${localePrefix}/image-to-video`, id: "image-to-video" },
     { label: isZh ? "参考视频生成" : "Reference Video", href: `${localePrefix}/reference-video-generator`, id: "reference-video-generator" },
+    { label: isZh ? "动作迁移" : "Motion Transfer", href: `${localePrefix}/dance-motion-transfer`, id: "dance-motion-transfer" },
     { label: isZh ? "视频延展" : "Video Extension", href: `${localePrefix}/video-extension`, id: "video-extension" },
   ];
   const communityLinks = [
@@ -72,6 +73,11 @@ export function Footer() {
                 ? '上传素材会在你的工作流里保持独立：角色、动作、节奏和结果各自可追踪。'
                 : 'Uploads stay separated by role so identity, motion, timing, and outputs remain easier to track.'}
             </p>
+            <p className="mt-4 max-w-sm text-sm leading-7 text-muted-foreground">
+              {currentLocale === 'zh'
+                ? '首页负责理解 Seedance 2，创作中心负责开始生成，Guides 和场景页负责把真实工作流讲清楚。'
+                : 'The homepage explains Seedance 2, the creation center starts generation, and guides plus workflow pages explain how the production process actually works.'}
+            </p>
           </div>
 
           {/* Tools - 工具内链 */}
@@ -95,7 +101,7 @@ export function Footer() {
           {/* Styles */}
           <div className="flex flex-col gap-3">
             <h3 className="text-sm font-semibold">
-              {currentLocale === 'zh' ? '热门风格' : 'Styles'}
+              {currentLocale === 'zh' ? '核心工作流' : 'Core Workflows'}
             </h3>
             <nav className="flex flex-col gap-2">
               {styleLinks.map((link) => (

@@ -242,9 +242,14 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
                 ? `商务、版权或支持问题可联系：${site.supportEmail}`
                 : `For support, rights, or business inquiries, contact: ${site.supportEmail}`}
             </p>
-            <Button asChild size="lg">
-              <Link href={`${localePrefix}`}>{isZh ? "打开工作台" : "Open Workspace"}</Link>
-            </Button>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button asChild size="lg">
+                <Link href={`${localePrefix}`}>{isZh ? "返回首页" : "Back to Homepage"}</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link href={`${localePrefix}/creative-center`}>{isZh ? "进入创作中心" : "Open Creation Center"}</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </div>

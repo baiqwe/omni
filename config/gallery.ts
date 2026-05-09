@@ -171,8 +171,9 @@ export const galleryItems: GalleryItem[] = [
 
 export function getLocalizedGalleryItems(locale: string, useCase?: LandingPageSlug) {
   const filtered = useCase ? galleryItems.filter((item) => item.useCase === useCase) : galleryItems;
+  const resolved = filtered.length > 0 ? filtered : galleryItems;
 
-  return filtered.map((item) => ({
+  return resolved.map((item) => ({
     ...item,
     categoryLabel: locale === "zh" ? item.titleZh : item.category,
     titleLabel: locale === "zh" ? item.titleZh : item.title,

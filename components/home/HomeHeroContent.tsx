@@ -25,6 +25,10 @@ function getQuickLinks(locale: string) {
       href: `${localePrefix}/pricing`,
       label: locale === "zh" ? "价格方案" : "Pricing",
     },
+    {
+      href: `${localePrefix}/guides`,
+      label: locale === "zh" ? "使用指南" : "Guides",
+    },
   ];
 }
 
@@ -88,18 +92,18 @@ export async function HomeHeroSupport({ locale }: Props) {
       <div className="mx-auto grid max-w-4xl gap-3 text-left text-sm text-white/68 md:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-black/22 px-4 py-3 backdrop-blur-md">
           {locale === "zh"
-            ? "先用一句话把镜头想清楚，再决定是否补图片、视频或音频参考。"
-            : "Start with one clear scene description, then decide whether images, clips, or audio references are actually needed."}
+            ? "先用一句话把镜头想清楚，再决定是否补图片、视频或音频参考，这样更接近真实团队的创作顺序。"
+            : "Start with one clear scene description, then decide whether images, clips, or audio references are actually needed. That mirrors how real teams usually begin."}
         </div>
         <div className="rounded-2xl border border-white/10 bg-black/22 px-4 py-3 backdrop-blur-md">
           {locale === "zh"
-            ? "首页负责快速进入，创作中心负责角色、动作、节奏和多模态参考的细化控制。"
-            : "Use the homepage to get moving quickly, then switch to the creation center when identity, motion, pacing, and references need finer control."}
+            ? "首页负责快速进入，创作中心负责角色、动作、节奏和多模态参考的细化控制，Guides 负责解释为什么要这样做。"
+            : "Use the homepage to get moving quickly, switch to the creation center when identity, motion, pacing, and references need finer control, then use Guides for the deeper explanations."}
         </div>
         <div className="rounded-2xl border border-white/10 bg-black/22 px-4 py-3 backdrop-blur-md">
           {locale === "zh"
-            ? "适合广告创意、角色一致性、影视预演、产品展示和短视频批量生产。"
-            : "Designed for ad creative, character consistency, previs, product reveals, and repeatable short-form production."}
+            ? "适合广告创意、角色一致性、影视预演、产品展示和短视频批量生产，也最适合那些本来就在用参考素材沟通创意的团队。"
+            : "Designed for ad creative, character consistency, previs, product reveals, and repeatable short-form production, especially for teams that already communicate through references."}
         </div>
       </div>
     </div>

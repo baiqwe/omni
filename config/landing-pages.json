@@ -112,5 +112,81 @@
         "answer": "Yes. A target end frame is often the best way to force continuity and give the model a destination instead of a vague continuation."
       }
     ]
+  },
+  "ai-music-video-generator": {
+    "slug": "ai-music-video-generator",
+    "targetKeyword": "ai music video generator",
+    "title": "Seedance 2 AI Music Video Generator - Build Rhythm-Led Visual Sequences",
+    "description": "Use Seedance 2 to turn prompts, mood frames, motion references, and rhythm cues into music-video-style AI shots.",
+    "h1": "Seedance 2 AI Music Video Generator",
+    "subtitle": "Create rhythm-aware visual sequences by combining prompt direction, image references, motion clips, and soundtrack cues.",
+    "mode": "multi_modal_video",
+    "faqs": [
+      {
+        "question": "What matters most in an AI music video workflow?",
+        "answer": "Beat clarity, motion energy, subject stability, and camera pacing matter more than adding too many unrelated references."
+      },
+      {
+        "question": "Should I upload audio references?",
+        "answer": "Yes, if the rhythm and emotional timing are important. Audio cues are helpful when the visual motion needs to follow a beat structure."
+      }
+    ]
+  },
+  "ecommerce-product-video-ai": {
+    "slug": "ecommerce-product-video-ai",
+    "targetKeyword": "ecommerce product video ai",
+    "title": "Seedance 2 Ecommerce Product Video AI - Turn Product Frames into Sales Motion",
+    "description": "Create ecommerce-ready product video shots from still imagery, reveal references, and commercial prompts inside Seedance 2.",
+    "h1": "Seedance 2 Ecommerce Product Video AI",
+    "subtitle": "Turn product stills into launch loops, reveal shots, and ecommerce-ready campaign edits with clearer motion control.",
+    "mode": "multi_modal_video",
+    "faqs": [
+      {
+        "question": "What is the best starting asset for ecommerce video?",
+        "answer": "A clean hero product image with clear material detail is usually the strongest starting point."
+      },
+      {
+        "question": "Why add camera references for product work?",
+        "answer": "Because reveal shots, sweeps, and orbit moves are easier to guide when the camera language already has a visual reference."
+      }
+    ]
+  },
+  "ai-short-drama-maker": {
+    "slug": "ai-short-drama-maker",
+    "targetKeyword": "ai short drama maker",
+    "title": "Seedance 2 AI Short Drama Maker - Build Previs and Short Narrative Beats",
+    "description": "Use Seedance 2 to explore short-form drama scenes with storyboards, keyframes, motion references, and scene continuity prompts.",
+    "h1": "Seedance 2 AI Short Drama Maker",
+    "subtitle": "Plan short drama scenes, emotional beats, and camera continuity before full production by turning still ideas into motion.",
+    "mode": "image_to_video",
+    "faqs": [
+      {
+        "question": "Is this meant for final drama episodes?",
+        "answer": "Usually it is more useful for previs, beat testing, camera rhythm, and scene exploration than for fully finished narrative production."
+      },
+      {
+        "question": "What should a short-drama team prepare first?",
+        "answer": "A strong keyframe or storyboard still, a clear emotional objective for the shot, and prompt notes about pacing and continuity."
+      }
+    ]
+  },
+  "cinematic-product-reveal-generator": {
+    "slug": "cinematic-product-reveal-generator",
+    "targetKeyword": "cinematic product reveal generator",
+    "title": "Seedance 2 Cinematic Product Reveal Generator - Design Premium Launch Shots",
+    "description": "Use Seedance 2 to generate cinematic product reveal videos with richer motion design, light sweeps, and premium launch pacing.",
+    "h1": "Seedance 2 Cinematic Product Reveal Generator",
+    "subtitle": "Build premium product reveal shots with stronger camera intent, lighting accents, and launch-friendly pacing.",
+    "mode": "multi_modal_video",
+    "faqs": [
+      {
+        "question": "What makes a reveal shot feel premium?",
+        "answer": "Camera restraint, material legibility, highlight control, and a clear movement arc usually matter more than fast or complicated motion."
+      },
+      {
+        "question": "Can this start from one still product image?",
+        "answer": "Yes. A polished still can anchor the shot, and motion references can then define how the reveal unfolds."
+      }
+    ]
   }
 }

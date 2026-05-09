@@ -130,6 +130,18 @@ export default async function ContactPage(props: { params: Promise<{ locale: str
               <p className="text-sm leading-relaxed text-muted-foreground">{t("p3")}</p>
             </div>
           </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            <Link href={`${localePrefix}/guides`} className="rounded-2xl border border-border/70 bg-card/80 px-5 py-5 text-sm text-muted-foreground transition-colors hover:bg-card">
+              {locale === "zh" ? "先看使用指南，很多“报错”其实是素材准备或工作流问题。" : "Read the guides first—many apparent errors are really asset prep or workflow issues."}
+            </Link>
+            <Link href={`${localePrefix}/creative-center`} className="rounded-2xl border border-border/70 bg-card/80 px-5 py-5 text-sm text-muted-foreground transition-colors hover:bg-card">
+              {locale === "zh" ? "如果你已经知道要生成什么，直接去创作中心继续。" : "If you already know the task, jump back into the creation center."}
+            </Link>
+            <Link href={`${localePrefix}/pricing`} className="rounded-2xl border border-border/70 bg-card/80 px-5 py-5 text-sm text-muted-foreground transition-colors hover:bg-card">
+              {locale === "zh" ? "支付、订阅和积分相关问题，建议一并附上订单号和账号邮箱。" : "For billing, subscriptions, and credits, include the order ID and account email in the same message."}
+            </Link>
+          </div>
         </div>
       </div>
     </div>

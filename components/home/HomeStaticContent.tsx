@@ -57,6 +57,45 @@ export default async function HomeStaticContent({ locale }: Props) {
     },
   ];
 
+  const whySeedance = [
+    {
+      title: isZh ? "把角色、动作和节奏拆开控制" : "Separate identity, motion, and rhythm",
+      body: isZh
+        ? "很多生成结果不稳定，不是模型不会生成，而是所有输入都在抢同一个控制权。Seedance 2 的价值在于把这些职责拆开。"
+        : "Many unstable outputs are not caused by weak generation alone, but by too many inputs fighting for the same control layer. Seedance 2 is strongest when those roles are separated.",
+    },
+    {
+      title: isZh ? "从试方向到做流程" : "Move from exploration to workflow",
+      body: isZh
+        ? "首页可以先试一句话，创作中心再处理关键帧、动作参考和节奏控制，这比一上来堆完整参数更适合真实使用。"
+        : "The homepage lets teams test direction with one sentence first, while the creation center handles keyframes, motion references, and timing. That is more realistic than exposing every setting immediately.",
+    },
+    {
+      title: isZh ? "适合可以复用的团队方法" : "Built for repeatable team methods",
+      body: isZh
+        ? "真正重要的不是偶尔出一条惊艳样片，而是同一套输入、镜头语言和素材准备方式能不能被稳定复用。"
+        : "The real benchmark is not whether the model can occasionally produce one impressive clip, but whether the same references, shot language, and preparation method can be reused reliably.",
+    },
+  ];
+
+  const helpCenterLinks = [
+    {
+      href: `${localePrefix}/guides`,
+      title: isZh ? "Prompt 与工作流指南" : "Prompt and workflow guides",
+      description: isZh ? "先看怎么准备素材、怎么组织参考、怎么评估成片。" : "Start with how to prepare assets, organize references, and review outputs.",
+    },
+    {
+      href: `${localePrefix}/creative-center`,
+      title: isZh ? "进入创作中心" : "Open the creation center",
+      description: isZh ? "当你已经知道要做哪类任务，就直接进入完整工作台。" : "When you already know the task, jump straight into the full workspace.",
+    },
+    {
+      href: `${localePrefix}/about`,
+      title: isZh ? "了解团队方法" : "Read the product method",
+      description: isZh ? "看看我们如何理解可控性、可复用性和边界说明。" : "See how we think about controllability, repeatability, and usage boundaries.",
+    },
+  ];
+
   const trustLinks = [
     { href: `${localePrefix}/about`, label: isZh ? "了解团队方法" : "About the team" },
     { href: `${localePrefix}/guides`, label: isZh ? "查看使用指南" : "Read the guides" },
@@ -145,6 +184,28 @@ export default async function HomeStaticContent({ locale }: Props) {
                 title={isZh ? "从轻试用到深创作" : "Fast start, deeper control later"}
                 desc={isZh ? "首页先用一句话开始，真正需要上传和精细控制时，再进入创作中心继续做完。" : "The homepage starts with one simple idea, while the creation center takes over when you need uploads and deeper controls."}
               />
+            </div>
+
+            <div className="space-y-6">
+              <div className="max-w-4xl">
+                <div className="section-kicker">{isZh ? "Why Seedance 2" : "Why Seedance 2"}</div>
+                <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                  {isZh ? "Seedance 2 的价值，不在于“多一个模型”，而在于把视频生成重新整理成工作流。" : "Seedance 2 is valuable not because it is one more model, but because it reorganizes video generation into a workflow."}
+                </h2>
+                <p className="mt-4 text-base leading-8 text-white/66 sm:text-lg">
+                  {isZh
+                    ? "如果一个团队已经在用参考图、分镜、动作片段和节奏 cue 做沟通，那么 Seedance 2 更像一个把这些信息重新接起来的工作台。"
+                    : "If a team already communicates through reference stills, boards, motion clips, and timing cues, Seedance 2 becomes a workspace that reconnects those inputs instead of flattening them into one prompt."}
+                </p>
+              </div>
+              <div className="grid gap-4 md:grid-cols-3">
+                {whySeedance.map((item) => (
+                  <div key={item.title} className="surface-card p-6">
+                    <div className="text-lg font-semibold text-white">{item.title}</div>
+                    <p className="mt-3 text-sm leading-7 text-white/64">{item.body}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
@@ -251,6 +312,15 @@ export default async function HomeStaticContent({ locale }: Props) {
                   ))}
                 </div>
               </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              {helpCenterLinks.map((link) => (
+                <Link key={link.href} href={link.href} className="surface-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30">
+                  <div className="text-lg font-semibold text-white">{link.title}</div>
+                  <p className="mt-3 text-sm leading-7 text-white/64">{link.description}</p>
+                </Link>
+              ))}
             </div>
           </div>
         </div>

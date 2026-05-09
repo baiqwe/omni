@@ -29,6 +29,7 @@ export default function Header() {
     { id: "creative-center", label: currentLocale === "zh" ? "创作中心" : "Creation Center", href: '/creative-center' },
     { id: "image", label: currentLocale === "zh" ? "图生视频" : "Image to Video", href: '/image-to-video' },
     { id: "guide", label: currentLocale === "zh" ? "指南" : "Guides", href: '/guides' },
+    { id: "about", label: currentLocale === "zh" ? "关于" : "About", href: '/about' },
     { id: "pricing", label: t('pricing'), href: '/pricing' },
   ];
 

@@ -227,6 +227,21 @@ export default async function PublicVideoPage({ params }: Props) {
                   </a>
                 </div>
               </div>
+
+              <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
+                <div className="flex items-center gap-2 text-xs uppercase tracking-[0.24em] text-white/44">
+                  <Sparkles className="h-4 w-4" />
+                  {isZh ? "Next steps" : "Next steps"}
+                </div>
+                <div className="mt-4 space-y-3">
+                  <Link href={`/${locale}/guides`} className="block rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4 text-sm text-white/72 transition-colors hover:bg-white/[0.06] hover:text-white">
+                    {isZh ? "看使用指南：理解这条视频背后的 Prompt、参考素材和评估逻辑。" : "Read the guides to understand the prompt, references, and evaluation logic behind results like this."}
+                  </Link>
+                  <Link href={`/${locale}/reference-video-generator`} className="block rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4 text-sm text-white/72 transition-colors hover:bg-white/[0.06] hover:text-white">
+                    {isZh ? "看相关工作流：如果你也想靠参考片段去控制镜头和动作，从这里继续。" : "Open the related workflow if you want to control motion and camera behavior through references instead of prompt alone."}
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -12,6 +12,12 @@ import { buildLocaleAlternates } from "@/utils/seo/metadata";
 import { InspirationGallery } from "@/components/gallery/InspirationGallery";
 import { ImageGallerySchema } from "@/components/gallery/ImageGallerySchema";
 
+function getCreationCenterHref(locale: string, mode: string) {
+  const params = new URLSearchParams();
+  params.set("mode", mode);
+  return `/${locale}/creative-center?${params.toString()}`;
+}
+
 export async function generateStaticParams() {
   return locales.flatMap((locale) =>
     landingPageSlugs.map((slug) => ({
@@ -80,6 +86,23 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
     { name: t("how_step3"), text: t("how_step3") },
   ];
   const insightBlock = getLandingPageInsights(page.slug, locale);
+  const creationCenterHref = getCreationCenterHref(locale, page.mode);
+  const workflowSummary =
+    locale === "zh"
+      ? page.mode === "image_to_video"
+        ? "这条页面更适合从关键帧出发：先锁定起始画面，再决定镜头如何推进。"
+        : page.mode === "text_to_video"
+          ? "这条页面更适合先把场景、主体和镜头节奏说清楚，再进入创作中心补控制。"
+          : page.mode === "video_extension"
+            ? "这条页面更适合从已有片段继续往下写，重点是连续性而不是重新定义创意。"
+            : "这条页面更适合把图片、动作参考和节奏提示拆开控制，得到更稳定的多模态结果。"
+      : page.mode === "image_to_video"
+        ? "This page is best when a keyframe should anchor the shot first and camera evolution comes second."
+        : page.mode === "text_to_video"
+          ? "This page is best when the scene, subject, and pacing need to be described clearly before deeper controls are added."
+          : page.mode === "video_extension"
+            ? "This page is best when an existing clip needs continuation and continuity matters more than redefining the concept."
+            : "This page is best when images, motion references, and timing cues each need a separate job inside one multi-modal workflow.";
 
   return (
     <div className="bg-background">
@@ -94,6 +117,9 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
             <div className="section-kicker">{locale === "zh" ? "Use Case" : "Use Case"}</div>
             <h1 className="text-4xl font-black tracking-tight text-white sm:text-5xl">{page.h1}</h1>
             <p className="max-w-3xl text-lg leading-8 text-white/76">{page.subtitle}</p>
+            <div className="inline-flex max-w-3xl rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm leading-7 text-white/66">
+              {workflowSummary}
+            </div>
           </div>
           <MultiModalWorkspace locale={locale} />
         </div>
@@ -191,6 +217,43 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
                 </div>
               </div>
             ) : null}
+
+            <div className="grid gap-6 md:grid-cols-[1.05fr_0.95fr]">
+              <div className="surface-card border-white/8 bg-[#1d1f26] p-6">
+                <div className="section-kicker">{locale === "zh" ? "Recommended Next Step" : "Recommended Next Step"}</div>
+                <h2 className="mt-3 text-2xl font-bold tracking-tight">
+                  {locale === "zh" ? "看完这页以后，最好的动作通常是进入对应模式的创作中心。" : "After this page, the best next move is usually to open the creation center in the matching mode."}
+                </h2>
+                <p className="mt-4 text-sm leading-8 text-white/68">
+                  {locale === "zh"
+                    ? "首页负责理解 Seedance 2，场景页负责理解任务，创作中心负责真正开始生成。这样分开以后，团队更容易知道下一步该做什么。"
+                    : "The homepage explains Seedance 2, the use-case page explains the task, and the creation center is where production begins. That separation makes it easier for teams to know what to do next."}
+                </p>
+                <div className="mt-6">
+                  <Link
+                    href={creationCenterHref}
+                    className="inline-flex items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-950 transition-colors hover:bg-cyan-100"
+                  >
+                    {locale === "zh" ? "用这个工作流进入创作中心" : "Open this workflow in the creation center"}
+                  </Link>
+                </div>
+              </div>
+
+              <div className="surface-card border-white/8 bg-[#1d1f26] p-6">
+                <div className="section-kicker">{locale === "zh" ? "Related Learning" : "Related Learning"}</div>
+                <h2 className="mt-3 text-2xl font-bold tracking-tight">
+                  {locale === "zh" ? "如果结果不对，先去看这两个解释层。" : "If the output is off, these are usually the next two layers worth checking."}
+                </h2>
+                <div className="mt-5 space-y-3">
+                  <Link href={`/${locale}/guides`} className="block rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4 text-sm text-white/72 transition-colors hover:bg-white/[0.06] hover:text-white">
+                    {locale === "zh" ? "使用指南：先检查 Prompt、参考素材和评估方式。" : "Guides: review prompt structure, references, and output evaluation first."}
+                  </Link>
+                  <Link href={`/${locale}/about`} className="block rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4 text-sm text-white/72 transition-colors hover:bg-white/[0.06] hover:text-white">
+                    {locale === "zh" ? "关于我们：理解这套产品为什么强调工作流、边界和团队复用。" : "About: understand why the product emphasizes workflow, boundaries, and team reuse."}
+                  </Link>
+                </div>
+              </div>
+            </div>
 
             <div className="space-y-4">
               <div className="section-kicker">FAQ</div>

@@ -42,6 +42,50 @@ export default async function GuidesPage(props: { params: Promise<{ locale: stri
   const { locale } = params;
   const isZh = locale === "zh";
   const localePrefix = `/${locale}`;
+  const guideModules = [
+    {
+      title: isZh ? "如何写更像镜头语言的 Prompt" : "How to write prompts that behave like shot direction",
+      description: isZh
+        ? "先写主体、镜头运动、节奏和氛围，再决定是否要补视觉参考，而不是一开始就堆很多修饰词。"
+        : "Start with subject, camera movement, pacing, and atmosphere first, then decide whether visual references are needed instead of stacking vague adjectives.",
+      href: `${localePrefix}/creative-center?mode=text-to-video&model=bytedance/seedance-2`,
+    },
+    {
+      title: isZh ? "如何准备图像关键帧" : "How to prepare image keyframes",
+      description: isZh
+        ? "图生视频最关键的是起始关键帧是否干净、主体是否明确，以及尾帧目标是否真的有必要。"
+        : "The key to image-to-video is whether the starting keyframe is clean, the subject is unambiguous, and the end-frame target is actually necessary.",
+      href: `${localePrefix}/image-to-video`,
+    },
+    {
+      title: isZh ? "如何使用动作与镜头参考" : "How to use motion and camera references",
+      description: isZh
+        ? "参考视频不是拿来堆数量的，而是拿来说明动作路径、镜头节奏和段落推进。"
+        : "Reference clips are not useful because there are many of them, but because they clarify motion paths, camera rhythm, and sequence intent.",
+      href: `${localePrefix}/reference-video-generator`,
+    },
+    {
+      title: isZh ? "如何保持角色一致性" : "How to keep character identity consistent",
+      description: isZh
+        ? "优先锁定角色图、服装、轮廓和开场构图，再决定动作该怎么迁移，而不是反过来。"
+        : "Lock the character still, wardrobe, silhouette, and opening composition first, then decide how motion should transfer instead of doing it in reverse.",
+      href: `${localePrefix}/dance-motion-transfer`,
+    },
+    {
+      title: isZh ? "什么时候该用 Seedance 2 Fast" : "When to use Seedance 2 Fast",
+      description: isZh
+        ? "Fast 更适合快速试方向、试节奏和试镜头，不是每一条视频都应该先跑高质量标准模型。"
+        : "Fast is best for testing direction, pacing, and camera ideas quickly instead of sending every experiment straight to the higher-quality model.",
+      href: `${localePrefix}/creative-center?model=bytedance/seedance-2-fast`,
+    },
+    {
+      title: isZh ? "如何做平滑的视频延展" : "How to extend a shot smoothly",
+      description: isZh
+        ? "延展不是重新开始一个新镜头，而是尊重已有片段的动势、光线和空间关系，再往前续写。"
+        : "Extension is not about inventing a new shot from zero. It works best when it respects the momentum, lighting, and spatial logic already present in the clip.",
+      href: `${localePrefix}/video-extension`,
+    },
+  ];
 
   const faqs = [
     {
@@ -113,6 +157,32 @@ export default async function GuidesPage(props: { params: Promise<{ locale: stri
               title={isZh ? "注意权限与边界" : "Respect rights and boundaries"}
               description={isZh ? "如果你在上传真人、产品或客户素材，要先确认权利归属、商用范围和数据处理方式。" : "If you upload human, product, or client material, confirm rights, commercial usage scope, and data handling expectations first."}
             />
+          </section>
+
+          <section className="space-y-6">
+            <div className="max-w-4xl">
+              <div className="section-kicker">{isZh ? "Help Center Library" : "Help Center Library"}</div>
+              <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                {isZh ? "先选一个你最常遇到的问题，再进入对应工作流。" : "Start from the problem you hit most often, then move into the matching workflow."}
+              </h2>
+              <p className="mt-4 text-base leading-8 text-white/66 sm:text-lg">
+                {isZh
+                  ? "这一层的目标不是把所有文档写成长篇说明，而是把最容易踩坑的节点拆开，让团队知道下一步该看哪一页、该点哪个入口。"
+                  : "The point of this layer is not to bury teams in long documentation, but to separate the highest-friction problems so people know which page to read and which entry point to use next."}
+              </p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {guideModules.map((module) => (
+                <Link
+                  key={module.title}
+                  href={module.href}
+                  className="surface-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30"
+                >
+                  <div className="text-lg font-semibold text-white">{module.title}</div>
+                  <p className="mt-3 text-sm leading-7 text-white/64">{module.description}</p>
+                </Link>
+              ))}
+            </div>
           </section>
 
           <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
@@ -217,6 +287,42 @@ export default async function GuidesPage(props: { params: Promise<{ locale: stri
                   <p className="mt-2 text-sm leading-7 text-white/64">{faq.answer}</p>
                 </div>
               ))}
+            </div>
+          </section>
+
+          <section className="grid gap-6 lg:grid-cols-2">
+            <div className="surface-panel px-6 py-7 md:px-8">
+              <div className="section-kicker">{isZh ? "Model Choice" : "Model Choice"}</div>
+              <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white">
+                {isZh ? "先选模型，再看素材怎么准备。" : "Choose the model first, then decide how deep the asset prep should go."}
+              </h2>
+              <div className="mt-5 space-y-4 text-sm leading-8 text-white/66">
+                <p>
+                  {isZh
+                    ? "Seedance 2 更适合角色一致性、产品材质和多参考素材协同；Seedance 2 Fast 更适合先试方向、试镜头和试节奏。"
+                    : "Seedance 2 is stronger for identity consistency, product detail, and multi-reference coordination, while Seedance 2 Fast is stronger for trying direction, shot language, and pacing quickly."}
+                </p>
+                <p>
+                  {isZh
+                    ? "如果团队还在找视觉方向，就先用 Fast 跑通概念；如果已经接近成片逻辑，再切回标准模型会更合理。"
+                    : "If the team is still exploring visual direction, use Fast to validate the concept first. Once the shot logic is close, moving back to the standard model usually makes more sense."}
+                </p>
+              </div>
+            </div>
+
+            <div className="surface-panel px-6 py-7 md:px-8">
+              <div className="section-kicker">{isZh ? "Where To Go Next" : "Where To Go Next"}</div>
+              <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white">
+                {isZh ? "Help Center 看完以后，最好回到这两个入口。" : "After the help center, most teams should go back to these two entry points."}
+              </h2>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <Link href={`${localePrefix}/creative-center`} className="rounded-lg bg-[#2563ff] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-[#3b72ff]">
+                  {isZh ? "进入创作中心" : "Open Creation Center"}
+                </Link>
+                <Link href={`${localePrefix}/pricing`} className="rounded-lg border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-white/[0.08]">
+                  {isZh ? "查看定价与积分" : "See Pricing & Credits"}
+                </Link>
+              </div>
             </div>
           </section>
         </div>
