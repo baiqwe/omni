@@ -30,15 +30,13 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
 
   const canonical = `/${locale}/${page.slug}`;
   const ogImage = new URL(site.ogImagePath, site.siteUrl).toString();
-  const commonKeywords =
-    locale === "zh"
-      ? ["Seedance 2", "AI 视频生成", "多模态视频生成", "视频工作流", "AI 视频生成器"]
-      : ["seedance 2", "ai video generation", "multi-modal video ai", "video workflow", "ai video generator"];
-
   return {
     title: page.title,
     description: page.description,
-    keywords: [page.targetKeyword, page.h1, page.slug.replace(/-/g, " "), ...commonKeywords],
+    keywords:
+      locale === "zh"
+        ? [page.targetKeyword, `Seedance 2 ${page.h1}`, "Seedance 2"]
+        : [page.targetKeyword, `Seedance 2 ${page.h1}`, "seedance 2"],
     alternates: buildLocaleAlternates(canonical),
     openGraph: {
       title: page.title,
@@ -117,13 +115,13 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
               <div className="surface-card border-white/8 bg-[#1d1f26] p-6 text-sm leading-8 text-white/70">
                 <p>
                   {locale === "zh"
-                    ? `${page.h1} 的关键不是“有没有结果”，而是能不能把参考素材、镜头方向和节奏目标组织成一个可重复执行的工作流。`
-                    : `${page.h1} is not about getting any result. It is about turning references, motion direction, and pacing into a workflow that can be repeated reliably.`}
+                    ? `${page.h1} 的关键不是“能不能生成”，而是能不能把参考素材、镜头方向和节奏目标组织成一套别人也能复用的做法。`
+                    : `${page.h1} is not just about getting a result. It is about organizing references, motion direction, and pacing into a process a team can repeat.`}
                 </p>
                 <p className="mt-3">
                   {locale === "zh"
-                    ? "这一页更像是面向具体任务的工作流模板：你可以把它当作一个场景落地页，而不是一个单独的花式滤镜入口。"
-                    : "Treat this page as a workflow template for a specific production scenario, not as a one-off gimmick landing page."}
+                    ? "把它当成一个具体任务的工作台说明页会更有帮助：你可以直接照着准备素材、组织镜头，再去创作中心开始生成。"
+                    : "It is most useful when treated as a task-specific playbook: prepare the right assets, organize the shot properly, then move into the creation center and generate."}
                 </p>
               </div>
             </div>
@@ -210,13 +208,13 @@ export default async function LandingPage(props: { params: Promise<{ locale: str
             <div className="space-y-4">
               <div className="surface-card border-white/8 bg-[#1d1f26] p-5">
                 <p className="text-sm leading-7 text-white/68">
-                  {locale === "zh" ? "想先从主工作台开始？" : "Want to start from the main workspace?"}{" "}
+                  {locale === "zh" ? "如果你已经准备好开始做自己的版本，" : "If you are ready to build your own version, "}{" "}
                   <Link href={`${localePrefix}`} className="font-medium text-primary hover:underline">
-                    {locale === "zh" ? "返回 Seedance 2 首页" : "Go back to the Seedance 2 homepage"}
+                    {locale === "zh" ? "先回到 Seedance 2 首页" : "go back to the Seedance 2 homepage"}
                   </Link>
                   {locale === "zh"
-                    ? "，再进入具体场景页继续做更强的定向生成。"
-                    : " and then come back to this scenario page when you need a more targeted workflow."}
+                    ? "，再根据任务类型进入创作中心或继续看这个场景页。"
+                    : " and then choose between the creation center or this scenario page depending on how much control you need."}
                 </p>
               </div>
               <h2 className="text-3xl font-bold tracking-tight">

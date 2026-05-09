@@ -11,97 +11,101 @@ export default async function HomeStaticContent({ locale }: Props) {
   const isZh = locale === "zh";
   const t = await getTranslations({ locale, namespace: "home_static" });
   const localePrefix = `/${locale}`;
+
   const workflowLinks = [
     {
       href: `${localePrefix}/image-to-video`,
-      title: isZh ? "Image to Video" : "Image to Video",
+      title: isZh ? "Seedance 2 图生视频" : "Seedance 2 Image to Video",
       description: isZh
-        ? "把单张图片、多张参考图或角色立绘转成镜头更稳定的视频结果。"
-        : "Turn stills, multiple references, or character art into more stable motion output.",
+        ? "从一张静帧、角色设定图或产品主视觉开始，把画面推成更稳定的连续镜头。"
+        : "Start from a still, a character sheet, or a product hero frame and push it into a more stable moving shot.",
     },
     {
       href: `${localePrefix}/reference-video-generator`,
-      title: isZh ? "Reference Video Generator" : "Reference Video Generator",
+      title: isZh ? "Seedance 2 参考视频生成" : "Seedance 2 Reference Video",
       description: isZh
-        ? "用已有视频片段、镜头语言和动作节奏去约束新的 AI 视频生成。"
-        : "Use existing clips, shot language, and pacing to constrain new AI video generations.",
+        ? "用已有片段锁定动作、运镜和节奏，让新视频更接近你脑海里的镜头语言。"
+        : "Use existing clips to lock motion, camera behavior, and pacing so the new output stays closer to your intended shot language.",
     },
     {
       href: `${localePrefix}/dance-motion-transfer`,
-      title: isZh ? "Dance Motion Transfer" : "Dance Motion Transfer",
+      title: isZh ? "Seedance 2 动作迁移" : "Seedance 2 Motion Transfer",
       description: isZh
-        ? "让人物、虚拟角色或数字人更准确地继承参考动作。"
-        : "Carry choreographed movement into human, avatar, or digital talent workflows.",
+        ? "把参考动作迁移到新的角色或数字人，同时尽量守住身份和造型一致性。"
+        : "Transfer choreography into a new character or avatar while keeping identity and styling more consistent.",
     },
     {
       href: `${localePrefix}/storyboard-to-video`,
-      title: isZh ? "Storyboard to Video" : "Storyboard to Video",
+      title: isZh ? "Seedance 2 分镜转视频" : "Seedance 2 Storyboard to Video",
       description: isZh
-        ? "把分镜图、场景草图和镜头说明拼成预演视频。"
-        : "Convert storyboard panels, scene boards, and shot notes into previs-ready clips.",
+        ? "把分镜稿、关键帧和镜头说明扩成预演视频，先验证走位和节奏。"
+        : "Turn boards, keyframes, and shot notes into previs clips so teams can validate timing and blocking early.",
     },
     {
       href: `${localePrefix}/video-extension`,
-      title: isZh ? "Video Extension" : "Video Extension",
+      title: isZh ? "Seedance 2 视频延展" : "Seedance 2 Video Extension",
       description: isZh
-        ? "把已有片段继续往下写，重点保持动作连续性和镜头节奏。"
-        : "Continue an existing clip while preserving camera movement and temporal continuity.",
+        ? "沿着原始片段的节奏与空间关系继续写下去，不必从头重来。"
+        : "Continue a source clip along its existing momentum and scene logic instead of restarting from zero.",
     },
     {
       href: `${localePrefix}/product-ad-generator`,
-      title: isZh ? "Product Ad Generator" : "Product Ad Generator",
+      title: isZh ? "Seedance 2 产品广告" : "Seedance 2 Product Ads",
       description: isZh
-        ? "适合电商、广告和社媒团队做产品展示、开箱和 campaign testing。"
-        : "Useful for commerce, ads, and social teams building product reveals and campaign tests.",
+        ? "适合产品揭幕、材质展示、发售预热和 campaign 测试片段。"
+        : "Useful for product reveals, material sweeps, launch teasers, and campaign test edits.",
     },
   ];
+
   const trustLinks = [
-    { href: `${localePrefix}/about`, label: isZh ? "关于我们" : "About" },
-    { href: `${localePrefix}/privacy`, label: isZh ? "隐私政策" : "Privacy Policy" },
-    { href: `${localePrefix}/terms`, label: isZh ? "服务条款" : "Terms of Service" },
-    { href: `${localePrefix}/contact`, label: isZh ? "联系我们" : "Contact" },
-    { href: `${localePrefix}/guides`, label: isZh ? "帮助中心" : "Help Center" },
+    { href: `${localePrefix}/about`, label: isZh ? "了解团队方法" : "About the team" },
+    { href: `${localePrefix}/guides`, label: isZh ? "查看使用指南" : "Read the guides" },
+    { href: `${localePrefix}/privacy`, label: isZh ? "查看隐私政策" : "Privacy policy" },
+    { href: `${localePrefix}/terms`, label: isZh ? "查看服务条款" : "Terms of service" },
+    { href: `${localePrefix}/contact`, label: isZh ? "联系支持" : "Contact support" },
   ];
+
   const buyerFaqs = [
     {
-      question: isZh ? "Seedance 2 更像什么产品？" : "What kind of product is Seedance 2, really?",
+      question: isZh ? "Seedance 2 更适合谁先用起来？" : "Who should start with Seedance 2 first?",
       answer: isZh
-        ? "它更像一个多模态 AI 视频工作站，而不是一个只输入一句 prompt 就随机出片的轻工具。你可以把图片、视频、音频和文字一起组织成可复用的生成流程。"
-        : "It behaves more like a multi-modal AI video workstation than a lightweight prompt toy. You can combine images, videos, audio, and text into a workflow that can be repeated and refined.",
+        ? "最适合广告与营销团队、短视频工作室、影视预演团队，以及已经习惯用参考图、参考片段和音乐节奏做创意沟通的人。"
+        : "It is strongest for ad and marketing teams, short-form studios, previs teams, and creators who already communicate through references, clip examples, and rhythm cues.",
     },
     {
-      question: isZh ? "它适合哪类团队先用起来？" : "Who should adopt it first?",
+      question: isZh ? "首页为什么只有简化版生成器？" : "Why is the homepage generator intentionally simplified?",
       answer: isZh
-        ? "最适合广告与营销团队、短视频工作室、影视预演团队、品牌内容团队，以及已经有参考素材体系的人。"
-        : "It fits ad and marketing teams, short-form studios, previs teams, brand content groups, and anyone who already works from reference material.",
+        ? "首页的任务是让你先写下一个清楚的想法，再决定要不要进入创作中心补参考素材和高级控制。这样更接近真实创作顺序。"
+        : "The homepage is designed to help you express one clear idea first, then move into the creation center only when you need references and deeper controls. That matches how real projects usually start.",
     },
     {
-      question: isZh ? "为什么首页要写这么多解释内容？" : "Why does the homepage need so much explanatory content?",
+      question: isZh ? "什么时候一定要用参考素材？" : "When do references become essential?",
       answer: isZh
-        ? "因为用户和 Google 都需要知道这是不是一个可信、可用、适合自己场景的 AI video generator，而不仅是一张酷炫截图。"
-        : "Because both users and Google need enough context to understand whether this is a credible AI video generator that fits a real workflow, not just a cool screenshot.",
+        ? "当你关心角色一致性、具体动作、镜头节奏、产品材质表现或多镜头连续性时，参考图和参考视频通常比继续加长 prompt 更有效。"
+        : "When character consistency, exact movement, camera rhythm, product materials, or continuity across shots really matter, reference images and clips usually help more than writing a longer prompt.",
     },
     {
-      question: isZh ? "如果现在先静态访问，不配 GA4 和社媒参数可以吗？" : "Can the site stay mostly static without GA4 or community links for now?",
+      question: isZh ? "怎么判断这是不是适合团队的工作流？" : "How can a team tell whether the workflow fits?",
       answer: isZh
-        ? "可以。GA4、LinkedIn、Reddit 和 Search Console 验证码都不是部署阻塞项。只要正式域名、站点 URL、支持邮箱和你实际要用的 Supabase / 支付配置正确，页面就能正常访问。"
-        : "Yes. GA4, LinkedIn, Reddit, and Search Console verification are not deployment blockers. The site can render fine as long as the production domain, site URL, support email, and any real Supabase or billing settings you use are configured correctly.",
+        ? "看它能不能让同一套素材被反复利用，能不能把结果讲清楚给同事看，能不能在失败时快速重做，而不是只看第一次生成是否惊艳。"
+        : "Judge it by whether the same inputs can be reused, whether the result can be communicated clearly to teammates, and whether the workflow is easy to retry after failure, not just by first-use wow factor.",
     },
   ];
 
   return (
     <>
       <FAQSchema items={buyerFaqs} />
+
       <section className="border-t border-white/6 bg-[linear-gradient(180deg,#060918_0%,#0b1026_100%)] py-20">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-5xl text-center">
-            <h2 className="text-4xl font-semibold tracking-tight text-transparent bg-[linear-gradient(90deg,#8b5cf6,#2563ff)] bg-clip-text sm:text-5xl">
+            <h2 className="bg-[linear-gradient(90deg,#8b5cf6,#2563ff)] bg-clip-text text-4xl font-semibold tracking-tight text-transparent sm:text-5xl">
               {isZh ? "Get Inspired" : "Get Inspired"}
             </h2>
             <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-white/68 sm:text-lg">
               {isZh
-                ? "浏览多模态示例视频，看看图像、视频、音频与文本参考如何组合成更可控的成片。"
-                : "Explore multi-modal video examples to see how image, video, audio, and text references combine into controllable outputs."}
+                ? "看一组真正像 Seedance 2 工作流会产出的示例：有的靠静帧起镜头，有的靠参考片段带动作，有的直接从产品图或分镜稿出发。"
+                : "Explore examples that feel closer to real Seedance 2 usage: some begin from still frames, some borrow motion from reference clips, and others grow from product images or storyboard frames."}
             </p>
           </div>
         </div>
@@ -114,126 +118,76 @@ export default async function HomeStaticContent({ locale }: Props) {
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-6xl space-y-16">
             <div className="mx-auto max-w-4xl text-center">
-              <div className="section-kicker">{isZh ? "What Seedance 2 Covers" : "What Seedance 2 Covers"}</div>
+              <div className="section-kicker">{isZh ? "Why Seedance 2 Feels Different" : "Why Seedance 2 Feels Different"}</div>
               <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                {isZh ? "不只是一个提示词输入框，而是一套可控的视频生成工作流。" : "Not just a prompt box, but a controllable AI video production workflow."}
+                {isZh ? "它不是把所有事情都交给一句 prompt，而是把控制权拆回真实工作流。" : "It does not leave everything to one prompt. It breaks control back into a workflow creators already understand."}
               </h2>
               <p className="mt-5 text-base leading-8 text-white/66 sm:text-lg">
                 {isZh
-                  ? "如果你在搜索 Seedance 2、AI video generator、image to video、text to video 或 video extension，这个首页应该先让你理解：它能处理哪些输入、适合哪些场景、输出如何更可控。"
-                  : "If you are searching for Seedance 2, an AI video generator, image to video, text to video, or video extension workflows, this page should make the product scope legible before you ever sign up."}
+                  ? "Seedance 2 的核心不是“随便生成一条视频”，而是让图片、视频、音频和文字各自承担不同职责：有人负责角色，有人负责动作，有人负责节奏。"
+                  : "The real value of Seedance 2 is not random generation. It is the ability to let images, clips, audio, and text each carry a different job: subject, motion, rhythm, or direction."}
               </p>
             </div>
+
             <div className="grid gap-5 md:grid-cols-3">
               <FeatureCard
                 icon={<Layers3 className="h-5 w-5 text-[#6ea8ff]" />}
-                title={isZh ? "参考素材优先" : "Reference-first inputs"}
-                desc={isZh ? "图片、视频、音频各自独立上传和排序，工作台逻辑更接近真实视频生产。" : "Images, videos, and audio upload in distinct lanes so the workflow feels closer to real video production."}
+                title={isZh ? "素材职责清楚" : "Clear jobs for each input"}
+                desc={isZh ? "图片负责角色和构图，视频负责动作和运镜，音频负责节奏和氛围，避免所有输入互相打架。" : "Images carry subject and composition, video carries motion and camera, and audio carries rhythm so the inputs do not fight each other."}
               />
               <FeatureCard
                 icon={<Clapperboard className="h-5 w-5 text-[#8b5cf6]" />}
-                title={isZh ? "视频预览优先" : "Preview-first interface"}
-                desc={isZh ? "右侧直接给出视频预览与说明区域，减少表单感，让结果更突出。" : "The right side is dedicated to preview and guidance so the result stays visually central."}
+                title={isZh ? "先看成片，不先看表单" : "Preview-first, not form-first"}
+                desc={isZh ? "界面应该把注意力给结果，而不是让用户先在一排设置里迷路。" : "The interface keeps the result visually central instead of asking users to decode a wall of settings first."}
               />
               <FeatureCard
                 icon={<Sparkles className="h-5 w-5 text-[#5eead4]" />}
-                title={isZh ? "更像 Seedance 的页面节奏" : "Closer Seedance pacing"}
-                desc={isZh ? "顶部标题简洁、工作台集中、下方画廊直给，先把核心体验讲清楚。" : "A simpler hero, concentrated workspace, and direct gallery make the page read more like the Seedance reference."}
+                title={isZh ? "从轻试用到深创作" : "Fast start, deeper control later"}
+                desc={isZh ? "首页先用一句话开始，真正需要上传和精细控制时，再进入创作中心继续做完。" : "The homepage starts with one simple idea, while the creation center takes over when you need uploads and deeper controls."}
               />
             </div>
 
-            <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
               <div className="surface-panel px-6 py-7 md:px-8">
-                <div className="section-kicker">{isZh ? "Search Intent" : "Search Intent"}</div>
+                <div className="section-kicker">{isZh ? "What You Can Make" : "What You Can Make"}</div>
                 <h3 className="mt-4 text-2xl font-semibold text-white">
-                  {isZh ? "Seedance 2 的首页需要同时回答品牌词和工具词。" : "The homepage needs to answer both branded and tool-intent searches."}
+                  {isZh ? "Seedance 2 最适合那些“已经知道自己想控制什么”的场景。" : "Seedance 2 is strongest when you already know what needs to stay under control."}
                 </h3>
                 <div className="mt-5 space-y-4 text-sm leading-8 text-white/68">
                   <p>
                     {isZh
-                      ? "品牌词层面，用户会直接搜索 Seedance 2、Seedance 2 video、Seedance 2 AI。工具词层面，他们会搜索 AI video generator、multi-modal AI video、reference video generator、image to video 和 text to video。"
-                      : "At the branded layer, users search Seedance 2, Seedance 2 video, or Seedance 2 AI. At the tool layer, they search AI video generator, multi-modal AI video, reference video generator, image to video, and text to video."}
+                      ? "如果你要做广告短片、产品展示、角色一致性内容、影视预演、舞蹈动作迁移，或者需要把多个素材拼成一个完整镜头，Seedance 2 会比单纯文生视频更好用。"
+                      : "If you are producing ad edits, product showcases, character-consistent content, previs, dance motion transfer, or any shot that depends on combining multiple references, Seedance 2 is usually more useful than text-only generation."}
                   </p>
                   <p>
                     {isZh
-                      ? "因此首页不能只展示一个黑色工作台壳子，还需要把能力边界、适用团队、输入类型、输出方式、定价逻辑和隐私说明都讲清楚。"
-                      : "That means the homepage cannot stop at a dark workspace shell. It also has to explain capability boundaries, target teams, input types, output controls, pricing logic, and privacy expectations."}
-                  </p>
-                  <p>
-                    {isZh
-                      ? "如果你想看更完整的使用方法、素材准备建议和结果评估标准，可以继续进入帮助中心。"
-                      : "If you need more detailed workflow guidance, input preparation notes, or review criteria, continue into the help center."}{" "}
-                    <Link href={`${localePrefix}/guides`} className="font-medium text-primary hover:underline">
-                      {isZh ? "查看 Seedance 2 使用指南" : "Read the Seedance 2 guides"}
-                    </Link>
-                    。
+                      ? "真正重要的不是“它支不支持很多模态”，而是这些模态能不能各司其职，最终让结果更稳定。"
+                      : "What matters is not that the product supports many modalities, but that each modality can do a specific job and make the result more stable."}
                   </p>
                 </div>
               </div>
-              <div className="surface-panel px-6 py-7 md:px-8">
-                <div className="section-kicker">{isZh ? "Trust Signals" : "Trust Signals"}</div>
-                <h3 className="mt-4 text-2xl font-semibold text-white">
-                  {isZh ? "Google 更看重“这是谁做的，为什么值得信任”。" : "Google also wants to know who made this and why it deserves trust."}
-                </h3>
-                <div className="mt-5 space-y-4 text-sm leading-8 text-white/68">
-                  <p>
-                    {isZh
-                      ? "所以我们会把关于我们、服务条款、隐私政策、联系方式、支持邮箱、支付说明和公开视频样例都挂在主导航与页脚里。"
-                      : "That is why About, Terms, Privacy, Contact, support email, billing language, and public showcase pages need to be discoverable from the primary site structure."}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {trustLinks.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-white/72 transition-colors hover:bg-white/[0.08] hover:text-white"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
               <div className="surface-panel px-6 py-7 md:px-8">
-                <div className="section-kicker">{isZh ? "Helpful Content" : "Helpful Content"}</div>
-                <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white">
-                  {isZh ? "如果页面想长期拿到流量，必须回答用户真正想知道的问题。" : "If this page wants durable rankings, it has to answer real user questions."}
-                </h2>
-                <div className="mt-5 space-y-4 text-sm leading-8 text-white/66">
-                  <p>
-                    {isZh
-                      ? "用户不是为了看一句“我们很强”而搜索 Seedance 2。他们想知道这是不是一个可靠的 AI video generator，是否支持 image to video、text to video、reference video generation、video extension，是否适合广告、预演、角色一致性或短视频生产。"
-                      : "People do not search Seedance 2 just to read a slogan. They want to know whether this is a reliable AI video generator, whether it supports image to video, text to video, reference video generation, and video extension, and whether it fits ad creative, previs, character consistency, or repeatable content production."}
-                  </p>
-                  <p>
-                    {isZh
-                      ? "因此首页需要同时承担三个角色：品牌入口、工作台入口、内容解释页。只有把这三层都做好，搜索和转化才会更稳。"
-                      : "That means the homepage has to do three jobs at once: brand entry point, workspace entry point, and explanatory content page. Search visibility and conversion tend to improve only when all three are handled well."}
-                  </p>
+                <div className="section-kicker">{isZh ? "Where To Go Next" : "Where To Go Next"}</div>
+                <h3 className="mt-4 text-2xl font-semibold text-white">
+                  {isZh ? "如果你已经有明确任务，直接进入对应工作流。" : "If you already know the task, jump straight into the matching workflow."}
+                </h3>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {trustLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-white/72 transition-colors hover:bg-white/[0.08] hover:text-white"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
                 </div>
-              </div>
-              <div className="surface-panel px-6 py-7 md:px-8">
-                <div className="section-kicker">{isZh ? "What This Site Is Not" : "What This Site Is Not"}</div>
-                <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white">
-                  {isZh ? "它不应该看起来像一个只有几行 prompt 的薄页面。" : "It should not feel like a thin page wrapped around a prompt box."}
-                </h2>
-                <ul className="mt-5 space-y-3 text-sm leading-7 text-white/66">
-                  <li className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-rose-300/80" />
-                    <span>{isZh ? "不是只靠品牌词和一个 H1 撑起来的单页。" : "Not a one-screen site propped up by a brand word and a single H1."}</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-rose-300/80" />
-                    <span>{isZh ? "不是只堆截图、缺少工作流说明和法律页的“AI 壳站”。" : "Not an AI shell site that only stacks screenshots without workflow explanation or trust pages."}</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-rose-300/80" />
-                    <span>{isZh ? "不是每个 use case 都长得一模一样、只有关键词不同的程序化落地页集合。" : "Not a cluster of programmatic landing pages that only swap keywords while saying the same thing."}</span>
-                  </li>
-                </ul>
+                <p className="mt-5 text-sm leading-8 text-white/68">
+                  {isZh
+                    ? "首页只负责快速进入和建立直觉；更细的上传方式、参数选择、素材准备建议和使用边界，都可以在创作中心和帮助中心继续看。"
+                    : "The homepage is meant to establish direction quickly. Detailed upload behavior, settings, preparation advice, and usage boundaries continue in the creation center and help center."}
+                </p>
               </div>
             </div>
 
@@ -241,12 +195,12 @@ export default async function HomeStaticContent({ locale }: Props) {
               <div className="max-w-4xl">
                 <div className="section-kicker">{isZh ? "Workflow Library" : "Workflow Library"}</div>
                 <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                  {isZh ? "围绕 Seedance 2 构建的核心内部链接集群" : "Core internal-link clusters built around Seedance 2 workflows"}
+                  {isZh ? "从 Seedance 2 首页继续走，下一步应该进入这些具体工作流。" : "After the Seedance 2 homepage, these are the workflows most teams reach for next."}
                 </h2>
                 <p className="mt-4 text-base leading-8 text-white/66 sm:text-lg">
                   {isZh
-                    ? "这些页面不应该只是关键词入口，而应该成为具体任务的落地模板：让搜索用户直接找到适合自己的 AI 视频工作流。"
-                    : "These pages should not exist as thin keyword bait. They should act as concrete production templates that map search intent to a relevant AI video workflow."}
+                    ? "每一页都围绕一个具体任务展开：图生视频、参考驱动生成、动作迁移、分镜预演、视频延展或产品广告。"
+                    : "Each page is organized around one concrete task: image to video, reference-led generation, motion transfer, storyboard previs, video extension, or product advertising."}
                 </p>
               </div>
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -263,35 +217,30 @@ export default async function HomeStaticContent({ locale }: Props) {
               </div>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+            <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
               <div className="surface-panel px-6 py-7 md:px-8">
-                <div className="section-kicker">{isZh ? "Why Teams Choose It" : "Why Teams Choose It"}</div>
+                <div className="section-kicker">{isZh ? "How Teams Usually Work" : "How Teams Usually Work"}</div>
                 <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white">
-                  {isZh ? "真正的差异不在“能不能生成”，而在“能不能控制”。" : "The real distinction is not whether it generates, but whether it can be directed."}
+                  {isZh ? "真实团队不是靠运气出片，而是靠重复利用同一套参考方法。" : "Real teams do not scale with lucky prompts. They scale with repeatable reference logic."}
                 </h2>
                 <div className="mt-5 space-y-4 text-sm leading-8 text-white/66">
                   <p>
                     {isZh
-                      ? "很多 AI 视频工具能在演示里给你一段惊艳片段，但真正进入广告、短剧、角色一致性、分镜预演或产品展示流程之后，团队更看重的是参考控制、输入组织方式、镜头可重复性和任务恢复能力。"
-                      : "Many AI video tools can produce one impressive demo clip, but once the workflow moves into advertising, short-form production, character consistency, previs, or product content, teams care more about reference control, input structure, repeatability, and recoverable jobs."}
+                      ? "很多团队会先在首页写一句核心想法，确认方向没问题，再进入创作中心上传图像、动作参考或节奏素材。"
+                      : "Many teams start on the homepage with one clear direction, then move into the creation center once they know they need image, motion, or timing references."}
                   </p>
-                <p>
-                  {isZh
-                    ? "这也是为什么这个站点会把 use cases、FAQ、法务页、支付页、公开视频示例和工作台放在同一个信息结构里。"
-                    : "That is why this site keeps use cases, FAQ content, legal pages, pricing, public examples, and the workspace inside one coherent information architecture."}
-                </p>
-                <p>
-                  {isZh
-                    ? "接下来还会由帮助中心继续承接“怎么做、怎么评估、什么情况下要谨慎”的内容层。"
-                    : "The help center extends that structure with content about how to work, how to review outputs, and where teams should slow down and check carefully."}
-                </p>
+                  <p>
+                    {isZh
+                      ? "等流程稳定下来之后，同一套素材和提示会被不断复用，只替换角色、产品、镜头或节奏要求。"
+                      : "Once the workflow settles, the same references and prompt structure can be reused while swapping only the character, product, camera treatment, or rhythm target."}
+                  </p>
+                </div>
               </div>
-            </div>
 
               <div className="surface-panel px-6 py-7 md:px-8">
                 <div className="section-kicker">{isZh ? "Buyer FAQ" : "Buyer FAQ"}</div>
                 <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white">
-                  {isZh ? "如果你第一次评估这个站点，通常会先问这些问题。" : "If you are evaluating the site for the first time, these are the questions that matter."}
+                  {isZh ? "第一次评估 Seedance 2 时，通常会先问这几个问题。" : "These are the questions buyers usually ask when evaluating Seedance 2 for the first time."}
                 </h2>
                 <div className="mt-5 space-y-4">
                   {buyerFaqs.map((faq) => (

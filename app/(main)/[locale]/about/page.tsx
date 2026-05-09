@@ -185,13 +185,13 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
               <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
                 <p>
                   {isZh
-                    ? "我们尽量把首页、use-case 页面、公开视频页、价格页、帮助页和法务页连成一个完整的信息结构，而不是把所有事情都塞进一个“试试这个 AI 很酷”的首页里。"
-                    : "We try to connect the homepage, use-case pages, public video pages, pricing, help content, and legal pages into one coherent information architecture instead of compressing everything into a flashy homepage."}
+                    ? "我们尽量把首页、场景页、公开视频页、价格页、帮助页和法务页连成一个完整的信息结构，而不是把所有问题都压到一个“试试这个 AI 很酷”的首页里。"
+                    : "We try to connect the homepage, scenario pages, public video pages, pricing, help content, and legal pages into one coherent information structure instead of pushing every question into one flashy homepage."}
                 </p>
                 <p>
                   {isZh
-                    ? "这不仅是为了 SEO，更是为了让第一次接触 Seedance 2 的用户知道：这是谁做的、为什么这样设计、以及在什么场景下它值得被信任。"
-                    : "This is not just an SEO choice. It helps first-time visitors understand who built Seedance 2, why it is designed this way, and in which scenarios it deserves trust."}
+                    ? "这样第一次接触 Seedance 2 的用户才会知道：这是谁做的、为什么这样设计、以及在什么场景下它值得被信任。"
+                    : "That gives first-time visitors enough context to understand who built Seedance 2, why it is designed this way, and in which situations it is worth trusting."}
                 </p>
               </CardContent>
             </Card>
@@ -230,8 +230,8 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
               </p>
               <p>
                 {isZh
-                  ? `这也是为什么 ${site.siteName} 会把首页、创作中心、价格、关于我们、隐私、条款、联系页和帮助中心一起建设。对搜索引擎来说，这提高了可理解性；对用户来说，这降低了试错成本。`
-                  : `That is why ${site.siteName} is built as a connected system of homepage, creation center, pricing, about, privacy, terms, contact, and help content. Search engines get more context, and users face less ambiguity.`}
+                  ? `这也是为什么 ${site.siteName} 会把首页、创作中心、价格、关于我们、隐私、条款、联系页和帮助中心一起建设。对用户来说，这能明显降低试错成本。`
+                  : `That is why ${site.siteName} is built as a connected system of homepage, creation center, pricing, about, privacy, terms, contact, and help content. For real users, that lowers the cost of trial and error.`}
               </p>
             </div>
           </div>

@@ -171,9 +171,9 @@ export type LandingPageSlug = keyof typeof landingPages;
 
 const landingPagesZh: Record<LandingPageSlug, LandingPageLocalizedCopy> = {
   "image-to-video": {
-    titleZh: "图像转视频 AI 工作台 - 把静帧推进成镜头",
+    titleZh: "Seedance 2 图生视频 - 把静帧推进成镜头",
     descriptionZh: "从一张静态图片出发，加入运镜、节奏和画面意图，把它变成更可控的 AI 视频工作流。",
-    h1Zh: "图像转视频 AI 工作台",
+    h1Zh: "Seedance 2 图生视频",
     subtitleZh: "把静帧推进成有节奏的镜头，而不是随机动起来的短片段。",
     faqsZh: [
       { question: "什么样的图像适合作为起始帧？", answer: "主体清晰、构图明确、空间关系稳定的画面最适合做起始帧。" },
@@ -181,9 +181,9 @@ const landingPagesZh: Record<LandingPageSlug, LandingPageLocalizedCopy> = {
     ]
   },
   "reference-video-generator": {
-    titleZh: "多参考视频生成器 - 用真实素材而不是玄学 Prompt",
+    titleZh: "Seedance 2 参考视频生成器 - 用真实素材而不是玄学 Prompt",
     descriptionZh: "把图片、视频和音频参考放在一起，让结果跟随真实创作意图，而不是依赖模糊的文字描述。",
-    h1Zh: "多参考视频生成器",
+    h1Zh: "Seedance 2 参考视频生成器",
     subtitleZh: "把参考图、参考视频和音频节奏一起交给系统，生成更可控的视频结果。",
     faqsZh: [
       { question: "为什么多参考比纯文本更重要？", answer: "因为参考素材能直接压缩镜头语言、画面质感和动作方向，比单句文字更可靠。" },
@@ -191,9 +191,9 @@ const landingPagesZh: Record<LandingPageSlug, LandingPageLocalizedCopy> = {
     ]
   },
   "dance-motion-transfer": {
-    titleZh: "AI 舞蹈动作迁移 - 复制节奏，替换主体",
+    titleZh: "Seedance 2 动作迁移 - 复制节奏，替换主体",
     descriptionZh: "把参考舞蹈视频里的动作节奏和能量迁移到新的角色或新的视频设定上。",
-    h1Zh: "AI 舞蹈动作迁移",
+    h1Zh: "Seedance 2 动作迁移",
     subtitleZh: "让动作参考带走节奏和编舞，同时把主体替换成新的角色或造型。",
     faqsZh: [
       { question: "什么样的参考舞蹈视频最好？", answer: "全身清晰、动作连续、镜头不要切太碎的视频最适合做动作迁移。" },
@@ -201,9 +201,9 @@ const landingPagesZh: Record<LandingPageSlug, LandingPageLocalizedCopy> = {
     ]
   },
   "product-ad-generator": {
-    titleZh: "AI 产品广告生成器 - 把产品图变成广告镜头",
+    titleZh: "Seedance 2 产品广告生成器 - 把产品图变成广告镜头",
     descriptionZh: "用产品静帧、运镜参考和商业化 Prompt，生成更像 campaign shot 的产品视频片段。",
-    h1Zh: "AI 产品广告生成器",
+    h1Zh: "Seedance 2 产品广告生成器",
     subtitleZh: "从产品静图出发，快速生成揭幕镜头、发售预告和视觉提案片段。",
     faqsZh: [
       { question: "产品广告 Prompt 最关键的是什么？", answer: "材质反应、光线变化、镜头路径和品牌气质，这些都要写清楚。" },
@@ -211,9 +211,9 @@ const landingPagesZh: Record<LandingPageSlug, LandingPageLocalizedCopy> = {
     ]
   },
   "storyboard-to-video": {
-    titleZh: "分镜转视频 AI - 把静态分镜扩成预演镜头",
+    titleZh: "Seedance 2 分镜转视频 - 把静态分镜扩成预演镜头",
     descriptionZh: "把分镜稿或关键帧扩成可移动的预演视频，用来测试运镜、节奏和场景连续性。",
-    h1Zh: "分镜转视频 AI",
+    h1Zh: "Seedance 2 分镜转视频",
     subtitleZh: "让静态分镜不再只是平面图，而是可以用于预演和走位验证的动态镜头。",
     faqsZh: [
       { question: "这更适合成片还是预演？", answer: "更适合预演、提案和拍摄前验证，而不是直接替代最终成片。" },
@@ -221,9 +221,9 @@ const landingPagesZh: Record<LandingPageSlug, LandingPageLocalizedCopy> = {
     ]
   },
   "video-extension": {
-    titleZh: "AI 视频扩写 - 把已有镜头平滑延长",
+    titleZh: "Seedance 2 视频扩写 - 把已有镜头平滑延长",
     descriptionZh: "沿着原始视频的运动方向、场景逻辑和情绪基调，把镜头继续自然延长。",
-    h1Zh: "AI 视频扩写",
+    h1Zh: "Seedance 2 视频扩写",
     subtitleZh: "不是重新生成一个新镜头，而是沿着原镜头的逻辑继续往前走。",
     faqsZh: [
       { question: "什么决定扩写是否自然？", answer: "运动方向、空间关系、光线延续和主体状态是否前后一致。" },

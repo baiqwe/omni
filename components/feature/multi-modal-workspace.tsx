@@ -114,14 +114,14 @@ const COPY: Record<string, WorkspaceCopy> = {
     aspectRatio: "画幅",
     advanced: "高级选项",
     generate: "生成视频",
-    queueTitle: "渲染队列",
-    queueEta: "工作台状态已就绪",
-    queueHint: "这个区域现在先模拟创作工作流里的素材队列和任务状态，后面接真实后端时会平滑过渡到异步生成与失败恢复。",
+    queueTitle: "生成前检查",
+    queueEta: "当前素材状态",
+    queueHint: "先确认参考素材各自承担的职责，再发起生成。这样通常比一味加长 Prompt 更容易得到稳定结果。",
     queueBullets: [
-      "最多 9 张参考图片，用来锁定角色、场景和关键帧。",
-      "最多 3 段参考视频，总时长 15 秒，用来定义动作、运镜和镜头节奏。",
-      "最多 3 段参考音频，总时长 15 秒，用来提示节拍、氛围和声音情绪。",
-      "至少提供图片或视频其中一种，纯音频不会单独触发生成。",
+      "先用图片锁定角色、场景和关键帧，再决定镜头应该怎么动。",
+      "参考视频更适合描述动作、运镜和节奏，而不是取代所有文字说明。",
+      "音频参考更适合给节拍和情绪，不适合单独承担画面结构。",
+      "只要你关心稳定性，就尽量明确“谁负责角色，谁负责动作，谁负责节奏”。",
     ],
     previewTitle: "预览样片",
     previewSubtitle: "让结果成为视觉中心，让界面退后一步。",
@@ -149,13 +149,13 @@ const COPY: Record<string, WorkspaceCopy> = {
       },
     ],
     laneTitle: {
-      image: "图像参考",
-      video: "视频参考",
-      audio: "音频参考",
+      image: "角色与关键帧",
+      video: "动作与镜头",
+      audio: "音频与节奏",
     },
     laneHint: {
-      image: "角色设定、首帧、场景、尾帧",
-      video: "动作、运镜、节奏、连续性",
+      image: "角色设定、起始画面、场景、尾帧目标",
+      video: "动作、运镜、速度、连续性",
       audio: "节拍、氛围、情绪提示",
     },
     laneAction: {
@@ -200,14 +200,14 @@ const COPY: Record<string, WorkspaceCopy> = {
     aspectRatio: "Aspect Ratio",
     advanced: "Advanced",
     generate: "Generate",
-    queueTitle: "Render Queue",
-    queueEta: "Workspace state is live",
-    queueHint: "This panel currently mirrors the front-end queue and task state. Once backend orchestration lands, it can transition naturally into async jobs, polling, and recovery.",
+    queueTitle: "Pre-flight check",
+    queueEta: "Current asset state",
+    queueHint: "Use this area to confirm that each reference has a clear job before you generate. Stable outputs usually come from clearer responsibilities, not longer prompts.",
     queueBullets: [
-      "Up to 9 reference images for identity, scene layout, and keyframe control.",
-      "Up to 3 reference videos, 15 seconds total, for motion, camera movement, and pacing.",
-      "Up to 3 reference audio clips, 15 seconds total, for beat, atmosphere, and timing cues.",
-      "At least one image or video is required. Audio alone is not enough to start a generation.",
+      "Use images to lock identity, scene layout, and keyframes before pushing motion further.",
+      "Use reference clips for body movement, camera travel, and pacing rather than trying to describe all motion in text alone.",
+      "Use audio for beat and mood cues, not as the only structural input.",
+      "The clearest results usually come from assigning one role to each reference type.",
     ],
     previewTitle: "Output Preview",
     previewSubtitle: "Let the output become the focus and the interface recede.",
@@ -235,9 +235,9 @@ const COPY: Record<string, WorkspaceCopy> = {
       },
     ],
     laneTitle: {
-      image: "Image References",
-      video: "Video References",
-      audio: "Audio References",
+      image: "Character & keyframes",
+      video: "Motion & camera",
+      audio: "Audio & timing",
     },
     laneHint: {
       image: "identity, opening frame, scene, end frame",
@@ -370,6 +370,7 @@ export function MultiModalWorkspace({ locale }: Props) {
   const promptLength = useMemo(() => prompt.length, [prompt]);
   const activePreview = PREVIEW_REELS[mode];
   const activeModel = modelMeta[mode];
+  const localizedNotice = useMemo(() => formatWorkspaceNotice(notice, locale), [notice, locale]);
 
   async function handleGenerate() {
     if (!user) {
@@ -488,10 +489,10 @@ export function MultiModalWorkspace({ locale }: Props) {
             </div>
           </div>
 
-          {notice ? (
+          {localizedNotice ? (
             <div className="flex items-center gap-3 rounded-[14px] border border-amber-300/15 bg-amber-300/8 px-4 py-3 text-sm text-amber-100/90">
               <AlertCircle className="h-4 w-4 shrink-0" />
-              <span className="flex-1">{notice}</span>
+              <span className="flex-1">{localizedNotice}</span>
               <button type="button" onClick={actions.clearNotice} className="text-white/50 hover:text-white">
                 ×
               </button>
@@ -505,6 +506,7 @@ export function MultiModalWorkspace({ locale }: Props) {
 
           <div className="space-y-3">
             <UploadLane
+              locale={locale}
               kind="image"
               title={copy.laneTitle.image}
               hint={copy.laneHint.image}
@@ -516,8 +518,8 @@ export function MultiModalWorkspace({ locale }: Props) {
               onRemove={actions.removeAsset}
               emptyLabel={copy.noAssets}
             />
-            <UploadLane kind="video" title={copy.laneTitle.video} hint={copy.laneHint.video} actionLabel={copy.laneAction.video} limitLabel={copy.laneEmptyMeta.video} assets={assets.video} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
-            <UploadLane kind="audio" title={copy.laneTitle.audio} hint={copy.laneHint.audio} actionLabel={copy.laneAction.audio} limitLabel={copy.laneEmptyMeta.audio} assets={assets.audio} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
+            <UploadLane locale={locale} kind="video" title={copy.laneTitle.video} hint={copy.laneHint.video} actionLabel={copy.laneAction.video} limitLabel={copy.laneEmptyMeta.video} assets={assets.video} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
+            <UploadLane locale={locale} kind="audio" title={copy.laneTitle.audio} hint={copy.laneHint.audio} actionLabel={copy.laneAction.audio} limitLabel={copy.laneEmptyMeta.audio} assets={assets.audio} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
           </div>
 
           <div className="space-y-2.5">
@@ -652,8 +654,8 @@ export function MultiModalWorkspace({ locale }: Props) {
         <div className="rounded-[18px] border border-white/8 bg-[#24252c] p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-xs uppercase tracking-[0.16em] text-white/38">{locale === "zh" ? "Multi Reference Guide" : "Multi Reference Guide"}</p>
-              <h3 className="mt-2 text-base font-semibold text-white">{locale === "zh" ? "上传多个参考素材，分别控制角色、动作和节奏。" : "Use multiple references to separately control identity, motion, and timing."}</h3>
+              <p className="text-xs uppercase tracking-[0.16em] text-white/38">{copy.queueTitle}</p>
+              <h3 className="mt-2 text-base font-semibold text-white">{locale === "zh" ? "把每类参考素材都用在它最擅长的地方。" : "Let each reference type do the job it handles best."}</h3>
             </div>
             <MonitorPlay className="h-5 w-5 text-white/40" />
           </div>
@@ -669,16 +671,16 @@ export function MultiModalWorkspace({ locale }: Props) {
             </ul>
           </div>
           <div className="mt-4 space-y-3">
-            <QueueItem title={copy.laneTitle.image} detail={`${assets.image.length} ${locale === "zh" ? "个参考素材在队列中" : "queued references"}`} progress={assets.image.length > 0 ? "done" : "idle"} />
-            <QueueItem title={copy.laneTitle.video} detail={`${assets.video.length} ${locale === "zh" ? "个动作片段在队列中" : "queued motion clips"}`} progress={assets.video.length > 0 ? "active" : "idle"} />
-            <QueueItem title={copy.laneTitle.audio} detail={`${assets.audio.length} ${locale === "zh" ? "个音频线索在队列中" : "queued audio cues"}`} progress={assets.audio.length > 0 ? "done" : "idle"} />
+            <QueueItem title={copy.laneTitle.image} detail={locale === "zh" ? `${assets.image.length} 个图像素材已进入角色与关键帧队列` : `${assets.image.length} image assets staged for identity and keyframes`} progress={assets.image.length > 0 ? "done" : "idle"} />
+            <QueueItem title={copy.laneTitle.video} detail={locale === "zh" ? `${assets.video.length} 个视频素材已进入动作与镜头队列` : `${assets.video.length} motion clips staged for movement and camera`} progress={assets.video.length > 0 ? "active" : "idle"} />
+            <QueueItem title={copy.laneTitle.audio} detail={locale === "zh" ? `${assets.audio.length} 个音频素材已进入节奏队列` : `${assets.audio.length} audio cues staged for rhythm and timing`} progress={assets.audio.length > 0 ? "done" : "idle"} />
             {activeGenerationId ? (
               <QueueItem
-                title={locale === "zh" ? "异步任务" : "Provider job"}
+                title={locale === "zh" ? "当前任务" : "Current task"}
                 detail={
                   locale === "zh"
-                    ? `任务 ${activeGenerationId.slice(0, 8)} 当前状态为 ${activeGenerationStatus ?? "pending"}`
-                    : `Async job ${activeGenerationId.slice(0, 8)} is ${activeGenerationStatus ?? "pending"}`
+                    ? `任务 ${activeGenerationId.slice(0, 8)} 当前状态：${activeGenerationStatus ?? "pending"}`
+                    : `Job ${activeGenerationId.slice(0, 8)} is currently ${activeGenerationStatus ?? "pending"}`
                 }
                 progress="active"
               />
@@ -712,6 +714,7 @@ export function MultiModalWorkspace({ locale }: Props) {
 }
 
 function UploadLane({
+  locale,
   kind,
   title,
   hint,
@@ -724,6 +727,7 @@ function UploadLane({
   onRemove,
 }: {
   kind: WorkspaceAssetKind;
+  locale: string;
   title: string;
   hint: string;
   actionLabel: string;
@@ -781,6 +785,7 @@ function UploadLane({
           <AssetRow
             key={asset.id}
             asset={asset}
+            locale={locale}
             canMoveUp={index > 0}
             canMoveDown={index < assets.length - 1}
             onMove={(direction) => onMove(kind, asset.id, direction)}
@@ -794,12 +799,14 @@ function UploadLane({
 
 function AssetRow({
   asset,
+  locale,
   canMoveUp,
   canMoveDown,
   onMove,
   onRemove,
 }: {
   asset: WorkspaceAsset;
+  locale: string;
   canMoveUp: boolean;
   canMoveDown: boolean;
   onMove: (direction: "up" | "down") => void;
@@ -828,10 +835,14 @@ function AssetRow({
       <div className="mt-3 flex items-center justify-between">
         <div className="text-xs text-white/44">
           {asset.status === "ready"
-            ? "Ready for generation"
+            ? locale === "zh"
+              ? "已准备好生成"
+              : "Ready to generate"
             : asset.status === "error"
-              ? asset.error || "Upload failed"
-              : `${asset.progress}% uploaded`}
+              ? formatWorkspaceNotice(asset.error || "Upload failed", locale)
+              : locale === "zh"
+                ? `已上传 ${asset.progress}%`
+                : `${asset.progress}% uploaded`}
         </div>
         <div className="flex items-center gap-1">
           <IconButton disabled={!canMoveUp} onClick={() => onMove("up")}>
@@ -1031,4 +1042,38 @@ function IconButton({
       {children}
     </button>
   );
+}
+
+function formatWorkspaceNotice(notice: string | null, locale: string) {
+  if (!notice || locale !== "zh") return notice;
+
+  const directMap: Record<string, string> = {
+    "Prompt is required before generating.": "开始生成前请先补充提示词。",
+    "Upload at least one image or video reference before generating.": "开始生成前请至少准备一个图像或视频参考。",
+    "Please wait until all uploads finish before generating.": "请先等待所有素材上传完成，再开始生成。",
+    "Generation queued. You can continue editing or monitor progress in the dashboard.": "任务已经进入队列，你可以继续整理素材，或前往控制台查看进度。",
+    "Failed to create generation": "创建生成任务失败，请稍后再试。",
+    "Upload failed": "素材上传失败，请稍后重试。",
+    "Failed to prepare upload": "准备上传失败，请稍后重试。",
+    "Network error during upload": "上传过程中发生网络错误，请稍后重试。",
+  };
+
+  if (directMap[notice]) return directMap[notice];
+
+  const laneLimitMatch = notice.match(/^Only (\d+) (\w+)s? allowed in this lane\.$/);
+  if (laneLimitMatch) {
+    return `这个队列最多只能放 ${laneLimitMatch[1]} 个素材。`;
+  }
+
+  const addedMatch = notice.match(/^Added (\d+) (\w+)s?\. (\d+) exceeded the lane limit\.$/);
+  if (addedMatch) {
+    return `已加入 ${addedMatch[1]} 个素材，另外 ${addedMatch[3]} 个超过了当前队列上限。`;
+  }
+
+  const uploadStatusMatch = notice.match(/^Upload failed with status (\d+)$/);
+  if (uploadStatusMatch) {
+    return `素材上传失败，服务器返回状态 ${uploadStatusMatch[1]}。`;
+  }
+
+  return notice;
 }

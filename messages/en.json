@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "Seedance 2.0 - Multi-Modal AI Video Generator for Image, Text, Audio, and Video References",
-    "description": "Seedance 2.0 is a multi-modal AI video generator for image to video, text to video, reference-driven motion, video extension, and production-ready cinematic workflows.",
-    "keywords": "seedance 2, seedance 2.0, seedance 2 video, ai video generator, multi modal ai video, multi-modal ai video generator, image to video, text to video, video to video, reference video generator, video extension, cinematic ai video, ai video workspace"
+    "title": "Seedance 2.0 - AI Video Generator and Multi-Modal Creation Workflow",
+    "description": "Seedance 2.0 is an AI video generator built around one multi-modal workflow for image to video, text to video, reference-led motion, and video extension.",
+    "keywords": "seedance 2.0, seedance 2, seedance2, seedance 2 ai video generator, seedance 2 workflow"
   },
   "nav": {
     "home": "Home",
@@ -100,8 +100,8 @@
     "faq3_a": "Once the async job system is wired, users can generate, extend, and refine without restarting the entire flow.",
     "faq4_q": "What happens to uploaded assets?",
     "faq4_a": "Assets should be stored in project-scoped buckets and forwarded only to the selected generation provider. Privacy details belong in the final policy.",
-    "cta_title": "Ready to turn this scaffold into a real Seedance product?",
-    "cta_subtitle": "The product shell is in place. Next we wire storage, async jobs, credits, and the live model.",
+    "cta_title": "Ready to start creating with Seedance 2?",
+    "cta_subtitle": "Open an account, explore the creation center, and choose the plan that matches your video workflow.",
     "cta_signup": "Create account",
     "cta_pricing": "View pricing"
   },
@@ -136,9 +136,9 @@
   },
   "Pricing": {
     "eyebrow": "Production Pricing",
-    "title": "One page, two buying behaviors, clear upgrade logic.",
-    "subtitle": "Keep the low-friction buy-out packs for first-time testing, then make the subscription math obviously better for serious video production.",
-    "artist_anchor": "Compared with traditional storyboarding, motion tests, or repeated freelance editing rounds, a strong Seedance subscription should feel like instant leverage rather than just another SaaS bill.",
+    "title": "Choose the Seedance 2 plan that matches how often you generate.",
+    "subtitle": "Start with a one-time pack for testing, or switch to a subscription once your team needs repeatable video output every week.",
+    "artist_anchor": "Compared with repeated concept edits, previs revisions, or outsourced motion tests, a well-sized Seedance plan should feel like faster creative throughput, not just another bill.",
     "buyout_label": "Buy-out",
     "subscription_label": "Pro",
     "one_time_payment": "One-time payment",
@@ -151,10 +151,10 @@
     "price_per_image": "Cost / image",
     "only_price_per_image": "Only ${price} / image",
     "missing_features": "Missing features",
-    "faq_kicker": "Why upgrade?",
+    "faq_kicker": "Why teams upgrade",
     "checkout_failed": "Failed to start payment process.",
-    "refill_title": "Keep the render queue moving.",
-    "refill_subtitle": "Use top-up packs for campaign tests, or unlock the subscription for repeatable high-volume video work.",
+    "refill_title": "Keep your video workflow moving.",
+    "refill_subtitle": "Top-up packs work well for campaign tests and short bursts. Subscriptions make more sense once you are generating every week.",
     "refill_upgrade": "Go Pro Monthly",
     "refill_mini": "Get 10 credits",
     "cards": {

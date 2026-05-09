@@ -176,8 +176,8 @@ export default async function PublicVideoPage({ params }: Props) {
                 </h1>
                 <p className="mt-4 text-base leading-8 text-white/62">
                   {isZh
-                    ? "这不是一个普通结果页，而是一个能承接外链传播、搜索抓取和社媒预览的公开详情页。"
-                    : "This is a public destination built for outbound sharing, search discovery, and social previews."}
+                    ? "如果你想把这条结果发给客户、同事或合作方，这一页会把视频、提示词和关键参数放在同一个公开入口里。"
+                    : "If you want to share this result with a client, teammate, or collaborator, this page keeps the video, prompt, and key settings in one public destination."}
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-2">

@@ -69,8 +69,8 @@ export function Footer() {
             </p>
             <p className="mt-3 inline-flex rounded-full border border-border/80 bg-background/80 px-3 py-1.5 text-xs text-muted-foreground">
               {currentLocale === 'zh'
-                ? '提示：真实视频能力接入后，素材会先进入受控存储，再转发到选定的视频模型服务。'
-                : 'Note: once live generation is connected, uploads should be staged in controlled storage before provider handoff.'}
+                ? '上传素材会在你的工作流里保持独立：角色、动作、节奏和结果各自可追踪。'
+                : 'Uploads stay separated by role so identity, motion, timing, and outputs remain easier to track.'}
             </p>
           </div>
 

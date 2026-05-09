@@ -47,8 +47,8 @@ export default async function GuidesPage(props: { params: Promise<{ locale: stri
     {
       question: isZh ? "首页和创作中心有什么区别？" : "What is the difference between the homepage and the creation center?",
       answer: isZh
-        ? "首页负责承接 Seedance 2 的品牌词和工具词搜索意图，先用简化生成器降低理解门槛。创作中心则保留完整的多模态工作台，用于真正上传图片、视频、音频参考并配置更细的生成参数。"
-        : "The homepage handles Seedance 2 brand and tool intent with a simplified generator. The creation center keeps the full multi-modal workspace for real image, video, and audio references plus deeper controls.",
+        ? "首页更像一个快速入口：先把想法写出来。创作中心则保留完整多模态工作台，用于真正上传图片、视频、音频参考并配置更细的生成参数。"
+        : "The homepage is a quick entry point for expressing the idea. The creation center keeps the full multi-modal workspace for real image, video, and audio references plus deeper controls.",
     },
     {
       question: isZh ? "什么样的素材最适合做参考？" : "What makes a good reference asset?",
@@ -171,8 +171,8 @@ export default async function GuidesPage(props: { params: Promise<{ locale: stri
                 </p>
                 <p>
                   {isZh
-                    ? "这也是为什么隐私政策、服务条款和关于我们页面不只是法务必需品，它们也是搜索和转化里的信任入口。"
-                    : "That is also why Privacy, Terms, and About are not just legal necessities. They are trust layers that matter for both search and conversion."}
+                    ? "这也是为什么隐私政策、服务条款和关于我们页面值得在开始商用前先读一遍。"
+                    : "That is also why Privacy, Terms, and About are worth reading before a team moves into serious commercial use."}
                 </p>
               </div>
             </div>

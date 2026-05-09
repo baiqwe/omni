@@ -88,18 +88,18 @@ export async function HomeHeroSupport({ locale }: Props) {
       <div className="mx-auto grid max-w-4xl gap-3 text-left text-sm text-white/68 md:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-black/22 px-4 py-3 backdrop-blur-md">
           {locale === "zh"
-            ? "围绕 Seedance 2 关键词和真实工作流设计，首页先承接品牌词，再自然承接工具词。"
-            : "Built around the Seedance 2 keyword cluster so the homepage can rank for both brand intent and AI video tool intent."}
+            ? "先用一句话把镜头想清楚，再决定是否补图片、视频或音频参考。"
+            : "Start with one clear scene description, then decide whether images, clips, or audio references are actually needed."}
         </div>
         <div className="rounded-2xl border border-white/10 bg-black/22 px-4 py-3 backdrop-blur-md">
           {locale === "zh"
-            ? "先用极简生成条降低上手门槛，再进入创作中心处理角色、动作、节奏和多模态参考。"
-            : "Use the lightweight prompt bar first, then move into the creation center for references, motion, pacing, and deeper controls."}
+            ? "首页负责快速进入，创作中心负责角色、动作、节奏和多模态参考的细化控制。"
+            : "Use the homepage to get moving quickly, then switch to the creation center when identity, motion, pacing, and references need finer control."}
         </div>
         <div className="rounded-2xl border border-white/10 bg-black/22 px-4 py-3 backdrop-blur-md">
           {locale === "zh"
             ? "适合广告创意、角色一致性、影视预演、产品展示和短视频批量生产。"
-            : "Designed for ad creative, previs, character consistency, product reveals, and repeatable short-form Seedance 2 output."}
+            : "Designed for ad creative, character consistency, previs, product reveals, and repeatable short-form production."}
         </div>
       </div>
     </div>

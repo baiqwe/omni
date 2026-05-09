@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "Seedance 2.0 - 多模态 AI 视频生成器，支持图生视频、文生视频与参考视频工作流",
-    "description": "Seedance 2.0 是一套多模态 AI 视频生成器，可处理图生视频、文生视频、视频参考、音频参考、视频延展和更适合生产环境的可控工作流。",
-    "keywords": "seedance 2, seedance 2.0, seedance 2 视频, ai视频生成器, 多模态视频生成, 图生视频, 文生视频, 视频转视频, 参考视频生成, 视频延展, 电影感ai视频, 视频工作台"
+    "title": "Seedance 2.0 - AI 视频生成器与多模态创作工作流",
+    "description": "Seedance 2.0 是一套围绕图生视频、文生视频、参考动作生成和视频延展构建的多模态 AI 视频工作流。",
+    "keywords": "seedance 2.0, seedance 2, seedance2, seedance 2 ai 视频生成器, seedance 2 工作流"
   },
   "nav": {
     "home": "首页",
@@ -100,8 +100,8 @@
     "faq3_a": "等异步任务系统接入后，用户可以生成、延展、局部调整，而不是每次都从头来过。",
     "faq4_q": "上传素材会怎么处理？",
     "faq4_a": "理想状态下，素材应先进入项目隔离的存储桶，再按所选模型提供商的协议转发。最终细节应写入隐私政策。",
-    "cta_title": "准备把这个脚手架真正变成 Seedance 产品了吗？",
-    "cta_subtitle": "产品外壳已经搭起来，下一步就是接存储、异步任务、积分和真实模型。",
+    "cta_title": "准备开始用 Seedance 2 创作了吗？",
+    "cta_subtitle": "注册账号，进入创作中心，再按你的出片频率选择合适方案。",
     "cta_signup": "创建账号",
     "cta_pricing": "查看定价"
   },
@@ -136,9 +136,9 @@
   },
   "Pricing": {
     "eyebrow": "生产级定价",
-    "title": "一页同时服务两类购买行为，而且升级逻辑足够清楚。",
-    "subtitle": "保留低门槛买断包满足试水需求，再用更明显的订阅性价比承接真正高频的视频生产。",
-    "artist_anchor": "和传统预演、镜头测试、反复外包剪辑相比，一个设计合理的 Seedance 订阅应该像是即时杠杆，而不只是多一个 SaaS 账单。",
+    "title": "按你的使用频率选择合适的 Seedance 2 方案。",
+    "subtitle": "先用一次性买断包试水，确定工作流跑顺以后，再切到更适合高频创作的订阅方案。",
+    "artist_anchor": "和反复做预演、镜头测试或外包剪辑相比，一个合适的 Seedance 方案更像是提高产能，而不是多一笔纯软件成本。",
     "buyout_label": "买断",
     "subscription_label": "专业版",
     "one_time_payment": "一次性付款",
@@ -151,10 +151,10 @@
     "price_per_image": "单张成本",
     "only_price_per_image": "约 ${price} / 张",
     "missing_features": "缺失特权",
-    "faq_kicker": "为什么值得升级？",
+    "faq_kicker": "团队为什么会升级",
     "checkout_failed": "发起支付失败。",
-    "refill_title": "让渲染队列继续往前走。",
-    "refill_subtitle": "买断包适合活动测试和客户提案，订阅更适合稳定而持续的视频产出。",
+    "refill_title": "让视频工作流保持连续。",
+    "refill_subtitle": "买断包适合活动测试、客户提案和短期需求；如果你几乎每周都要出片，订阅会更省心。",
     "refill_upgrade": "开通专业版月订阅",
     "refill_mini": "购买 10 积分",
     "cards": {

@@ -51,12 +51,12 @@ export default async function CreativeCenterPage(props: { params: Promise<{ loca
                         {locale === "zh" ? "Seedance 2 创作中心" : "Seedance 2 Creation Center"}
                     </div>
                     <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-                        {locale === "zh" ? "完整多模态工作台" : "The full multi-modal workspace"}
+                        {locale === "zh" ? "Seedance 2 完整多模态工作台" : "The full Seedance 2 multi-modal workspace"}
                     </h1>
                     <p className="mx-auto max-w-3xl text-base leading-8 text-white/66 sm:text-lg">
                         {locale === "zh"
-                            ? "这里保留完整的 Seedance 2 生成器，用来处理图片、视频、音频参考，设置时长、画幅、参考策略和更精细的输出控制。首页只负责快速进入，这里才承接真正的深度创作。"
-                            : "This is the full Seedance 2 generator for image, video, and audio references, duration, aspect ratio, reference strategy, and deeper output controls. The homepage handles quick intent; the creation center handles serious production work."}
+                            ? "这里保留完整的 Seedance 2 生成器，用来处理图片、视频、音频参考，设置时长、画幅、参考策略和更细的输出控制。首页负责快速进入，这里负责真正的深度创作。"
+                            : "This is the full Seedance 2 generator for image, video, and audio references, duration, aspect ratio, reference strategy, and deeper output controls. The homepage gets you moving; the creation center handles serious production work."}
                     </p>
                 </div>
 
