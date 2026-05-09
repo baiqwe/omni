@@ -3,7 +3,7 @@ import { site } from "@/config/site";
 import { locales } from "@/i18n/routing";
 import { indexableLandingPageSlugs } from "@/config/landing-pages";
 
-const staticPages = ["", "creative-center", "guides", "pricing", "privacy", "terms", "about", "contact"];
+const staticPages = ["", "creative-center", "guides", "pricing", "about", "contact"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -14,8 +14,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       return {
         url: new URL(path, site.siteUrl).toString(),
         lastModified: now,
-        changeFrequency: page ? (page === "privacy" || page === "terms" ? "monthly" : "weekly") : "daily",
-        priority: page ? (page === "privacy" || page === "terms" ? 0.5 : 0.8) : 1,
+        changeFrequency: page ? "weekly" : "daily",
+        priority: page ? 0.8 : 1,
         alternates: {
           languages: {
             "en-US": new URL(page ? `/en/${page}` : "/en", site.siteUrl).toString(),

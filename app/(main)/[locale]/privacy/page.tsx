@@ -22,6 +22,10 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
   return {
     title,
     description,
+    robots: {
+      index: false,
+      follow: true,
+    },
     alternates: buildLocaleAlternates(`/${locale}/privacy`),
     openGraph: {
       title,

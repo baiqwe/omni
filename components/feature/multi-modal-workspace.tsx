@@ -40,7 +40,14 @@ import {
   type WorkspaceAsset,
   type WorkspaceAssetKind,
 } from "@/hooks/use-multi-modal-workspace";
-import type { VideoGenerationMode } from "@/utils/video-generation";
+import {
+  KIE_SEEDANCE_SUPPORTED_DURATIONS,
+  KIE_SEEDANCE_SUPPORTED_RATIOS,
+  KIE_SEEDANCE_SUPPORTED_RESOLUTIONS,
+  getAssetLimitForMode,
+  type VideoGenerationMode,
+  type VideoModelId,
+} from "@/utils/video-generation";
 
 type WorkspaceCopy = {
   tabs: Array<{ label: string; mode: VideoGenerationMode }>;
@@ -259,65 +266,46 @@ const COPY: Record<string, WorkspaceCopy> = {
   },
 };
 
-const RESOLUTIONS = ["480p", "720p", "1080p"] as const;
-const DURATIONS = [5, 10, 15] as const;
-const RATIOS = ["auto", "16:9", "9:16", "1:1", "4:3", "3:4", "21:9"] as const;
+const RESOLUTIONS = KIE_SEEDANCE_SUPPORTED_RESOLUTIONS;
+const DURATIONS = KIE_SEEDANCE_SUPPORTED_DURATIONS;
+const RATIOS = KIE_SEEDANCE_SUPPORTED_RATIOS;
+const VIDEO_MODEL_OPTIONS: VideoModelId[] = ["bytedance/seedance-2", "bytedance/seedance-2-fast"];
 
-const MODEL_META: Record<string, Record<VideoGenerationMode, { name: string; description: string; badges: string[] }>> = {
+const VIDEO_MODEL_META: Record<string, Record<VideoModelId, { name: string; description: string; badges: string[] }>> = {
   zh: {
-    multi_modal_video: {
-      name: "Seedance 2.0 Multi-Reference",
-      description: "优先理解图像、视频、音频与文字之间的关系，适合做角色一致性、动作继承和镜头延展。",
-      badges: ["参考优先", "动作理解", "镜头延展"],
+    "bytedance/seedance-2": {
+      name: "Seedance 2.0",
+      description: "标准质量模型，更适合角色稳定性、镜头层次和更完整的多参考视频生成。",
+      badges: ["高质量", "多参考", "镜头稳定"],
     },
-    image_to_video: {
-      name: "Seedance 2.0 Image to Video",
-      description: "更适合从首帧、产品图和角色设定图出发，把静态画面延展成连续镜头。",
-      badges: ["首帧驱动", "角色一致性", "镜头生长"],
-    },
-    text_to_video: {
-      name: "Seedance 2.0 Text to Video",
-      description: "适合先用自然语言搭建场景、镜头和节奏，再逐步补足参考素材。",
-      badges: ["语义优先", "概念验证", "镜头构思"],
-    },
-    video_extension: {
-      name: "Seedance 2.0 Video Extension",
-      description: "适合延展已有镜头，保持动作、光线和空间关系，让镜头自然续上。",
-      badges: ["连续性", "接续镜头", "叙事延展"],
+    "bytedance/seedance-2-fast": {
+      name: "Seedance 2 Fast",
+      description: "更适合快速验证方向、快速试错和先把镜头节奏跑通，再决定是否切回标准模型。",
+      badges: ["更快出片", "概念验证", "快速迭代"],
     },
   },
   en: {
-    multi_modal_video: {
-      name: "Seedance 2.0 Multi-Reference",
-      description: "Built to interpret images, clips, audio, and text together, with stronger control over identity, motion transfer, and shot extension.",
-      badges: ["Reference-first", "Motion-aware", "Extendable"],
+    "bytedance/seedance-2": {
+      name: "Seedance 2.0",
+      description: "The quality-first model for stronger identity consistency, richer shot design, and deeper multi-reference generation.",
+      badges: ["Higher quality", "Multi-reference", "Stable shots"],
     },
-    image_to_video: {
-      name: "Seedance 2.0 Image to Video",
-      description: "Best when a still, a product frame, or a hero character image needs to evolve into a continuous shot.",
-      badges: ["Frame-led", "Identity-safe", "Cinematic motion"],
-    },
-    text_to_video: {
-      name: "Seedance 2.0 Text to Video",
-      description: "Ideal for semantic direction first, then deeper control through references, pacing, and aspect ratio.",
-      badges: ["Prompt-first", "Concept testing", "Shot language"],
-    },
-    video_extension: {
-      name: "Seedance 2.0 Video Extension",
-      description: "Extend an existing shot while preserving movement, lighting, and scene continuity.",
-      badges: ["Continuity", "Shot extension", "Scene-safe"],
+    "bytedance/seedance-2-fast": {
+      name: "Seedance 2 Fast",
+      description: "Optimized for faster iteration when you want to validate direction, pacing, and camera ideas before committing to the standard model.",
+      badges: ["Faster output", "Concept testing", "Rapid iteration"],
     },
   },
 };
 
 const PREVIEW_REELS: Record<VideoGenerationMode, { src: string; label: string; headlineZh: string; headlineEn: string; bodyZh: string; bodyEn: string }> = {
   multi_modal_video: {
-    src: "/videos/gallery/reference-led.mp4",
-    label: "Reference-led sample",
-    headlineZh: "多参考输入，不再只是一次猜测。",
-    headlineEn: "Multi-reference input, not a blind guess.",
-    bodyZh: "把图片、视频和音频放进同一条指令里，结果会更接近一个有意图的镜头，而不是随机可用的片段。",
-    bodyEn: "Bring stills, clips, and audio into one directive so the output feels intentional instead of merely acceptable.",
+    src: "/videos/gallery/seedance-autumn-duel.mp4",
+    label: "Cinematic action sample",
+    headlineZh: "让角色、动作和运镜在同一个镜头里配合起来。",
+    headlineEn: "Let identity, movement, and camera travel work together in one shot.",
+    bodyZh: "这类完整动作样片更适合展示多参考工作流的价值：主体需要稳定，动作需要有节奏，镜头也要沿着同一个意图推进。",
+    bodyEn: "A full action sample shows the value of the multi-reference workflow more clearly: the subject stays stable, the motion keeps its rhythm, and the camera move follows one consistent intent.",
   },
   image_to_video: {
     src: "/videos/gallery/image-to-video.mp4",
@@ -347,8 +335,9 @@ const PREVIEW_REELS: Record<VideoGenerationMode, { src: string; label: string; h
 
 export function MultiModalWorkspace({ locale }: Props) {
   const copy = COPY[locale] ?? COPY.en;
-  const modelMeta = MODEL_META[locale] ?? MODEL_META.en;
+  const videoModelMeta = VIDEO_MODEL_META[locale] ?? VIDEO_MODEL_META.en;
   const {
+    videoModel,
     mode,
     prompt,
     resolution,
@@ -369,8 +358,35 @@ export function MultiModalWorkspace({ locale }: Props) {
 
   const promptLength = useMemo(() => prompt.length, [prompt]);
   const activePreview = PREVIEW_REELS[mode];
-  const activeModel = modelMeta[mode];
+  const activeModel = videoModelMeta[videoModel];
   const localizedNotice = useMemo(() => formatWorkspaceNotice(notice, locale), [notice, locale]);
+  const imageLimit = getAssetLimitForMode(mode, "image");
+  const videoLimit = getAssetLimitForMode(mode, "video");
+  const audioLimit = getAssetLimitForMode(mode, "audio");
+  const currentUploadTitle =
+    mode === "text_to_video"
+      ? locale === "zh"
+        ? "这个模式只需要一段清晰的文字描述"
+        : "This mode starts with a clear text prompt"
+      : mode === "image_to_video"
+        ? locale === "zh"
+          ? "上传 1 到 2 张关键帧图片"
+          : "Upload 1 to 2 keyframe images"
+        : copy.uploadTitle;
+  const currentUploadHint =
+    mode === "text_to_video"
+      ? locale === "zh"
+        ? "Kie 当前公开的 Seedance 文档里，这个工作流先以提示词为主。先把主体、镜头运动、节奏和氛围说清楚，再进入生成。"
+        : "In Kie's current public Seedance docs, this workflow starts prompt-first. Describe the subject, camera motion, pacing, and atmosphere clearly before you generate."
+      : mode === "image_to_video"
+        ? locale === "zh"
+          ? "当前按 Kie 文档收紧为首帧 / 尾帧图片工作流。第一张图负责起始画面，第二张图可作为尾帧目标。"
+          : "This mode is tightened to the first-frame / last-frame image workflow described by Kie. The first image starts the shot, and the optional second image becomes the target ending frame."
+        : copy.uploadHint;
+  const showImageLane = imageLimit > 0;
+  const showVideoLane = videoLimit > 0;
+  const showAudioLane = audioLimit > 0;
+  const showLastFrameToggle = mode !== "text_to_video";
 
   async function handleGenerate() {
     if (!user) {
@@ -403,6 +419,10 @@ export function MultiModalWorkspace({ locale }: Props) {
           ? locale === "zh"
             ? "先补充 Prompt 再发起生成。"
             : "Add a prompt before starting generation."
+          : result.error === "missing_image_keyframe"
+            ? locale === "zh"
+              ? "图生视频模式下，请至少上传一张关键帧图片。"
+              : "Upload at least one keyframe image in image-to-video mode."
           : result.error === "missing_references"
             ? locale === "zh"
               ? "至少准备一个图像或视频参考。"
@@ -459,20 +479,23 @@ export function MultiModalWorkspace({ locale }: Props) {
                     </span>
                   </div>
                   <div className="mt-3">
-                    <Select value={mode} onValueChange={(value) => actions.setMode(value as VideoGenerationMode)}>
+                    <Select value={videoModel} onValueChange={(value) => actions.setVideoModel(value as VideoModelId)}>
                       <SelectTrigger className="h-11 rounded-[12px] border-white/10 bg-[#171920] text-left text-sm text-white focus:ring-[#2563ff]/35 focus:ring-offset-0">
-                        <SelectValue placeholder={locale === "zh" ? "选择模型模式" : "Choose a model mode"} />
+                        <SelectValue placeholder={locale === "zh" ? "选择视频模型" : "Choose a video model"} />
                       </SelectTrigger>
                       <SelectContent className="border-white/10 bg-[#171920] text-white">
-                        {copy.tabs.map((tab) => (
+                        {VIDEO_MODEL_OPTIONS.map((modelOptionKey) => {
+                          const modelOption = videoModelMeta[modelOptionKey];
+                          return (
                           <SelectItem
-                            key={tab.mode}
-                            value={tab.mode}
+                            key={modelOptionKey}
+                            value={modelOptionKey}
                             className="rounded-[10px] py-2.5 pl-8 pr-3 text-sm text-white focus:bg-white/[0.08] focus:text-white"
                           >
-                            {tab.label}
+                            {modelOption.name}
                           </SelectItem>
-                        ))}
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                   </div>
@@ -500,27 +523,41 @@ export function MultiModalWorkspace({ locale }: Props) {
           ) : null}
 
           <div className="rounded-[16px] border border-white/8 bg-[#1d1f26] p-4">
-            <div className="text-sm font-medium text-white">{copy.uploadTitle}</div>
-            <p className="mt-2 text-sm leading-7 text-white/56">{copy.uploadHint}</p>
+            <div className="text-sm font-medium text-white">{currentUploadTitle}</div>
+            <p className="mt-2 text-sm leading-7 text-white/56">{currentUploadHint}</p>
           </div>
 
-          <div className="space-y-3">
-            <UploadLane
-              locale={locale}
-              kind="image"
-              title={copy.laneTitle.image}
-              hint={copy.laneHint.image}
-              actionLabel={copy.laneAction.image}
-              limitLabel={copy.laneEmptyMeta.image}
-              assets={assets.image}
-              onAddFiles={actions.addFiles}
-              onMove={actions.moveAsset}
-              onRemove={actions.removeAsset}
-              emptyLabel={copy.noAssets}
-            />
-            <UploadLane locale={locale} kind="video" title={copy.laneTitle.video} hint={copy.laneHint.video} actionLabel={copy.laneAction.video} limitLabel={copy.laneEmptyMeta.video} assets={assets.video} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
-            <UploadLane locale={locale} kind="audio" title={copy.laneTitle.audio} hint={copy.laneHint.audio} actionLabel={copy.laneAction.audio} limitLabel={copy.laneEmptyMeta.audio} assets={assets.audio} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
-          </div>
+          {showImageLane || showVideoLane || showAudioLane ? (
+            <div className="space-y-3">
+              {showImageLane ? (
+                <UploadLane
+                  locale={locale}
+                  kind="image"
+                  title={copy.laneTitle.image}
+                  hint={copy.laneHint.image}
+                  actionLabel={copy.laneAction.image}
+                  limitLabel={imageLimit === 2 ? (locale === "zh" ? "最多 2 张 / 首帧 + 尾帧" : "Up to 2 images / first + last frame") : copy.laneEmptyMeta.image}
+                  assets={assets.image}
+                  onAddFiles={actions.addFiles}
+                  onMove={actions.moveAsset}
+                  onRemove={actions.removeAsset}
+                  emptyLabel={copy.noAssets}
+                />
+              ) : null}
+              {showVideoLane ? (
+                <UploadLane locale={locale} kind="video" title={copy.laneTitle.video} hint={copy.laneHint.video} actionLabel={copy.laneAction.video} limitLabel={copy.laneEmptyMeta.video} assets={assets.video} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
+              ) : null}
+              {showAudioLane ? (
+                <UploadLane locale={locale} kind="audio" title={copy.laneTitle.audio} hint={copy.laneHint.audio} actionLabel={copy.laneAction.audio} limitLabel={copy.laneEmptyMeta.audio} assets={assets.audio} onAddFiles={actions.addFiles} onMove={actions.moveAsset} onRemove={actions.removeAsset} emptyLabel={copy.noAssets} />
+              ) : null}
+            </div>
+          ) : (
+            <div className="rounded-[16px] border border-dashed border-white/10 bg-[#1c1f26] px-4 py-5 text-sm leading-7 text-white/54">
+              {locale === "zh"
+                ? "这个模式当前不需要上传参考素材。直接把主体、镜头、节奏和氛围写清楚，就可以发起生成。"
+                : "This mode does not need reference uploads right now. Describe the subject, camera move, pacing, and atmosphere clearly, then generate."}
+            </div>
+          )}
 
           <div className="space-y-2.5">
             <TogglePill
@@ -529,12 +566,14 @@ export function MultiModalWorkspace({ locale }: Props) {
               label={copy.containsRealPeople}
               hint={copy.containsRealPeopleHint}
             />
-            <TogglePill
-              active={returnLastFrame}
-              onClick={actions.toggleReturnLastFrame}
-              label={copy.returnLastFrame}
-              hint={copy.returnLastFrameHint}
-            />
+            {showLastFrameToggle ? (
+              <TogglePill
+                active={returnLastFrame}
+                onClick={actions.toggleReturnLastFrame}
+                label={copy.returnLastFrame}
+                hint={copy.returnLastFrameHint}
+              />
+            ) : null}
           </div>
 
           <div className="rounded-[16px] border border-white/8 bg-[#1d1f26] p-4">
@@ -560,6 +599,7 @@ export function MultiModalWorkspace({ locale }: Props) {
             />
             <DurationSlider
               title={copy.duration}
+              options={DURATIONS}
               value={durationSeconds}
               onChange={(next) => actions.setDurationSeconds(next as typeof durationSeconds)}
             />
@@ -946,6 +986,17 @@ function OptionGroup({
   value: string;
   onChange: (next: string) => void;
 }) {
+  if (options.length <= 1) {
+    return (
+      <div className="rounded-[16px] border border-white/8 bg-[#1d1f26] p-4">
+        <Label>{title}</Label>
+        <div className="mt-3 inline-flex rounded-xl border border-white/10 bg-[#15171d] px-3.5 py-2 text-sm text-white/76">
+          {options[0]}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-[16px] border border-white/8 bg-[#1d1f26] p-4">
       <Label>{title}</Label>
@@ -974,13 +1025,29 @@ function OptionGroup({
 
 function DurationSlider({
   title,
+  options,
   value,
   onChange,
 }: {
   title: string;
+  options: readonly number[];
   value: number;
   onChange: (next: number) => void;
 }) {
+  if (options.length <= 1) {
+    return (
+      <div className="rounded-[16px] border border-white/8 bg-[#1d1f26] p-4">
+        <div className="flex items-center justify-between">
+          <Label>{title}</Label>
+          <span className="text-sm text-white">{value}s</span>
+        </div>
+        <div className="mt-3 rounded-xl border border-white/10 bg-[#15171d] px-3.5 py-3 text-sm text-white/68">
+          {title.includes("时长") ? `${value}s · 当前按 Kie 支持能力展示` : `${value}s · Shown from the current Kie-supported set`}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-[16px] border border-white/8 bg-[#1d1f26] p-4">
       <div className="flex items-center justify-between">
@@ -989,9 +1056,9 @@ function DurationSlider({
       </div>
       <input
         type="range"
-        min={5}
-        max={15}
-        step={5}
+        min={Math.min(...options)}
+        max={Math.max(...options)}
+        step={options.length > 1 ? options[1] - options[0] : 1}
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
         className="mt-4 h-2 w-full accent-[#5da3ff]"
@@ -1049,6 +1116,7 @@ function formatWorkspaceNotice(notice: string | null, locale: string) {
 
   const directMap: Record<string, string> = {
     "Prompt is required before generating.": "开始生成前请先补充提示词。",
+    "Upload at least one keyframe image before generating.": "图生视频模式下，请至少上传一张关键帧图片。",
     "Upload at least one image or video reference before generating.": "开始生成前请至少准备一个图像或视频参考。",
     "Please wait until all uploads finish before generating.": "请先等待所有素材上传完成，再开始生成。",
     "Generation queued. You can continue editing or monitor progress in the dashboard.": "任务已经进入队列，你可以继续整理素材，或前往控制台查看进度。",
@@ -1056,6 +1124,9 @@ function formatWorkspaceNotice(notice: string | null, locale: string) {
     "Upload failed": "素材上传失败，请稍后重试。",
     "Failed to prepare upload": "准备上传失败，请稍后重试。",
     "Network error during upload": "上传过程中发生网络错误，请稍后重试。",
+    "This mode does not accept image references.": "当前模式不接受图片参考素材。",
+    "This mode does not accept video references.": "当前模式不接受视频参考素材。",
+    "This mode does not accept audio references.": "当前模式不接受音频参考素材。",
   };
 
   if (directMap[notice]) return directMap[notice];

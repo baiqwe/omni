@@ -4,10 +4,23 @@ import { createServiceRoleClient } from "@/utils/supabase/service-role";
 import { getProjectId } from "@/utils/supabase/project";
 import { consumeRateLimit } from "@/utils/rate-limit";
 import { estimateGenerationCredits, normalizeVideoGenerationRequest } from "@/utils/video-generation";
+import { buildKieCallbackUrl, createKieSeedanceTask } from "@/utils/kie";
 
 export const runtime = "nodejs";
 
 const ACTIVE_GENERATION_WINDOW_MS = 10 * 60 * 1000;
+
+function getRequestIp(request: NextRequest) {
+  const cloudflareIp = request.headers.get("cf-connecting-ip")?.trim();
+  if (cloudflareIp) return cloudflareIp;
+
+  const realIp = request.headers.get("x-real-ip")?.trim();
+  if (realIp) return realIp;
+
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  const forwardedIp = forwardedFor?.split(",")[0]?.trim();
+  return forwardedIp || "unknown";
+}
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
@@ -49,7 +62,6 @@ export async function POST(request: NextRequest) {
 
   let generationId: string | null = null;
   let projectId: string | null = null;
-  let userId: string | null = null;
   let estimatedCredits = 0;
 
   try {
@@ -84,10 +96,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Please sign in to generate.", code: "UNAUTHORIZED" }, { status: 401 });
     }
 
-    userId = user.id;
-
-    const forwardedFor = request.headers.get("x-forwarded-for");
-    const ip = forwardedFor?.split(",")[0]?.trim() || "unknown";
+    const ip = getRequestIp(request);
     const rateLimit = consumeRateLimit({
       scope: "ai-generate",
       key: `${projectId}:${user.id}:${ip}`,
@@ -139,84 +148,143 @@ export async function POST(request: NextRequest) {
 
     estimatedCredits = estimateGenerationCredits(payload);
 
-    const { data: deductSuccess, error: rpcError } = await supabase.rpc("decrease_credits", {
+    type CreateGenerationRpcRow = {
+      id: string;
+      created_at: string;
+      provider_job_id: string | null;
+      credits_cost: number;
+    };
+
+    const { data: rpcRows, error: rpcError } = await supabase.rpc("create_seedance_generation_with_credits", {
       p_user_id: user.id,
-      p_amount: estimatedCredits,
-      p_description: `Seedance generation (${payload.mode}, ${payload.resolution}, ${payload.durationSeconds}s)`,
-    });
+      p_prompt: payload.prompt,
+      p_model_id: payload.videoModel,
+      p_generation_type: payload.mode,
+      p_credits_cost: estimatedCredits,
+      p_input_images: payload.images,
+      p_input_videos: payload.videos,
+      p_input_audios: payload.audios,
+      p_resolution: payload.resolution,
+      p_duration_seconds: payload.durationSeconds,
+      p_aspect_ratio: payload.aspectRatio,
+      p_provider_job_id: null,
+      p_status: "pending",
+      p_status_detail: "queued_for_provider",
+      p_metadata: {
+        provider: "kie",
+        providerModel: payload.videoModel,
+        containsRealPeople: payload.containsRealPeople,
+        returnLastFrame: payload.returnLastFrame,
+        workspacePreset: payload.workspacePreset,
+        providerStatus: "waiting",
+        orchestration: "kie_seedance",
+        assetCounts: {
+          images: payload.images.length,
+          videos: payload.videos.length,
+          audios: payload.audios.length,
+        },
+      },
+    }) as { data: CreateGenerationRpcRow[] | null; error: { message?: string } | null };
 
     if (rpcError) {
-      return NextResponse.json({ error: "System busy, please try again", code: "SYSTEM_ERROR" }, { status: 500 });
-    }
-
-    if (!deductSuccess) {
-      return NextResponse.json(
-        {
-          error: "Insufficient credits",
-          code: "INSUFFICIENT_CREDITS",
-          required: estimatedCredits,
-        },
-        { status: 402 }
-      );
-    }
-
-    const { data: generationRow, error: generationInsertError } = await serviceSupabase
-      .from("generations")
-      .insert({
-        project_id: projectId,
-        user_id: user.id,
-        prompt: payload.prompt,
-        model_id: "seedance2-workspace-shell",
-        status: "pending",
-        credits_cost: estimatedCredits,
-        generation_type: payload.mode,
-        input_images: payload.images,
-        input_videos: payload.videos,
-        input_audios: payload.audios,
-        resolution: payload.resolution,
-        duration_seconds: payload.durationSeconds,
-        aspect_ratio: payload.aspectRatio,
-        provider_job_id: `stub_${crypto.randomUUID()}`,
-        status_detail: "queued_for_provider",
-        metadata: {
-          containsRealPeople: payload.containsRealPeople,
-          returnLastFrame: payload.returnLastFrame,
-          workspacePreset: payload.workspacePreset,
-          providerStatus: "not_connected_yet",
-          orchestration: "seedance_async_shell",
-          assetCounts: {
-            images: payload.images.length,
-            videos: payload.videos.length,
-            audios: payload.audios.length,
+      if (rpcError.message === "INSUFFICIENT_CREDITS") {
+        return NextResponse.json(
+          {
+            error: "Insufficient credits",
+            code: "INSUFFICIENT_CREDITS",
+            required: estimatedCredits,
           },
-        },
-      })
-      .select("id, created_at, provider_job_id")
-      .single();
+          { status: 402 }
+        );
+      }
 
-    if (generationInsertError || !generationRow?.id) {
-      await supabase.rpc("decrease_credits", {
-        p_user_id: user.id,
-        p_amount: -estimatedCredits,
-        p_description: "Refund: generation bootstrap failed",
-      });
+      if (rpcError.message === "CUSTOMER_NOT_FOUND" || rpcError.message === "PROJECT_CONTEXT_MISSING") {
+        return NextResponse.json({ error: "System busy, please try again", code: "SYSTEM_ERROR" }, { status: 500 });
+      }
 
+      return NextResponse.json({ error: "Could not initialize generation", code: "GENERATION_LOG_FAILED" }, { status: 500 });
+    }
+
+    const generationRow = rpcRows?.[0];
+    if (!generationRow?.id) {
       return NextResponse.json({ error: "Could not initialize generation", code: "GENERATION_LOG_FAILED" }, { status: 500 });
     }
 
     generationId = generationRow.id;
 
-    return NextResponse.json(
-      {
-        id: generationRow.id,
-        status: "pending",
-        statusDetail: "queued_for_provider",
-        providerJobId: generationRow.provider_job_id,
-        estimatedCredits,
-        message: "Generation job created. Provider execution will be connected in the next implementation phase.",
-      },
-      { status: 202 }
-    );
+    try {
+      const providerJobId = await createKieSeedanceTask({
+        model: payload.videoModel,
+        request: payload,
+        callbackUrl: buildKieCallbackUrl(),
+      });
+
+      await serviceSupabase
+        .from("generations")
+        .update({
+          model_id: payload.videoModel,
+          provider_job_id: providerJobId,
+          status: "pending",
+          status_detail: "provider_waiting",
+          metadata: {
+            provider: "kie",
+            providerModel: payload.videoModel,
+            providerStatus: "waiting",
+            containsRealPeople: payload.containsRealPeople,
+            returnLastFrame: payload.returnLastFrame,
+            workspacePreset: payload.workspacePreset,
+            orchestration: "kie_seedance",
+            assetCounts: {
+              images: payload.images.length,
+              videos: payload.videos.length,
+              audios: payload.audios.length,
+            },
+          },
+        })
+        .eq("id", generationId)
+        .eq("project_id", projectId);
+
+      return NextResponse.json(
+        {
+          id: generationRow.id,
+          status: "pending",
+          statusDetail: "provider_waiting",
+          providerJobId,
+          estimatedCredits,
+          message: "Generation job created and submitted to Kie.",
+        },
+        { status: 202 }
+      );
+    } catch (providerError: any) {
+      await supabase.rpc("decrease_credits", {
+        p_user_id: user.id,
+        p_amount: -estimatedCredits,
+        p_description: "Refund for failed Kie task bootstrap",
+      });
+
+      await serviceSupabase
+        .from("generations")
+        .update({
+          status: "failed",
+          status_detail: "provider_submission_failed",
+          metadata: {
+            provider: "kie",
+            providerModel: payload.videoModel,
+            providerStatus: "submission_failed",
+            failureMessage: providerError?.message || "Failed to submit task to Kie",
+          },
+        })
+        .eq("id", generationId)
+        .eq("project_id", projectId);
+
+      return NextResponse.json(
+        {
+          error: providerError?.message || "Failed to submit generation to Kie",
+          code: "PROVIDER_SUBMISSION_FAILED",
+        },
+        { status: 502 }
+      );
+    }
   } catch (error: any) {
     if (generationId && projectId) {
       await serviceSupabase
@@ -231,14 +299,6 @@ export async function POST(request: NextRequest) {
         })
         .eq("id", generationId)
         .eq("project_id", projectId);
-    }
-
-    if (userId && estimatedCredits > 0 && !generationId) {
-      await supabase.rpc("decrease_credits", {
-        p_user_id: userId,
-        p_amount: -estimatedCredits,
-        p_description: "Refund: generation setup error",
-      });
     }
 
     return NextResponse.json(

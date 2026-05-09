@@ -9,6 +9,7 @@ export function WorkspaceQuerySync() {
 
   useEffect(() => {
     workspaceActions.hydrateFromQuery({
+      model: searchParams.get("model") ?? undefined,
       mode: searchParams.get("mode") ?? undefined,
       prompt: searchParams.get("prompt") ?? undefined,
       ratio: searchParams.get("ratio") ?? undefined,

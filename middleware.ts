@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
     const normalizedPathname = request.nextUrl.pathname.replace(/^\/(en|zh)(?:\/(?:en|zh))+/, `/${duplicateLocaleMatch[1]}`)
     const normalizedUrl = request.nextUrl.clone()
     normalizedUrl.pathname = normalizedPathname || `/${duplicateLocaleMatch[1]}`
-    return NextResponse.redirect(normalizedUrl, 308)
+    return NextResponse.redirect(normalizedUrl, 307)
   }
 
   // 1. 先运行 intl 中间件，获取基础 Response (包含语言 Cookie 和重定向逻辑)

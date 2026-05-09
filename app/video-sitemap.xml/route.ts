@@ -2,6 +2,7 @@ import { galleryItems } from "@/config/gallery";
 import { locales } from "@/i18n/routing";
 import { site } from "@/config/site";
 import { toSchemaDateTime } from "@/utils/seo/date";
+import { parseDurationLabelToSeconds } from "@/utils/seo/video";
 
 export const runtime = "nodejs";
 
@@ -24,6 +25,7 @@ export async function GET() {
       const videoUrl = new URL(item.videoUrl, site.siteUrl).toString();
       const title = locale === "zh" ? item.titleZh : item.title;
       const description = locale === "zh" ? item.descriptionZh : item.description;
+      const durationSeconds = parseDurationLabelToSeconds(item.durationLabel) ?? 5;
 
       return `
   <url>
@@ -35,7 +37,7 @@ export async function GET() {
       <video:description>${escapeXml(description)}</video:description>
       <video:content_loc>${escapeXml(videoUrl)}</video:content_loc>
       <video:player_loc>${escapeXml(pageUrl)}#showcase</video:player_loc>
-      <video:duration>5</video:duration>
+      <video:duration>${durationSeconds}</video:duration>
       <video:publication_date>${escapeXml(publicationDate)}</video:publication_date>
     </video:video>
   </url>`;

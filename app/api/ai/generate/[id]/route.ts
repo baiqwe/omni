@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createServiceRoleClient } from "@/utils/supabase/service-role";
 import { getProjectId } from "@/utils/supabase/project";
+import { fetchKieTaskRecord, mapKieStateToGenerationState } from "@/utils/kie";
 
 export const runtime = "nodejs";
 
@@ -32,7 +33,7 @@ export async function GET(_: Request, context: { params: Promise<{ id: string }>
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { data: generation, error } = await serviceSupabase
+  let { data: generation, error } = await serviceSupabase
     .from("generations")
     .select(
       "id, status, status_detail, created_at, prompt, credits_cost, resolution, duration_seconds, aspect_ratio, generation_type, provider_job_id, input_images, input_videos, input_audios, output_video_url, image_url, metadata"
@@ -44,6 +45,48 @@ export async function GET(_: Request, context: { params: Promise<{ id: string }>
 
   if (error || !generation) {
     return NextResponse.json({ error: "Generation not found" }, { status: 404 });
+  }
+
+  const provider = (generation.metadata as Record<string, unknown> | null)?.provider;
+  if (
+    provider === "kie" &&
+    generation.provider_job_id &&
+    (generation.status === "pending" || generation.status === "processing")
+  ) {
+    try {
+      const taskRecord = await fetchKieTaskRecord(generation.provider_job_id);
+      const mappedState = mapKieStateToGenerationState(taskRecord.state);
+      const mergedMetadata = {
+        ...((generation.metadata as Record<string, unknown> | null) ?? {}),
+        provider: "kie",
+        providerStatus: taskRecord.state,
+        kie: taskRecord.raw,
+      };
+
+      const updatePayload: Record<string, unknown> = {
+        status: mappedState.status,
+        status_detail: mappedState.statusDetail,
+        metadata: mergedMetadata,
+      };
+
+      if (taskRecord.resultUrls[0]) {
+        updatePayload.output_video_url = taskRecord.resultUrls[0];
+      }
+
+      await serviceSupabase
+        .from("generations")
+        .update(updatePayload)
+        .eq("id", generation.id)
+        .eq("project_id", projectId);
+
+      generation = {
+        ...generation,
+        ...updatePayload,
+        output_video_url: (updatePayload.output_video_url as string | undefined) ?? generation.output_video_url,
+      };
+    } catch {
+      // Keep the last known database state if provider polling fails temporarily.
+    }
   }
 
   return NextResponse.json({

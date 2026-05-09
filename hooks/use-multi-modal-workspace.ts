@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
-import { estimateGenerationCredits, type VideoGenerationMode } from "@/utils/video-generation";
+import {
+  estimateGenerationCredits,
+  getAssetLimitForMode,
+  KIE_SEEDANCE_SUPPORTED_DURATIONS,
+  KIE_SEEDANCE_SUPPORTED_RATIOS,
+  KIE_SEEDANCE_SUPPORTED_RESOLUTIONS,
+  type VideoGenerationMode,
+  type VideoModelId,
+} from "@/utils/video-generation";
 
 export type WorkspaceAssetKind = "image" | "video" | "audio";
 export type WorkspaceAssetStatus = "queued" | "uploading" | "ready" | "error";
@@ -22,6 +30,7 @@ export type WorkspaceAsset = {
 type AssetBuckets = Record<WorkspaceAssetKind, WorkspaceAsset[]>;
 
 type WorkspaceState = {
+  videoModel: VideoModelId;
   mode: VideoGenerationMode;
   prompt: string;
   resolution: "480p" | "720p" | "1080p";
@@ -46,19 +55,15 @@ type WorkspaceHydrationPayload = Partial<{
   ratio: string;
   containsRealPeople: string;
   returnLastFrame: string;
+  model: string;
 }>;
 
-const MAX_ASSETS: Record<WorkspaceAssetKind, number> = {
-  image: 9,
-  video: 3,
-  audio: 3,
-};
-
 const initialState: WorkspaceState = {
+  videoModel: "bytedance/seedance-2",
   mode: "multi_modal_video",
   prompt: "",
-  resolution: "1080p",
-  durationSeconds: 5,
+  resolution: "720p",
+  durationSeconds: 15,
   aspectRatio: "16:9",
   containsRealPeople: true,
   returnLastFrame: true,
@@ -96,6 +101,10 @@ function snapshot() {
 
 function isMode(value: string): value is VideoGenerationMode {
   return value === "multi_modal_video" || value === "image_to_video" || value === "text_to_video" || value === "video_extension";
+}
+
+function isVideoModel(value: string): value is VideoModelId {
+  return value === "bytedance/seedance-2" || value === "bytedance/seedance-2-fast";
 }
 
 function isResolution(value: string): value is WorkspaceState["resolution"] {
@@ -271,6 +280,11 @@ export const workspaceActions = {
         nextState.mode = nextMode;
       }
 
+      const nextModel = payload.model ?? undefined;
+      if (nextModel && isVideoModel(nextModel) && nextState.videoModel !== nextModel) {
+        nextState.videoModel = nextModel;
+      }
+
       if (typeof payload.prompt === "string" && payload.prompt.trim()) {
         nextState.prompt = payload.prompt.slice(0, 5000);
       }
@@ -301,19 +315,46 @@ export const workspaceActions = {
     });
   },
   setMode(mode: VideoGenerationMode) {
-    setState((current) => ({ ...current, mode }));
+    setState((current) => ({
+      ...current,
+      mode,
+      resolution: KIE_SEEDANCE_SUPPORTED_RESOLUTIONS[0],
+      durationSeconds: KIE_SEEDANCE_SUPPORTED_DURATIONS[0],
+      aspectRatio: KIE_SEEDANCE_SUPPORTED_RATIOS[0],
+      assets: {
+        image: current.assets.image.slice(0, getAssetLimitForMode(mode, "image")),
+        video: current.assets.video.slice(0, getAssetLimitForMode(mode, "video")),
+        audio: current.assets.audio.slice(0, getAssetLimitForMode(mode, "audio")),
+      },
+    }));
+  },
+  setVideoModel(videoModel: VideoModelId) {
+    setState((current) => ({ ...current, videoModel }));
   },
   setPrompt(prompt: string) {
     setState((current) => ({ ...current, prompt: prompt.slice(0, 5000) }));
   },
   setResolution(resolution: WorkspaceState["resolution"]) {
-    setState((current) => ({ ...current, resolution }));
+    setState((current) => ({
+      ...current,
+      resolution: KIE_SEEDANCE_SUPPORTED_RESOLUTIONS.includes(resolution) ? resolution : KIE_SEEDANCE_SUPPORTED_RESOLUTIONS[0],
+    }));
   },
   setDurationSeconds(durationSeconds: WorkspaceState["durationSeconds"]) {
-    setState((current) => ({ ...current, durationSeconds }));
+    setState((current) => ({
+      ...current,
+      durationSeconds: KIE_SEEDANCE_SUPPORTED_DURATIONS.includes(durationSeconds)
+        ? durationSeconds
+        : KIE_SEEDANCE_SUPPORTED_DURATIONS[0],
+    }));
   },
   setAspectRatio(aspectRatio: WorkspaceState["aspectRatio"]) {
-    setState((current) => ({ ...current, aspectRatio }));
+    setState((current) => ({
+      ...current,
+      aspectRatio: KIE_SEEDANCE_SUPPORTED_RATIOS.includes(aspectRatio)
+        ? aspectRatio
+        : KIE_SEEDANCE_SUPPORTED_RATIOS[0],
+    }));
   },
   toggleContainsRealPeople() {
     setState((current) => ({ ...current, containsRealPeople: !current.containsRealPeople }));
@@ -325,7 +366,17 @@ export const workspaceActions = {
     setState((current) => ({ ...current, notice: null }));
   },
   addFiles(kind: WorkspaceAssetKind, files: File[]) {
-    const remaining = MAX_ASSETS[kind] - state.assets[kind].length;
+    const maxAssets = getAssetLimitForMode(state.mode, kind);
+    const remaining = maxAssets - state.assets[kind].length;
+
+    if (maxAssets <= 0) {
+      setState((current) => ({
+        ...current,
+        notice: `This mode does not accept ${kind} references.`,
+      }));
+      return;
+    }
+
     const acceptedFiles = files.slice(0, Math.max(remaining, 0));
     const droppedCount = files.length - acceptedFiles.length;
     const created = acceptedFiles.map((file) => createAsset(file, kind));
@@ -333,7 +384,7 @@ export const workspaceActions = {
     if (created.length === 0 && droppedCount > 0) {
       setState((current) => ({
         ...current,
-        notice: `Only ${MAX_ASSETS[kind]} ${kind}${MAX_ASSETS[kind] > 1 ? "s" : ""} allowed in this lane.`,
+        notice: `Only ${maxAssets} ${kind}${maxAssets > 1 ? "s" : ""} allowed in this lane.`,
       }));
       return;
     }
@@ -409,6 +460,14 @@ export const workspaceActions = {
       return { ok: false as const, error: "missing_prompt" };
     }
 
+    if (state.mode === "image_to_video" && readyAssets.image.length === 0) {
+      setState((current) => ({
+        ...current,
+        notice: "Upload at least one keyframe image before generating.",
+      }));
+      return { ok: false as const, error: "missing_image_keyframe" };
+    }
+
     if (
       state.mode !== "text_to_video" &&
       readyAssets.image.length === 0 &&
@@ -452,6 +511,7 @@ export const workspaceActions = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          videoModel: state.videoModel,
           mode: state.mode,
           prompt: state.prompt,
           resolution: state.resolution,

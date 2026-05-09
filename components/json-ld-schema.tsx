@@ -8,6 +8,7 @@ import { getTranslations } from 'next-intl/server';
 import { site } from '@/config/site';
 import { galleryItems } from '@/config/gallery';
 import { toSchemaDateTime } from '@/utils/seo/date';
+import { parseDurationLabelToSeconds, secondsToIsoDuration } from '@/utils/seo/video';
 
 export async function SoftwareApplicationSchema({ locale }: { locale: string }) {
     const t = await getTranslations({ locale, namespace: 'metadata' });
@@ -58,11 +59,6 @@ export async function SoftwareApplicationSchema({ locale }: { locale: string }) 
             "Video extension and production workflow planning"
         ],
         "screenshot": new URL(site.ogImagePath, site.siteUrl).toString(),
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "ratingCount": "1250"
-        },
         "provider": {
             "@type": "Organization",
             "name": site.siteName,
@@ -70,21 +66,25 @@ export async function SoftwareApplicationSchema({ locale }: { locale: string }) 
         }
     };
 
-    const videoSchemas = galleryItems.slice(0, 3).map((item) => ({
-        "@context": "https://schema.org",
-        "@type": "VideoObject",
-        "name": locale === "zh" ? item.titleZh : item.title,
-        "description": locale === "zh" ? item.descriptionZh : item.description,
-        "thumbnailUrl": new URL(item.afterImage, site.siteUrl).toString(),
-        "contentUrl": new URL(item.videoUrl, site.siteUrl).toString(),
-        "embedUrl": new URL(`/${locale}/${item.slug}#showcase`, site.siteUrl).toString(),
-        "duration": "PT5S",
-        "uploadDate": toSchemaDateTime("2026-04-23T00:00:00+08:00"),
-        "publisher": {
-            "@type": "Organization",
-            "name": site.siteName
-        }
-    }));
+    const videoSchemas = galleryItems.slice(0, 3).map((item) => {
+        const durationSeconds = parseDurationLabelToSeconds(item.durationLabel) ?? 5;
+
+        return {
+            "@context": "https://schema.org",
+            "@type": "VideoObject",
+            "name": locale === "zh" ? item.titleZh : item.title,
+            "description": locale === "zh" ? item.descriptionZh : item.description,
+            "thumbnailUrl": new URL(item.afterImage, site.siteUrl).toString(),
+            "contentUrl": new URL(item.videoUrl, site.siteUrl).toString(),
+            "embedUrl": new URL(`/${locale}/${item.slug}#showcase`, site.siteUrl).toString(),
+            "duration": secondsToIsoDuration(durationSeconds),
+            "uploadDate": toSchemaDateTime("2026-04-23T00:00:00+08:00"),
+            "publisher": {
+                "@type": "Organization",
+                "name": site.siteName
+            }
+        };
+    });
 
     const schema = [organizationSchema, websiteSchema, appSchema, ...videoSchemas];
 

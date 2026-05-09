@@ -5,6 +5,11 @@ import { usePathname } from 'next/navigation';
 import { ChevronDown, Paperclip, PlayCircle, Settings2, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter } from '@/i18n/routing';
+import {
+    KIE_SEEDANCE_SUPPORTED_DURATIONS,
+    KIE_SEEDANCE_SUPPORTED_RATIOS,
+    type VideoModelId
+} from '@/utils/video-generation';
 
 interface HomeInteractiveProps {
     onShowStaticContent: (show: boolean) => void;
@@ -24,8 +29,12 @@ const MODE_TABS = {
     ],
 } as const;
 
-const RATIO_OPTIONS = ['16:9', '9:16', '1:1'] as const;
-const DURATION_OPTIONS = ['5s', '10s', '15s'] as const;
+const RATIO_OPTIONS = KIE_SEEDANCE_SUPPORTED_RATIOS;
+const DURATION_OPTIONS = KIE_SEEDANCE_SUPPORTED_DURATIONS.map((value) => `${value}s`) as readonly string[];
+const VIDEO_MODELS: Array<{ value: VideoModelId; labelZh: string; labelEn: string }> = [
+    { value: 'bytedance/seedance-2', labelZh: 'Seedance 2', labelEn: 'Seedance 2' },
+    { value: 'bytedance/seedance-2-fast', labelZh: 'Seedance 2 Fast', labelEn: 'Seedance 2 Fast' },
+];
 
 const MODE_COPY = {
     zh: {
@@ -83,8 +92,9 @@ function HeroWithUploadSection({
     const locale = (pathParts[1] === 'en' || pathParts[1] === 'zh') ? pathParts[1] : 'en';
     const isZh = locale === 'zh';
     const [ratio, setRatio] = useState<(typeof RATIO_OPTIONS)[number]>('16:9');
-    const [duration, setDuration] = useState<(typeof DURATION_OPTIONS)[number]>('5s');
+    const [duration, setDuration] = useState<(typeof DURATION_OPTIONS)[number]>('15s');
     const [activeTab, setActiveTab] = useState<string>('seedance-2');
+    const [videoModel, setVideoModel] = useState<VideoModelId>('bytedance/seedance-2');
     const copy = MODE_COPY[isZh ? 'zh' : 'en'];
     const [prompt, setPrompt] = useState('');
 
@@ -101,6 +111,7 @@ function HeroWithUploadSection({
         const params = new URLSearchParams();
 
         if (prompt.trim()) params.set('prompt', prompt.trim());
+        params.set('model', videoModel);
         params.set('mode', activeTab);
         params.set('ratio', ratio);
         params.set('duration', duration);
@@ -137,35 +148,58 @@ function HeroWithUploadSection({
                                 <div className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/52">
                                     {modeCopy.eyebrow}
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={openCreationCenter}
-                                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm font-medium text-white/90"
-                                >
-                                    Seedance 2
-                                    <ChevronDown className="h-4 w-4 text-white/48" />
-                                </button>
+                                <div className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] p-1 text-sm font-medium text-white/90">
+                                    {VIDEO_MODELS.map((model) => (
+                                        <button
+                                            key={model.value}
+                                            type="button"
+                                            onClick={() => setVideoModel(model.value)}
+                                            className={cn(
+                                                'rounded-full px-3 py-1.5 transition-colors',
+                                                videoModel === model.value
+                                                    ? 'bg-white text-slate-950'
+                                                    : 'text-white/74 hover:bg-white/[0.08] hover:text-white'
+                                            )}
+                                        >
+                                            {isZh ? model.labelZh : model.labelEn}
+                                        </button>
+                                    ))}
+                                    <button
+                                        type="button"
+                                        onClick={openCreationCenter}
+                                        className="ml-1 inline-flex items-center gap-1 rounded-full px-2 py-1.5 text-white/52 hover:text-white/80"
+                                        aria-label={isZh ? '前往创作中心选择更多模型设置' : 'Open creation center for more model settings'}
+                                    >
+                                        <ChevronDown className="h-4 w-4" />
+                                    </button>
+                                </div>
                                 <div className="hidden rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-sm text-white/62 sm:inline-flex">
                                     {isZh ? '多模态 AI 视频生成器' : 'Multi-modal AI video generator'}
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-2">
-                                {RATIO_OPTIONS.map((option) => (
-                                    <button
-                                        key={option}
-                                        type="button"
-                                        onClick={() => setRatio(option)}
-                                        className={cn(
-                                            'rounded-full border px-3 py-1 text-xs transition-colors',
-                                            ratio === option
-                                                ? 'border-white/18 bg-white text-slate-950'
-                                                : 'border-white/10 bg-white/[0.04] text-white/72 hover:bg-white/[0.09]'
-                                        )}
-                                    >
-                                        {option}
-                                    </button>
-                                ))}
+                                {RATIO_OPTIONS.length === 1 ? (
+                                    <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-white/72">
+                                        {RATIO_OPTIONS[0]}
+                                    </div>
+                                ) : (
+                                    RATIO_OPTIONS.map((option) => (
+                                        <button
+                                            key={option}
+                                            type="button"
+                                            onClick={() => setRatio(option)}
+                                            className={cn(
+                                                'rounded-full border px-3 py-1 text-xs transition-colors',
+                                                ratio === option
+                                                    ? 'border-white/18 bg-white text-slate-950'
+                                                    : 'border-white/10 bg-white/[0.04] text-white/72 hover:bg-white/[0.09]'
+                                            )}
+                                        >
+                                            {option}
+                                        </button>
+                                    ))
+                                )}
                             </div>
                         </div>
                     </div>
@@ -211,21 +245,28 @@ function HeroWithUploadSection({
                         </button>
                         <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-white/62">
                             <span>{isZh ? '时长' : 'Duration'}</span>
-                            {DURATION_OPTIONS.map((option) => (
-                                <button
-                                    key={option}
-                                    type="button"
-                                    onClick={() => setDuration(option)}
-                                    className={cn(
-                                        'rounded-full px-2 py-0.5 transition-colors',
-                                        duration === option
-                                            ? 'bg-white text-slate-950'
-                                            : 'text-white/72 hover:bg-white/[0.08] hover:text-white'
-                                    )}
-                                >
-                                    {option}
-                                </button>
-                            ))}
+                            {DURATION_OPTIONS.length === 1 ? (
+                                <span className="rounded-full bg-white px-2 py-0.5 text-slate-950">{DURATION_OPTIONS[0]}</span>
+                            ) : (
+                                DURATION_OPTIONS.map((option) => (
+                                    <button
+                                        key={option}
+                                        type="button"
+                                        onClick={() => setDuration(option)}
+                                        className={cn(
+                                            'rounded-full px-2 py-0.5 transition-colors',
+                                            duration === option
+                                                ? 'bg-white text-slate-950'
+                                                : 'text-white/72 hover:bg-white/[0.08] hover:text-white'
+                                        )}
+                                    >
+                                        {option}
+                                    </button>
+                                ))
+                            )}
+                        </div>
+                        <div className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-white/58">
+                            {isZh ? '当前按 Kie 支持集展示 720p / 16:9 / 15s' : 'Showing the current Kie-supported set: 720p / 16:9 / 15s'}
                         </div>
                         <button
                             type="button"

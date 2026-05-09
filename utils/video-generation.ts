@@ -4,13 +4,17 @@ export type VideoGenerationMode =
   | "text_to_video"
   | "video_extension";
 
+export type VideoModelId = "bytedance/seedance-2" | "bytedance/seedance-2-fast";
+export type VideoAssetKind = "image" | "video" | "audio";
+
 export type VideoAsset = {
   id: string;
-  kind: "image" | "video" | "audio";
+  kind: VideoAssetKind;
   url: string;
 };
 
 export type VideoGenerationRequest = {
+  videoModel: VideoModelId;
   mode: VideoGenerationMode;
   prompt: string;
   resolution: "480p" | "720p" | "1080p";
@@ -23,6 +27,42 @@ export type VideoGenerationRequest = {
   returnLastFrame?: boolean;
   workspacePreset?: string | null;
 };
+
+export const KIE_SEEDANCE_SUPPORTED_MODELS: VideoModelId[] = ["bytedance/seedance-2", "bytedance/seedance-2-fast"];
+export const KIE_SEEDANCE_SUPPORTED_MODES: VideoGenerationMode[] = ["multi_modal_video", "image_to_video", "text_to_video"];
+export const KIE_SEEDANCE_SUPPORTED_RESOLUTIONS: VideoGenerationRequest["resolution"][] = ["720p"];
+export const KIE_SEEDANCE_SUPPORTED_DURATIONS: VideoGenerationRequest["durationSeconds"][] = [15];
+export const KIE_SEEDANCE_SUPPORTED_RATIOS: VideoGenerationRequest["aspectRatio"][] = ["16:9"];
+
+export const KIE_MODE_ASSET_LIMITS: Record<
+  VideoGenerationMode,
+  Record<VideoAssetKind, number>
+> = {
+  multi_modal_video: {
+    image: 9,
+    video: 3,
+    audio: 3,
+  },
+  image_to_video: {
+    image: 2,
+    video: 0,
+    audio: 0,
+  },
+  text_to_video: {
+    image: 0,
+    video: 0,
+    audio: 0,
+  },
+  video_extension: {
+    image: 0,
+    video: 1,
+    audio: 0,
+  },
+};
+
+export function getAssetLimitForMode(mode: VideoGenerationMode, kind: VideoAssetKind) {
+  return KIE_MODE_ASSET_LIMITS[mode][kind];
+}
 
 const RESOLUTION_COST_PER_SECOND: Record<VideoGenerationRequest["resolution"], number> = {
   "480p": 4,
@@ -45,10 +85,17 @@ export function estimateGenerationCredits(input: Pick<VideoGenerationRequest, "m
 }
 
 export function normalizeVideoGenerationRequest(payload: any): VideoGenerationRequest {
+  const videoModel =
+    payload?.videoModel === "bytedance/seedance-2-fast"
+      ? "bytedance/seedance-2-fast"
+      : "bytedance/seedance-2";
   const mode = (payload?.mode || "multi_modal_video") as VideoGenerationMode;
-  const resolution = (payload?.resolution || "1080p") as VideoGenerationRequest["resolution"];
-  const durationSeconds = Number(payload?.durationSeconds || 5) as VideoGenerationRequest["durationSeconds"];
-  const aspectRatio = (payload?.aspectRatio || "16:9") as VideoGenerationRequest["aspectRatio"];
+  const resolutionCandidate = (payload?.resolution || "720p") as VideoGenerationRequest["resolution"];
+  const durationCandidate = Number(payload?.durationSeconds || 15) as VideoGenerationRequest["durationSeconds"];
+  const aspectRatioCandidate = (payload?.aspectRatio || "16:9") as VideoGenerationRequest["aspectRatio"];
+  const resolution = KIE_SEEDANCE_SUPPORTED_RESOLUTIONS.includes(resolutionCandidate) ? resolutionCandidate : "720p";
+  const durationSeconds = KIE_SEEDANCE_SUPPORTED_DURATIONS.includes(durationCandidate) ? durationCandidate : 15;
+  const aspectRatio = KIE_SEEDANCE_SUPPORTED_RATIOS.includes(aspectRatioCandidate) ? aspectRatioCandidate : "16:9";
   const prompt = typeof payload?.prompt === "string" ? payload.prompt.trim() : "";
 
   const normalizeAssets = (assets: any[], kind: VideoAsset["kind"]) =>
@@ -63,6 +110,7 @@ export function normalizeVideoGenerationRequest(payload: any): VideoGenerationRe
       : [];
 
   return {
+    videoModel,
     mode,
     prompt,
     resolution,
