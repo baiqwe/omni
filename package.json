@@ -3,8 +3,7 @@
   "scripts": {
     "dev": "next dev",
     "next:build": "next build",
-    "seo:generate": "node scripts/generate-static-seo-files.mjs",
-    "build": "npm run seo:generate && next build && opennextjs-cloudflare build --skipBuild && node scripts/patch-opennext-cloudflare.mjs",
+    "build": "next build && opennextjs-cloudflare build --skipBuild && node scripts/patch-opennext-cloudflare.mjs",
     "preview": "npm run build && opennextjs-cloudflare preview",
     "deploy": "wrangler deploy",
     "upload": "wrangler versions upload",
