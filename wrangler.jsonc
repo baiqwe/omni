@@ -11,31 +11,14 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  "services": [
+  "routes": [
     {
-      "binding": "WORKER_SELF_REFERENCE",
-      "service": "geminiomni"
-    }
-  ],
-  // Phase 1 Cloudflare data bindings for the Supabase -> Auth.js + D1 + R2 + KV migration.
-  // Replace the placeholder ids/names with your real resources before enabling the new runtime paths.
-  "d1_databases": [
+      "pattern": "geminiomni.xyz",
+      "custom_domain": true
+    },
     {
-      "binding": "DB",
-      "database_name": "geminiomni-prod",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
-    }
-  ],
-  "r2_buckets": [
-    {
-      "binding": "MEDIA_BUCKET",
-      "bucket_name": "geminiomni-media"
-    }
-  ],
-  "kv_namespaces": [
-    {
-      "binding": "RATE_LIMIT_KV",
-      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+      "pattern": "www.geminiomni.xyz",
+      "custom_domain": true
     }
   ],
   "observability": {
