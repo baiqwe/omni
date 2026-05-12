@@ -6,6 +6,10 @@ import { SubscriptionStatusCard } from "@/components/dashboard/subscription-stat
 import { CreditsBalanceCard } from "@/components/dashboard/credits-balance-card";
 import { ProcessingGenerationsCard } from "@/components/dashboard/processing-generations-card";
 import type { Metadata } from "next";
+import { isCloudflareDataBackend } from "@/utils/backend/runtime";
+import { auth } from "@/auth";
+import { getCustomerByUserId, provisionCustomerIfMissing } from "@/utils/d1/customers";
+import { getLatestSubscriptionByUserId } from "@/utils/d1/subscriptions";
 
 export const metadata: Metadata = {
     robots: {
@@ -17,6 +21,71 @@ export const metadata: Metadata = {
 export default async function DashboardPage(props: { params: Promise<{ locale: string }> }) {
     const params = await props.params;
     const { locale } = params;
+
+    if (isCloudflareDataBackend()) {
+        const session = await auth();
+        const user = session?.user;
+
+        if (!user?.id) {
+            return redirect(`/${locale}/sign-in`);
+        }
+
+        let subscription: {
+            status: string;
+            current_period_end: string;
+            creem_product_id?: string | null;
+        } | null = null;
+        let credits = 0;
+
+        const customer = (await getCustomerByUserId(user.id)) ?? (await provisionCustomerIfMissing({
+            userId: user.id,
+            email: user.email,
+            name: user.name,
+        }));
+
+        credits = customer.credits || 0;
+        subscription = await getLatestSubscriptionByUserId(customer.user_id);
+
+        const welcomeText = locale === 'zh' ? '欢迎回来' : 'Welcome back';
+        const manageText = locale === 'zh' ? '在这里管理您的订阅和积分。' : 'Manage your subscription and credits here.';
+        const accountText = locale === 'zh' ? '账户信息' : 'Account Information';
+        const emailText = locale === 'zh' ? '邮箱' : 'Email';
+        const userIdText = locale === 'zh' ? '用户 ID' : 'User ID';
+
+        return (
+            <div className="flex-1 w-full flex flex-col gap-6 sm:gap-8 px-4 sm:px-8 container py-8">
+                <div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border rounded-lg p-6 sm:p-8">
+                    <h1 className="text-2xl sm:text-3xl font-bold mb-2 break-words">
+                        {welcomeText}, <span className="text-primary">{user.email}</span>
+                    </h1>
+                    <p className="text-muted-foreground">{manageText}</p>
+                </div>
+
+                <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+                    <SubscriptionStatusCard subscription={subscription} />
+                    <CreditsBalanceCard credits={credits} locale={locale} />
+                </div>
+
+                <ProcessingGenerationsCard locale={locale} />
+
+                <div className="rounded-xl border bg-card p-6">
+                    <h2 className="font-bold text-lg mb-4">{accountText}</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <p className="text-muted-foreground">{emailText}</p>
+                            <p className="font-medium">{user.email}</p>
+                        </div>
+                        <div>
+                            <p className="text-muted-foreground">{userIdText}</p>
+                            <p className="font-medium text-xs font-mono bg-muted p-1 rounded inline-block">
+                                {user.id}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     const supabase = await createClient();
     const {

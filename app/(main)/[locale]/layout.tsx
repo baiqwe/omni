@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { SoftwareApplicationSchema } from "@/components/json-ld-schema";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { site } from "@/config/site";
+import { AuthSessionProvider } from "@/components/providers/auth-session-provider";
 
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }));
@@ -123,19 +124,21 @@ export default async function LocaleLayout(props: {
             <GoogleAnalytics />
             <SoftwareApplicationSchema locale={locale} />
             <NextIntlClientProvider messages={messages} locale={locale}>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="dark"
-                    enableSystem={false}
-                    disableTransitionOnChange
-                >
-                    <div className="relative min-h-screen flex flex-col">
-                        <Header />
-                        <main className="flex-1">{children}</main>
-                        <Footer />
-                    </div>
-                    <Toaster />
-                </ThemeProvider>
+                <AuthSessionProvider>
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="dark"
+                        enableSystem={false}
+                        disableTransitionOnChange
+                    >
+                        <div className="relative min-h-screen flex flex-col">
+                            <Header />
+                            <main className="flex-1">{children}</main>
+                            <Footer />
+                        </div>
+                        <Toaster />
+                    </ThemeProvider>
+                </AuthSessionProvider>
             </NextIntlClientProvider>
         </>
     );

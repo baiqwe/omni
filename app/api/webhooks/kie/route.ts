@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/utils/supabase/service-role";
 import { mapKieStateToGenerationState, parseKieTaskRecord } from "@/utils/kie";
+import { isCloudflareDataBackend } from "@/utils/backend/runtime";
+import { getD1 } from "@/utils/d1/db";
+import { updateGenerationProviderState } from "@/utils/d1/generations";
 
 export const runtime = "nodejs";
 
@@ -22,6 +25,33 @@ export async function POST(request: NextRequest) {
   const taskRecord = parseKieTaskRecord(rawRecord);
   if (!taskRecord.taskId) {
     return NextResponse.json({ error: "Missing task id" }, { status: 400 });
+  }
+
+  if (isCloudflareDataBackend()) {
+    const generation = await getD1()
+      .prepare("SELECT id FROM generations WHERE provider_job_id = ? LIMIT 1")
+      .bind(taskRecord.taskId)
+      .first<{ id: string } | null>();
+
+    if (!generation?.id) {
+      return NextResponse.json({ ok: true, skipped: true });
+    }
+
+    const mappedState = mapKieStateToGenerationState(taskRecord.state);
+    await updateGenerationProviderState({
+      id: generation.id,
+      providerJobId: taskRecord.taskId,
+      status: mappedState.status,
+      statusDetail: mappedState.statusDetail,
+      outputVideoUrl: taskRecord.resultUrls[0] ?? null,
+      metadata: {
+        provider: "kie",
+        providerStatus: taskRecord.state,
+        kie: taskRecord.raw,
+      },
+    });
+
+    return NextResponse.json({ ok: true });
   }
 
   const serviceSupabase = createServiceRoleClient();

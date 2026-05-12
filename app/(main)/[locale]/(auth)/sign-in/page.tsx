@@ -7,10 +7,15 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getLocalePath } from "@/utils/utils";
 
-export default async function Login(props: { params: Promise<{ locale: string }>; searchParams: Promise<Message> }) {
+type SignInSearchParams = Message & {
+  next?: string;
+};
+
+export default async function Login(props: { params: Promise<{ locale: string }>; searchParams: Promise<SignInSearchParams> }) {
   const params = await props.params;
   const locale = params.locale;
   const searchParams = await props.searchParams;
+  const next = typeof searchParams.next === "string" ? searchParams.next : undefined;
 
   return (
     <>
@@ -23,6 +28,7 @@ export default async function Login(props: { params: Promise<{ locale: string }>
       <div className="grid gap-6">
         <form className="grid gap-4">
           <input type="hidden" name="locale" value={locale} />
+          <input type="hidden" name="next" value={next ?? ""} />
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -75,7 +81,7 @@ export default async function Login(props: { params: Promise<{ locale: string }>
           </div>
         </div>
         <Button asChild variant="outline" className="w-full flex items-center justify-center gap-2">
-          <Link href={`/auth/google?locale=${locale}&mode=sign-in`}>
+          <Link href={`/auth/google?locale=${locale}&mode=sign-in${next ? `&next=${encodeURIComponent(next)}` : ""}`}>
             <svg viewBox="0 0 24 24" className="h-5 w-5">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

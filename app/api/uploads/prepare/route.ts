@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createServiceRoleClient } from "@/utils/supabase/service-role";
 import { getProjectId } from "@/utils/supabase/project";
+import { isCloudflareDataBackend } from "@/utils/backend/runtime";
+import { requireSessionUser } from "@/utils/backend/auth";
+import { buildMediaObjectKey } from "@/utils/r2/server";
+import { createR2SignedUploadUrl } from "@/utils/r2/presign";
 
 export const runtime = "nodejs";
 
@@ -40,20 +44,22 @@ function buildStoragePath(projectId: string, userId: string, kind: UploadKind, f
   return `${projectId}/${userId}/staged/${date}/${kind}/${crypto.randomUUID()}-${safeName}`;
 }
 
-export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-  const serviceSupabase = createServiceRoleClient();
-  const projectId = await getProjectId(serviceSupabase);
+function buildR2StoragePath(userId: string, kind: UploadKind, fileName: string) {
+  const safeName = sanitizeName(fileName);
+  const date = new Date().toISOString().slice(0, 10);
+  return buildMediaObjectKey(["inputs", userId, date, kind, `${crypto.randomUUID()}-${safeName}`]);
+}
 
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+function getR2PublicUrl(objectKey: string) {
+  const baseUrl = process.env.R2_PUBLIC_BASE_URL?.trim();
+  if (!baseUrl) {
+    throw new Error("R2_PUBLIC_BASE_URL is not configured.");
   }
 
+  return `${baseUrl.replace(/\/+$/, "")}/${objectKey}`;
+}
+
+export async function POST(request: NextRequest) {
   const body = (await request.json()) as UploadPrepareBody;
   const kind = body.kind as UploadKind;
   const fileName = typeof body.fileName === "string" ? body.fileName : "";
@@ -75,6 +81,39 @@ export async function POST(request: NextRequest) {
 
   if (!rules.mimePrefixes.some((prefix) => contentType.startsWith(prefix))) {
     return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
+  }
+
+  if (isCloudflareDataBackend()) {
+    const user = await requireSessionUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const path = buildR2StoragePath(user.id, kind, fileName);
+    const signedUrl = await createR2SignedUploadUrl({
+      objectKey: path,
+      contentType,
+    });
+
+    return NextResponse.json({
+      bucket: process.env.R2_BUCKET_NAME || "seedance2-media",
+      path,
+      signedUrl,
+      publicUrl: getR2PublicUrl(path),
+    });
+  }
+
+  const supabase = await createClient();
+  const serviceSupabase = createServiceRoleClient();
+  const projectId = await getProjectId(serviceSupabase);
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const path = buildStoragePath(projectId, user.id, kind, fileName);

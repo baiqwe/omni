@@ -14,7 +14,7 @@ function getStore(name: string) {
   return store;
 }
 
-export function consumeRateLimit(opts: {
+async function consumeInMemoryRateLimit(opts: {
   scope: string;
   key: string;
   limit: number;
@@ -50,4 +50,53 @@ export function consumeRateLimit(opts: {
     remaining: Math.max(opts.limit - current.count, 0),
     resetAt: current.resetAt,
   };
+}
+
+export async function consumeRateLimit(opts: {
+  scope: string;
+  key: string;
+  limit: number;
+  windowMs: number;
+}) {
+  const { isCloudflareDataBackend } = await import("@/utils/backend/runtime");
+
+  if (isCloudflareDataBackend()) {
+    try {
+      const { getOptionalCloudflareEnv } = await import("@/utils/cloudflare/context");
+      const env = getOptionalCloudflareEnv();
+      const kv = env?.RATE_LIMIT_KV;
+
+      if (kv) {
+        const now = Date.now();
+        const bucketStart = Math.floor(now / opts.windowMs) * opts.windowMs;
+        const resetAt = bucketStart + opts.windowMs;
+        const kvKey = `rl:${opts.scope}:${opts.key}:${bucketStart}`;
+        const existing = await kv.get(kvKey);
+        const currentCount = Number.parseInt(existing || "0", 10);
+        const nextCount = Number.isFinite(currentCount) ? currentCount + 1 : 1;
+
+        await kv.put(kvKey, String(nextCount), {
+          expirationTtl: Math.max(Math.ceil((resetAt - now) / 1000) + 30, 30),
+        });
+
+        if (nextCount > opts.limit) {
+          return {
+            allowed: false,
+            remaining: 0,
+            resetAt,
+          };
+        }
+
+        return {
+          allowed: true,
+          remaining: Math.max(opts.limit - nextCount, 0),
+          resetAt,
+        };
+      }
+    } catch {
+      // Fall through to in-memory mode for local/dev fallback.
+    }
+  }
+
+  return consumeInMemoryRateLimit(opts);
 }

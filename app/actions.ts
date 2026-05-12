@@ -1,5 +1,7 @@
 "use server";
 
+import { AuthError } from "@auth/core/errors";
+import { signIn as authSignIn, signOut as authSignOut } from "@/auth";
 import { encodedRedirect } from "@/utils/utils";
 import { getLocalePath, normalizeLocale } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
@@ -7,6 +9,10 @@ import { getAppKey } from "@/utils/supabase/project";
 import { headers } from "next/headers";
 import { getRequestOrigin } from "@/utils/request";
 import { redirect } from "next/navigation";
+import { isCloudflareDataBackend } from "@/utils/backend/runtime";
+import { createCredentialsUser, getAuthUserByEmail, updateUserPassword } from "@/utils/d1/auth-users";
+import { createPasswordResetToken, getValidPasswordResetToken, markPasswordResetTokenUsed } from "@/utils/d1/password-reset";
+import { sendPasswordResetEmail } from "@/utils/email/resend";
 
 function resolveActionLocale(formData?: FormData) {
   const localeFromForm = formData?.get("locale")?.toString();
@@ -17,12 +23,27 @@ function resolveActionLocale(formData?: FormData) {
   return "en";
 }
 
+function resolveSafeNextPath(formData: FormData | undefined, locale: string, fallbackPath: string) {
+  const rawNext = formData?.get("next")?.toString();
+  if (!rawNext) {
+    return getLocalePath(fallbackPath, locale);
+  }
+
+  if (/^https?:\/\//i.test(rawNext)) {
+    return getLocalePath(fallbackPath, locale);
+  }
+
+  if (!/^\/(en|zh)(\/|$)/.test(rawNext)) {
+    return getLocalePath(fallbackPath, locale);
+  }
+
+  return rawNext;
+}
+
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
   const locale = resolveActionLocale(formData);
-  const supabase = await createClient();
-  const origin = await getRequestOrigin();
 
   if (!email || !password) {
     return encodedRedirect(
@@ -33,6 +54,35 @@ export const signUpAction = async (formData: FormData) => {
     );
   }
 
+  if (isCloudflareDataBackend()) {
+    const existingUser = await getAuthUserByEmail(email);
+    if (existingUser) {
+      return encodedRedirect("error", "/sign-up", "An account with this email already exists.", locale);
+    }
+
+    await createCredentialsUser({
+      email,
+      password,
+    });
+
+    try {
+      await authSignIn("credentials", {
+        email,
+        password,
+        redirectTo: getLocalePath("/dashboard", locale),
+      });
+    } catch (error) {
+      if (error instanceof AuthError) {
+        return encodedRedirect("error", "/sign-in", "Account created, but automatic sign-in failed. Please sign in manually.", locale);
+      }
+      throw error;
+    }
+
+    return;
+  }
+
+  const supabase = await createClient();
+  const origin = await getRequestOrigin();
   const { error } = await supabase.auth.signUp({
     email,
     password,
@@ -56,8 +106,25 @@ export const signInAction = async (formData: FormData) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const locale = resolveActionLocale(formData);
-  const supabase = await createClient();
+  const nextPath = resolveSafeNextPath(formData, locale, "/dashboard");
 
+  if (isCloudflareDataBackend()) {
+    try {
+      await authSignIn("credentials", {
+        email,
+        password,
+        redirectTo: nextPath,
+      });
+    } catch (error) {
+      if (error instanceof AuthError) {
+        return encodedRedirect("error", "/sign-in", "Invalid email or password.", locale);
+      }
+      throw error;
+    }
+    return;
+  }
+
+  const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -67,20 +134,47 @@ export const signInAction = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", error.message, locale);
   }
 
-  return redirect(getLocalePath("/dashboard", locale));
+  return redirect(nextPath);
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const locale = resolveActionLocale(formData);
-  const supabase = await createClient();
-  const origin = await getRequestOrigin();
   const callbackUrl = formData.get("callbackUrl")?.toString();
 
   if (!email) {
     return encodedRedirect("error", "/forgot-password", "Email is required", locale);
   }
 
+  if (isCloudflareDataBackend()) {
+    const origin = await getRequestOrigin();
+    const user = await getAuthUserByEmail(email);
+
+    if (user) {
+      const token = await createPasswordResetToken(user.id, new Date(Date.now() + 30 * 60 * 1000));
+      const resetUrl = new URL(getLocalePath("/reset-password", locale), origin);
+      resetUrl.searchParams.set("token", token);
+      await sendPasswordResetEmail({
+        to: email,
+        resetUrl: resetUrl.toString(),
+        locale,
+      });
+    }
+
+    if (callbackUrl) {
+      return redirect(callbackUrl);
+    }
+
+    return encodedRedirect(
+      "success",
+      "/forgot-password",
+      "If an account exists for this email, a reset link will be sent shortly.",
+      locale
+    );
+  }
+
+  const supabase = await createClient();
+  const origin = await getRequestOrigin();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${origin}/auth/callback?redirect_to=${encodeURIComponent(getLocalePath("/dashboard/reset-password", locale))}`,
   });
@@ -108,16 +202,15 @@ export const forgotPasswordAction = async (formData: FormData) => {
 };
 
 export const resetPasswordAction = async (formData: FormData) => {
-  const supabase = await createClient();
   const locale = resolveActionLocale(formData);
-
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
+  const token = formData.get("token")?.toString();
 
   if (!password || !confirmPassword) {
     return encodedRedirect(
       "error",
-      "/dashboard/reset-password",
+      "/reset-password",
       "Password and confirm password are required",
       locale
     );
@@ -126,12 +219,28 @@ export const resetPasswordAction = async (formData: FormData) => {
   if (password !== confirmPassword) {
     return encodedRedirect(
       "error",
-      "/dashboard/reset-password",
+      "/reset-password",
       "Passwords do not match",
       locale
     );
   }
 
+  if (isCloudflareDataBackend()) {
+    if (!token) {
+      return encodedRedirect("error", "/forgot-password", "Reset token is missing.", locale);
+    }
+
+    const record = await getValidPasswordResetToken(token);
+    if (!record) {
+      return encodedRedirect("error", "/forgot-password", "This reset link is invalid or has expired.", locale);
+    }
+
+    await updateUserPassword(record.user_id, password);
+    await markPasswordResetTokenUsed(record.id);
+    return encodedRedirect("success", "/sign-in", "Password updated. You can sign in now.", locale);
+  }
+
+  const supabase = await createClient();
   const { error } = await supabase.auth.updateUser({
     password: password,
   });
@@ -139,13 +248,13 @@ export const resetPasswordAction = async (formData: FormData) => {
   if (error) {
     return encodedRedirect(
       "error",
-      "/dashboard/reset-password",
+      "/reset-password",
       "Password update failed",
       locale
     );
   }
 
-  return encodedRedirect("success", "/dashboard/reset-password", "Password updated", locale);
+  return encodedRedirect("success", "/reset-password", "Password updated", locale);
 };
 
 export const signOutAction = async () => {
@@ -153,6 +262,14 @@ export const signOutAction = async () => {
   const referer = headerList.get("referer");
   const localeMatch = referer?.match(/\/(en|zh)(?:\/|$)/);
   const locale = normalizeLocale(localeMatch?.[1]);
+
+  if (isCloudflareDataBackend()) {
+    await authSignOut({
+      redirectTo: getLocalePath("/sign-in", locale),
+    });
+    return;
+  }
+
   const supabase = await createClient();
   await supabase.auth.signOut();
   return redirect(getLocalePath("/sign-in", locale));

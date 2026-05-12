@@ -1,3 +1,5 @@
+import { requireSessionUser } from "@/utils/backend/auth";
+import { isCloudflareDataBackend } from "@/utils/backend/runtime";
 import { createClient } from "@/utils/supabase/server";
 import { getAppKey } from "@/utils/supabase/project";
 import { NextResponse } from "next/server";
@@ -11,13 +13,20 @@ type CreemCheckoutResponse = {
 
 export async function POST(request: Request) {
     try {
-        // 1. 验证用户登录
-        const supabase = await createClient();
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        let authUser: { id: string; email?: string | null } | null = null;
 
-        if (userError || !user) {
-            // 如果没登录，返回 401，前端会处理重定向
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        if (isCloudflareDataBackend()) {
+            authUser = await requireSessionUser();
+            if (!authUser) {
+                return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            }
+        } else {
+            const supabase = await createClient();
+            const { data: { user }, error: userError } = await supabase.auth.getUser();
+            if (userError || !user) {
+                return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            }
+            authUser = { id: user.id, email: user.email };
         }
 
         // 2. 获取表单提交的 priceId 和产品类型
@@ -34,6 +43,13 @@ export async function POST(request: Request) {
             );
         }
 
+        if (!authUser.email) {
+            return NextResponse.json(
+                { error: "User email is required to create checkout." },
+                { status: 400 }
+            );
+        }
+
         // 3. 调用 Creem API 创建 Checkout Session
         const response = await fetch(`${process.env.CREEM_API_URL}/v1/checkouts`, {
             method: "POST",
@@ -45,12 +61,12 @@ export async function POST(request: Request) {
                 product_id: priceId,
                 success_url: redirectUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/en/dashboard?checkout=success`,
                 customer: {
-                    email: user.email,
+                    email: authUser.email,
                 },
                 // 🔥 关键：将 User ID 和产品类型传入 metadata，以便 Webhook 识别
                 metadata: {
-                    user_id: user.id,
-                    user_email: user.email,
+                    user_id: authUser.id,
+                    user_email: authUser.email,
                     product_type: productType || "subscription",
                     app_key: getAppKey(),
                     ...(credits && { credits: parseInt(credits) }),

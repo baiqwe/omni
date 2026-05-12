@@ -3,6 +3,9 @@ import { createClient } from "@/utils/supabase/server";
 import { createServiceRoleClient } from "@/utils/supabase/service-role";
 import { getProjectId } from "@/utils/supabase/project";
 import { fetchKieTaskRecord, mapKieStateToGenerationState } from "@/utils/kie";
+import { isCloudflareDataBackend } from "@/utils/backend/runtime";
+import { requireSessionUser } from "@/utils/backend/auth";
+import { getGenerationViewByIdForUser, updateGenerationProviderState } from "@/utils/d1/generations";
 
 export const runtime = "nodejs";
 
@@ -20,6 +23,66 @@ function deriveDisplayStatus(status: string, createdAt: string) {
 export async function GET(_: Request, context: { params: Promise<{ id: string }> }) {
   const params = await context.params;
   const generationId = params.id;
+
+  if (isCloudflareDataBackend()) {
+    const user = await requireSessionUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    let generation = await getGenerationViewByIdForUser(generationId, user.id);
+    if (!generation) {
+      return NextResponse.json({ error: "Generation not found" }, { status: 404 });
+    }
+
+    const provider = (generation.metadata as Record<string, unknown> | null)?.provider;
+    if (
+      provider === "kie" &&
+      generation.provider_job_id &&
+      (generation.status === "pending" || generation.status === "processing")
+    ) {
+      try {
+        const taskRecord = await fetchKieTaskRecord(generation.provider_job_id);
+        const mappedState = mapKieStateToGenerationState(taskRecord.state);
+        const updated = await updateGenerationProviderState({
+          id: generation.id,
+          providerJobId: generation.provider_job_id,
+          status: mappedState.status,
+          statusDetail: mappedState.statusDetail,
+          outputVideoUrl: taskRecord.resultUrls[0] ?? generation.output_video_url,
+          metadata: {
+            provider: "kie",
+            providerStatus: taskRecord.state,
+            kie: taskRecord.raw,
+          },
+        });
+
+        if (updated) {
+          generation = {
+            ...generation,
+            ...updated,
+            metadata: {
+              ...((generation.metadata as Record<string, unknown> | null) ?? {}),
+              provider: "kie",
+              providerStatus: taskRecord.state,
+              kie: taskRecord.raw,
+            },
+            output_video_url: taskRecord.resultUrls[0] ?? generation.output_video_url,
+          };
+        }
+      } catch {
+        // Keep existing state when provider polling fails temporarily.
+      }
+    }
+
+    return NextResponse.json({
+      generation: {
+        ...generation,
+        displayStatus: deriveDisplayStatus(generation.status, generation.created_at),
+      },
+    });
+  }
+
   const supabase = await createClient();
   const serviceSupabase = createServiceRoleClient();
   const projectId = await getProjectId(serviceSupabase);

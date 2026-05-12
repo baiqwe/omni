@@ -17,6 +17,27 @@
       "service": "seeddance2"
     }
   ],
+  // Phase 1 Cloudflare data bindings for the Supabase -> Auth.js + D1 + R2 + KV migration.
+  // Replace the placeholder ids/names with your real resources before enabling the new runtime paths.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "seedance2-prod",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA_BUCKET",
+      "bucket_name": "seedance2-media"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "RATE_LIMIT_KV",
+      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+    }
+  ],
   "observability": {
     "enabled": true
   }

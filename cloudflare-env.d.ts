@@ -5,6 +5,9 @@ declare namespace Cloudflare {
 	interface Env {
 		WORKER_SELF_REFERENCE: Fetcher /* seeddance2 */;
 		ASSETS: Fetcher;
+		DB: D1Database;
+		MEDIA_BUCKET: R2Bucket;
+		RATE_LIMIT_KV: KVNamespace;
 	}
 }
 interface CloudflareEnv extends Cloudflare.Env {}

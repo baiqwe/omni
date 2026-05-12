@@ -174,7 +174,6 @@ function uploadToSignedUrl(url: string, file: File, onProgress: (progress: numbe
   return new Promise<void>((resolve, reject) => {
     const request = new XMLHttpRequest();
     request.open("PUT", url);
-    request.setRequestHeader("x-upsert", "false");
     if (file.type) {
       request.setRequestHeader("Content-Type", file.type);
     }

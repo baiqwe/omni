@@ -1,3 +1,6 @@
+import { requireSessionUser } from "@/utils/backend/auth";
+import { isCloudflareDataBackend } from "@/utils/backend/runtime";
+import { getCustomerByUserId } from "@/utils/d1/customers";
 import { createClient } from "@/utils/supabase/server";
 import { getProjectId } from "@/utils/supabase/project";
 import { NextResponse } from "next/server";
@@ -6,29 +9,44 @@ export const runtime = "nodejs";
 
 type CreemPortalResponse = {
     url?: string;
+    customer_portal_url?: string;
     error?: string;
 };
 
 export async function GET() {
     try {
-        // 1. 验证用户登录
-        const supabase = await createClient();
-        const projectId = await getProjectId(supabase);
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        let creemCustomerId: string | null | undefined;
 
-        if (userError || !user) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        if (isCloudflareDataBackend()) {
+            const user = await requireSessionUser();
+            if (!user) {
+                return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            }
+
+            const customerData = await getCustomerByUserId(user.id);
+            creemCustomerId = customerData?.creem_customer_id;
+        } else {
+            // 1. 验证用户登录
+            const supabase = await createClient();
+            const projectId = await getProjectId(supabase);
+            const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+            if (userError || !user) {
+                return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            }
+
+            // 2. 获取用户的 Creem Customer ID
+            const { data: customerData } = await supabase
+                .from("customers")
+                .select("creem_customer_id")
+                .eq("project_id", projectId)
+                .eq("user_id", user.id)
+                .single();
+
+            creemCustomerId = customerData?.creem_customer_id;
         }
 
-        // 2. 获取用户的 Creem Customer ID
-        const { data: customerData } = await supabase
-            .from("customers")
-            .select("creem_customer_id")
-            .eq("project_id", projectId)
-            .eq("user_id", user.id)
-            .single();
-
-        if (!customerData?.creem_customer_id) {
+        if (!creemCustomerId) {
             return NextResponse.json(
                 { error: "No subscription found" },
                 { status: 404 }
@@ -43,7 +61,7 @@ export async function GET() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                customer_id: customerData.creem_customer_id,
+                customer_id: creemCustomerId,
                 return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/en/dashboard`,
             }),
         });
@@ -58,7 +76,7 @@ export async function GET() {
             );
         }
 
-        return NextResponse.json({ url: data.url });
+        return NextResponse.json({ url: data.url || data.customer_portal_url });
 
     } catch (error) {
         console.error("Customer portal error:", error);

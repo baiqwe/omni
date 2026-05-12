@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { ChevronDown, Paperclip, PlayCircle, Settings2, Sparkles } from 'lucide-react';
+import { ArrowRight, ChevronDown, Paperclip, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter } from '@/i18n/routing';
 import {
@@ -40,35 +40,35 @@ const MODE_COPY = {
     zh: {
         'seedance-2': {
             eyebrow: 'Seedance 2 工作流',
-            placeholder: '写下你的 Seedance 2 视频场景，比如人物、镜头运动、节奏和氛围...',
-            helper: '先输入一句核心想法，再按需补充图片、视频或音频参考。',
+            placeholder: '先写一句镜头描述，再决定是否补图片、视频或音频参考...',
+            helper: '先把画面目标说清楚，再进入创作中心细化角色、动作和节奏。',
         },
         'image-to-video': {
             eyebrow: '图生视频',
-            placeholder: '描述这张图片如何动起来，包括镜头、动作、光线和节奏...',
-            helper: '适合角色一致性、产品展示和把静帧扩展成连续镜头。',
+            placeholder: '描述这张关键帧应该如何动起来，包括镜头、动作、光线和节奏...',
+            helper: '适合角色一致性、产品展示和把静帧推进成连续镜头。',
         },
         'text-to-video': {
             eyebrow: '文生视频',
-            placeholder: '直接描述一个 Seedance 2 视频场景，包含主体、镜头和氛围...',
-            helper: '适合快速验证概念，再继续补参考素材提升可控性。',
+            placeholder: '直接描述一个 Seedance 2 视频场景，写清主体、镜头和氛围...',
+            helper: '适合快速验证概念，再决定是否加入参考素材加强可控性。',
         },
     },
     en: {
         'seedance-2': {
             eyebrow: 'Seedance 2 workflow',
-            placeholder: 'Describe your Seedance 2 scene, including the subject, camera move, pacing, and atmosphere...',
-            helper: 'Start with one strong idea, then add image, video, or audio references only when needed.',
+            placeholder: 'Start with one clear scene description, then decide whether images, clips, or audio references are needed...',
+            helper: 'Describe the goal first, then move into the creation center when identity, motion, and rhythm need tighter control.',
         },
         'image-to-video': {
             eyebrow: 'Image to Video',
-            placeholder: 'Describe how this still image should move, including motion, framing, lighting, and timing...',
-            helper: 'Great for character consistency, product shots, and extending still frames into cinematic motion.',
+            placeholder: 'Describe how this keyframe should evolve with motion, framing, lighting, and timing...',
+            helper: 'Great for character consistency, product reveals, and extending still frames into cinematic motion.',
         },
         'text-to-video': {
             eyebrow: 'Text to Video',
-            placeholder: 'Describe a Seedance 2 video concept with subject, camera movement, mood, and pacing...',
-            helper: 'Best for quick concept testing before adding references for tighter control.',
+            placeholder: 'Describe a Seedance 2 scene with subject, camera movement, pacing, and atmosphere...',
+            helper: 'Best for testing the concept first, then adding references only when they improve control.',
         },
     },
 } as const;
@@ -91,14 +91,12 @@ function HeroWithUploadSection({
     const pathParts = pathname?.split('/') || [];
     const locale = (pathParts[1] === 'en' || pathParts[1] === 'zh') ? pathParts[1] : 'en';
     const isZh = locale === 'zh';
-    const [ratio, setRatio] = useState<(typeof RATIO_OPTIONS)[number]>('16:9');
-    const [duration, setDuration] = useState<(typeof DURATION_OPTIONS)[number]>('15s');
+    const [ratio, setRatio] = useState<(typeof RATIO_OPTIONS)[number]>(RATIO_OPTIONS[0] ?? '16:9');
+    const [duration, setDuration] = useState<(typeof DURATION_OPTIONS)[number]>(DURATION_OPTIONS[0] ?? '15s');
     const [activeTab, setActiveTab] = useState<string>('seedance-2');
     const [videoModel, setVideoModel] = useState<VideoModelId>('bytedance/seedance-2');
-    const copy = MODE_COPY[isZh ? 'zh' : 'en'];
     const [prompt, setPrompt] = useState('');
-
-    void user;
+    const copy = MODE_COPY[isZh ? 'zh' : 'en'];
 
     const tabs = useMemo(() => MODE_TABS[isZh ? 'zh' : 'en'], [isZh]);
     const modeCopy = copy[activeTab as keyof typeof copy] ?? copy['seedance-2'];
@@ -107,7 +105,7 @@ function HeroWithUploadSection({
         onShowStaticContent(true);
     }, [onShowStaticContent]);
 
-    const openCreationCenter = () => {
+    const buildQuery = () => {
         const params = new URLSearchParams();
 
         if (prompt.trim()) params.set('prompt', prompt.trim());
@@ -116,14 +114,27 @@ function HeroWithUploadSection({
         params.set('ratio', ratio);
         params.set('duration', duration);
 
-        const query = params.toString();
-        router.push(query ? `/creative-center?${query}` : `/creative-center`);
+        return params.toString();
+    };
+
+    const openCreationCenter = () => {
+        const query = buildQuery();
+        const targetPath = `/${locale}/creative-center${query ? `?${query}` : ''}`;
+
+        if (!user) {
+            const signInQuery = new URLSearchParams();
+            signInQuery.set('next', targetPath);
+            router.push(`/${locale}/sign-in?${signInQuery.toString()}`);
+            return;
+        }
+
+        router.push(targetPath);
     };
 
     return (
-        <div className="space-y-8">
-            <div className="mx-auto w-full max-w-4xl">
-                <div className="mx-auto mb-5 flex w-fit flex-wrap items-center justify-center gap-2 rounded-full border border-white/12 bg-black/28 p-1.5 shadow-[0_18px_46px_-28px_rgba(0,0,0,0.82)] backdrop-blur-2xl">
+        <div className="space-y-6">
+            <div className="mx-auto w-full max-w-5xl">
+                <div className="mx-auto mb-5 flex w-fit flex-wrap items-center justify-center gap-2 rounded-full border border-white/12 bg-black/26 p-1.5 shadow-[0_18px_46px_-28px_rgba(0,0,0,0.82)] backdrop-blur-2xl">
                     {tabs.map((tab) => (
                         <button
                             key={tab.key}
@@ -141,8 +152,8 @@ function HeroWithUploadSection({
                     ))}
                 </div>
 
-                <div className="overflow-hidden rounded-[34px] border border-white/14 bg-[linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.05))] shadow-[0_30px_90px_-40px_rgba(0,0,0,0.84)] backdrop-blur-[28px]">
-                    <div className="border-b border-white/10 px-4 py-3">
+                <div className="overflow-hidden rounded-[34px] border border-white/14 bg-[linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0.05))] shadow-[0_36px_120px_-56px_rgba(0,0,0,0.9)] backdrop-blur-[28px]">
+                    <div className="border-b border-white/10 px-4 py-3 sm:px-5">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <div className="flex flex-wrap items-center gap-2">
                                 <div className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/52">
@@ -168,17 +179,14 @@ function HeroWithUploadSection({
                                         type="button"
                                         onClick={openCreationCenter}
                                         className="ml-1 inline-flex items-center gap-1 rounded-full px-2 py-1.5 text-white/52 hover:text-white/80"
-                                        aria-label={isZh ? '前往创作中心选择更多模型设置' : 'Open creation center for more model settings'}
+                                        aria-label={isZh ? '进入创作中心查看更多模型与参数' : 'Open the creation center for more model and parameter options'}
                                     >
                                         <ChevronDown className="h-4 w-4" />
                                     </button>
                                 </div>
-                                <div className="hidden rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-sm text-white/62 sm:inline-flex">
-                                    {isZh ? '多模态 AI 视频生成器' : 'Multi-modal AI video generator'}
-                                </div>
                             </div>
 
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 text-xs">
                                 {RATIO_OPTIONS.length === 1 ? (
                                     <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-white/72">
                                         {RATIO_OPTIONS[0]}
@@ -204,22 +212,28 @@ function HeroWithUploadSection({
                         </div>
                     </div>
 
-                    <div className="grid items-stretch gap-0 lg:grid-cols-[minmax(0,1fr)_auto]">
-                        <div className="px-5 py-4">
+                    <div className="px-5 pt-5 sm:px-6">
+                        <div className="mx-auto max-w-3xl text-center text-sm leading-7 text-white/62">
+                            {modeCopy.helper}
+                        </div>
+                    </div>
+
+                    <div className="grid items-stretch gap-0 px-3 pb-3 pt-4 sm:px-4 sm:pb-4 lg:grid-cols-[minmax(0,1fr)_auto]">
+                        <div className="rounded-[24px] border border-white/10 bg-black/24 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:px-5">
                             <textarea
                                 value={prompt}
                                 onChange={(event) => setPrompt(event.target.value)}
-                                className="min-h-[92px] w-full resize-none border-0 bg-transparent text-center text-base leading-8 text-white outline-none placeholder:text-white/36 sm:text-lg"
+                                className="min-h-[118px] w-full resize-none border-0 bg-transparent text-center text-base leading-8 text-white outline-none placeholder:text-white/34 sm:text-lg"
                                 placeholder={modeCopy.placeholder}
                             />
                         </div>
 
-                        <div className="flex items-center justify-center gap-2 border-t border-white/10 px-4 py-4 lg:border-l lg:border-t-0">
+                        <div className="mt-3 flex items-center justify-center gap-2 lg:mt-0 lg:pl-3">
                             <button
                                 type="button"
                                 onClick={openCreationCenter}
-                                className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/12 bg-white/[0.06] text-white/82 transition-colors hover:bg-white/[0.11] hover:text-white"
-                                aria-label={isZh ? '上传参考素材' : 'Upload references'}
+                                className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/12 bg-white/[0.08] text-white/82 transition-colors hover:bg-white/[0.14] hover:text-white"
+                                aria-label={isZh ? '上传参考素材并打开创作中心' : 'Open the creation center with reference uploads'}
                             >
                                 <Paperclip className="h-5 w-5" />
                             </button>
@@ -234,15 +248,26 @@ function HeroWithUploadSection({
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-center gap-2 border-t border-white/10 px-4 py-3">
-                        <button
-                            type="button"
-                            onClick={openCreationCenter}
-                            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-white/78 transition-colors hover:bg-white/[0.08] hover:text-white"
-                        >
-                            <Paperclip className="h-3.5 w-3.5" />
-                            {isZh ? '图片 / 视频 / 音频参考' : 'Image / Video / Audio references'}
-                        </button>
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 px-4 py-3 sm:px-5">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={openCreationCenter}
+                                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-white/78 transition-colors hover:bg-white/[0.08] hover:text-white"
+                            >
+                                <Paperclip className="h-3.5 w-3.5" />
+                                {isZh ? '图片 / 视频 / 音频参考' : 'Image / Video / Audio references'}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={openCreationCenter}
+                                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-white/68 transition-colors hover:bg-white/[0.08] hover:text-white"
+                            >
+                                <ArrowRight className="h-3.5 w-3.5" />
+                                {isZh ? '进入创作中心继续细化' : 'Refine inside the creation center'}
+                            </button>
+                        </div>
+
                         <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-white/62">
                             <span>{isZh ? '时长' : 'Duration'}</span>
                             {DURATION_OPTIONS.length === 1 ? (
@@ -265,43 +290,9 @@ function HeroWithUploadSection({
                                 ))
                             )}
                         </div>
-                        <div className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-white/58">
-                            {isZh ? '当前按 Kie 支持集展示 720p / 16:9 / 15s' : 'Showing the current Kie-supported set: 720p / 16:9 / 15s'}
-                        </div>
-                        <button
-                            type="button"
-                            onClick={openCreationCenter}
-                            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-white/68 transition-colors hover:bg-white/[0.08] hover:text-white"
-                        >
-                            <Settings2 className="h-3.5 w-3.5" />
-                            {isZh ? '高级设置' : 'Advanced settings'}
-                        </button>
-                    </div>
-                </div>
-
-                <div className="mt-4 flex flex-col items-center gap-3 text-center text-sm text-white/66">
-                    <p className="max-w-3xl text-balance leading-7">
-                        {modeCopy.helper}
-                    </p>
-                    <div className="flex flex-wrap items-center justify-center gap-3">
-                        <button
-                            type="button"
-                            onClick={openCreationCenter}
-                            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-white/78 transition-colors hover:bg-white/[0.08] hover:text-white"
-                        >
-                            <PlayCircle className="h-4 w-4" />
-                            {isZh ? '进入创作中心' : 'Open creation center'}
-                        </button>
-                        <div className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-white/62">
-                            {isZh ? '支持图生视频、文生视频、动作参考和视频延展。' : 'Supports image to video, text to video, reference motion, and video extension.'}
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     );
-}
-
-export function useHomeInteractive() {
-    return { showStaticContent: true, setShowStaticContent: () => {} };
 }

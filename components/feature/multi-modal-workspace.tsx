@@ -439,13 +439,13 @@ export function MultiModalWorkspace({ locale }: Props) {
   }
 
   return (
-    <div id="workspace" className="mx-auto max-w-6xl rounded-[24px] border border-white/10 bg-[#181a1f]/96 p-4 shadow-[0_28px_70px_-36px_rgba(0,0,0,0.72)] backdrop-blur-xl md:p-5">
-      <div className="grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
+    <div id="workspace" className="mx-auto max-w-7xl rounded-[30px] border border-white/10 bg-[#181a1f]/96 p-4 shadow-[0_34px_90px_-44px_rgba(0,0,0,0.8)] backdrop-blur-xl md:p-5">
+      <div className="grid gap-5 xl:grid-cols-[390px_minmax(0,1fr)]">
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="rounded-[18px] border border-white/8 bg-[#24252c] p-4"
+        className="rounded-[22px] border border-white/8 bg-[#24252c] p-4 xl:sticky xl:top-24 xl:self-start"
       >
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-2">
@@ -640,7 +640,7 @@ export function MultiModalWorkspace({ locale }: Props) {
         transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
         className="space-y-6"
       >
-        <div className="rounded-[18px] border border-white/8 bg-[#24252c] p-4">
+        <div className="rounded-[22px] border border-white/8 bg-[#24252c] p-4">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-white/38">{copy.previewTitle}</p>
@@ -649,25 +649,28 @@ export function MultiModalWorkspace({ locale }: Props) {
             <PlayCircle className="h-6 w-6 text-white/66" />
           </div>
 
-          <div className="mt-4 rounded-[16px] border border-white/8 bg-[#1d1f26] p-3">
-            <div className="flex items-center justify-between px-1 pb-3 pt-1 text-[11px] uppercase tracking-[0.16em] text-white/40">
-              <span>{activePreview.label}</span>
-              <span>{resolution} · {durationSeconds}s · {aspectRatio}</span>
+          <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.25fr)_320px]">
+            <div className="rounded-[18px] border border-white/8 bg-[#1d1f26] p-3">
+              <div className="flex items-center justify-between px-1 pb-3 pt-1 text-[11px] uppercase tracking-[0.16em] text-white/40">
+                <span>{activePreview.label}</span>
+                <span>{resolution} · {durationSeconds}s · {aspectRatio}</span>
+              </div>
+              <div className="overflow-hidden rounded-[16px] border border-white/6 bg-black">
+                <video
+                  key={activePreview.src}
+                  src={activePreview.src}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  controls
+                  className="aspect-[16/10] w-full object-contain"
+                />
+              </div>
             </div>
-            <div className="overflow-hidden rounded-[14px] border border-white/6 bg-black">
-              <video
-                key={activePreview.src}
-                src={activePreview.src}
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="metadata"
-                controls
-                className="aspect-[4/5] w-full object-cover"
-              />
-            </div>
-            <div className="space-y-4 p-4 pb-3">
+
+            <div className="space-y-4 rounded-[18px] border border-white/8 bg-[#1d1f26] p-4">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3 py-1 text-xs text-white/92">
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 {locale === "zh" ? "样例预览已就位" : "Preview reel loaded"}
@@ -678,73 +681,74 @@ export function MultiModalWorkspace({ locale }: Props) {
               <p className="text-sm leading-7 text-white/74">
                 {locale === "zh" ? activePreview.bodyZh : activePreview.bodyEn}
               </p>
-            </div>
-          </div>
-
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
-            {copy.stats.map((stat) => (
-              <div key={stat.label} className="rounded-[14px] border border-white/8 bg-[#1d1f26] p-4">
-                <div className="text-[11px] uppercase tracking-[0.16em] text-white/36">{stat.label}</div>
-                <div className="mt-2 text-sm font-medium text-white">{stat.value}</div>
+              <div className="grid gap-3">
+                {copy.stats.map((stat) => (
+                  <div key={stat.label} className="rounded-[14px] border border-white/8 bg-[#14161c] p-4">
+                    <div className="text-[11px] uppercase tracking-[0.16em] text-white/36">{stat.label}</div>
+                    <div className="mt-2 text-sm font-medium text-white">{stat.value}</div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-[18px] border border-white/8 bg-[#24252c] p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-xs uppercase tracking-[0.16em] text-white/38">{copy.queueTitle}</p>
-              <h3 className="mt-2 text-base font-semibold text-white">{locale === "zh" ? "把每类参考素材都用在它最擅长的地方。" : "Let each reference type do the job it handles best."}</h3>
             </div>
-            <MonitorPlay className="h-5 w-5 text-white/40" />
-          </div>
-          <div className="mt-4 rounded-[14px] border border-white/8 bg-[#1d1f26] p-4 text-sm leading-7 text-white/74">
-            <p>{copy.queueHint}</p>
-            <ul className="mt-3 space-y-2">
-              {copy.queueBullets.map((item) => (
-                <li key={item} className="flex gap-3">
-                  <Check className="mt-1 h-4 w-4 shrink-0 text-cyan-300" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="mt-4 space-y-3">
-            <QueueItem title={copy.laneTitle.image} detail={locale === "zh" ? `${assets.image.length} 个图像素材已进入角色与关键帧队列` : `${assets.image.length} image assets staged for identity and keyframes`} progress={assets.image.length > 0 ? "done" : "idle"} />
-            <QueueItem title={copy.laneTitle.video} detail={locale === "zh" ? `${assets.video.length} 个视频素材已进入动作与镜头队列` : `${assets.video.length} motion clips staged for movement and camera`} progress={assets.video.length > 0 ? "active" : "idle"} />
-            <QueueItem title={copy.laneTitle.audio} detail={locale === "zh" ? `${assets.audio.length} 个音频素材已进入节奏队列` : `${assets.audio.length} audio cues staged for rhythm and timing`} progress={assets.audio.length > 0 ? "done" : "idle"} />
-            {activeGenerationId ? (
-              <QueueItem
-                title={locale === "zh" ? "当前任务" : "Current task"}
-                detail={
-                  locale === "zh"
-                    ? `任务 ${activeGenerationId.slice(0, 8)} 当前状态：${activeGenerationStatus ?? "pending"}`
-                    : `Job ${activeGenerationId.slice(0, 8)} is currently ${activeGenerationStatus ?? "pending"}`
-                }
-                progress="active"
-              />
-            ) : null}
           </div>
         </div>
 
-        <div className="rounded-[18px] border border-white/8 bg-[#24252c] p-4">
-          <Label>{copy.quickPresetsTitle}</Label>
-          <div className="mt-4 space-y-3">
-            {copy.presets.map((preset) => (
-              <button
-                key={preset.name}
-                type="button"
-                onClick={() => actions.loadPreset(preset.prompt, preset.mode)}
-                className="w-full rounded-[14px] border border-white/6 bg-[#151518] p-4 text-left transition-colors hover:border-white/14 hover:bg-white/[0.04]"
-              >
-                <div className="flex items-center gap-2 text-sm font-medium text-white">
-                  <Sparkles className="h-4 w-4 text-white/70" />
-                  {preset.name}
-                </div>
-                <p className="mt-2 text-sm leading-6 text-white/52">{preset.prompt}</p>
-              </button>
-            ))}
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="rounded-[22px] border border-white/8 bg-[#24252c] p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs uppercase tracking-[0.16em] text-white/38">{copy.queueTitle}</p>
+                <h3 className="mt-2 text-base font-semibold text-white">{locale === "zh" ? "让每一类参考素材都承担自己最擅长的工作。" : "Let each reference type carry the part it handles best."}</h3>
+              </div>
+              <MonitorPlay className="h-5 w-5 text-white/40" />
+            </div>
+            <div className="mt-4 rounded-[14px] border border-white/8 bg-[#1d1f26] p-4 text-sm leading-7 text-white/74">
+              <p>{copy.queueHint}</p>
+              <ul className="mt-3 space-y-2">
+                {copy.queueBullets.map((item) => (
+                  <li key={item} className="flex gap-3">
+                    <Check className="mt-1 h-4 w-4 shrink-0 text-cyan-300" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mt-4 space-y-3">
+              <QueueItem title={copy.laneTitle.image} detail={locale === "zh" ? `${assets.image.length} 个图像素材已进入角色与关键帧队列` : `${assets.image.length} image assets staged for identity and keyframes`} progress={assets.image.length > 0 ? "done" : "idle"} />
+              <QueueItem title={copy.laneTitle.video} detail={locale === "zh" ? `${assets.video.length} 个视频素材已进入动作与镜头队列` : `${assets.video.length} motion clips staged for movement and camera`} progress={assets.video.length > 0 ? "active" : "idle"} />
+              <QueueItem title={copy.laneTitle.audio} detail={locale === "zh" ? `${assets.audio.length} 个音频素材已进入节奏队列` : `${assets.audio.length} audio cues staged for rhythm and timing`} progress={assets.audio.length > 0 ? "done" : "idle"} />
+              {activeGenerationId ? (
+                <QueueItem
+                  title={locale === "zh" ? "当前任务" : "Current task"}
+                  detail={
+                    locale === "zh"
+                      ? `任务 ${activeGenerationId.slice(0, 8)} 当前状态：${activeGenerationStatus ?? "pending"}`
+                      : `Job ${activeGenerationId.slice(0, 8)} is currently ${activeGenerationStatus ?? "pending"}`
+                  }
+                  progress="active"
+                />
+              ) : null}
+            </div>
+          </div>
+
+          <div className="rounded-[22px] border border-white/8 bg-[#24252c] p-4">
+            <Label>{copy.quickPresetsTitle}</Label>
+            <div className="mt-4 space-y-3">
+              {copy.presets.map((preset) => (
+                <button
+                  key={preset.name}
+                  type="button"
+                  onClick={() => actions.loadPreset(preset.prompt, preset.mode)}
+                  className="w-full rounded-[14px] border border-white/6 bg-[#151518] p-4 text-left transition-colors hover:border-white/14 hover:bg-white/[0.04]"
+                >
+                  <div className="flex items-center gap-2 text-sm font-medium text-white">
+                    <Sparkles className="h-4 w-4 text-white/70" />
+                    {preset.name}
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-white/52">{preset.prompt}</p>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </motion.div>

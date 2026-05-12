@@ -3,6 +3,10 @@ import { createClient } from "@/utils/supabase/server";
 import { getProjectId } from "@/utils/supabase/project";
 import { NextResponse } from "next/server";
 import { estimateGenerationCredits } from "@/utils/video-generation";
+import { isCloudflareDataBackend } from "@/utils/backend/runtime";
+import { requireSessionUser } from "@/utils/backend/auth";
+import { getCreditsViewForUser, spendUserCredits } from "@/utils/d1/credits";
+import { provisionCustomerIfMissing } from "@/utils/d1/customers";
 
 export const runtime = "nodejs";
 
@@ -33,6 +37,22 @@ export async function GET(request: Request) {
                     })),
                 }),
             });
+        }
+
+        if (isCloudflareDataBackend()) {
+            const user = await requireSessionUser();
+            if (!user) {
+                return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            }
+
+            await provisionCustomerIfMissing({
+                userId: user.id,
+                email: user.email,
+                name: user.name,
+            });
+
+            const credits = await getCreditsViewForUser(user.id);
+            return jsonWithCache({ credits });
         }
 
         const supabase = await createClient();
@@ -78,6 +98,33 @@ export async function POST(request: Request) {
             amount?: number;
             operation?: string;
         };
+
+        if (isCloudflareDataBackend()) {
+            const user = await requireSessionUser();
+            if (!user) {
+                return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            }
+
+            const body = (await request.json()) as SpendCreditsRequest;
+            const { amount, operation } = body;
+
+            if (!amount || amount <= 0) {
+                return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
+            }
+
+            const result = await spendUserCredits({
+                userId: user.id,
+                amount,
+                operation: operation || "api_spend",
+            });
+
+            if (!result.ok) {
+                return NextResponse.json({ error: "Insufficient credits" }, { status: 402 });
+            }
+
+            const credits = await getCreditsViewForUser(user.id);
+            return NextResponse.json({ credits });
+        }
 
         const supabase = await createClient();
         const projectId = await getProjectId(supabase);

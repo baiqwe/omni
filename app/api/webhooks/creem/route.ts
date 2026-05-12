@@ -2,12 +2,20 @@ import { headers } from "next/headers";
 export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import { verifyCreemWebhookSignature } from "@/utils/creem/verify-signature";
-import { CreemWebhookEvent } from "@/types/creem";
+import { CreemCheckout, CreemSubscription, CreemWebhookEvent } from "@/types/creem";
 import {
   createOrUpdateCustomer,
   createOrUpdateSubscription,
   addCreditsToCustomer,
 } from "@/utils/supabase/subscriptions";
+import { isCloudflareDataBackend } from "@/utils/backend/runtime";
+import {
+  addCreditsToCustomerByUserId,
+  createOrUpdateCustomerFromCreem,
+  createOrUpdateSubscriptionFromCreem,
+  getCustomerByCreemCustomerId,
+} from "@/utils/d1/subscriptions";
+import { getD1, isoNow } from "@/utils/d1/db";
 
 const CREEM_WEBHOOK_SECRET = process.env.CREEM_WEBHOOK_SECRET!;
 
@@ -29,6 +37,14 @@ export async function POST(request: Request) {
 
     const event = JSON.parse(body) as CreemWebhookEvent;
     console.log("Received webhook event:", event.eventType, event.object?.id);
+
+    if (isCloudflareDataBackend()) {
+      const duplicate = await isProcessedWebhookEvent(event.id);
+      if (duplicate) {
+        return NextResponse.json({ received: true, duplicate: true });
+      }
+      await upsertWebhookEventLog(event.id, body, false);
+    }
 
     // Handle different event types
     switch (event.eventType) {
@@ -56,6 +72,10 @@ export async function POST(request: Request) {
         );
     }
 
+    if (isCloudflareDataBackend()) {
+      await upsertWebhookEventLog(event.id, body, true);
+    }
+
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error("Error processing webhook:", error);
@@ -68,9 +88,132 @@ export async function POST(request: Request) {
   }
 }
 
+function getMetadataUserId(record: Record<string, any> | null | undefined) {
+  const direct = record?.metadata?.user_id;
+  if (typeof direct === "string" && direct.trim()) {
+    return direct.trim();
+  }
+
+  const orderUser = record?.order?.metadata?.user_id;
+  if (typeof orderUser === "string" && orderUser.trim()) {
+    return orderUser.trim();
+  }
+
+  return null;
+}
+
+function getOrderCredits(checkout: CreemCheckout) {
+  const raw =
+    checkout.metadata?.credits ??
+    checkout.order?.metadata?.credits ??
+    0;
+
+  const parsed = typeof raw === "string" ? Number.parseInt(raw, 10) : Number(raw);
+  if (!Number.isFinite(parsed) || parsed <= 0) return 0;
+  return parsed;
+}
+
+function getCreemCustomerId(customer: unknown) {
+  if (!customer) return null;
+  if (typeof customer === "string") return customer;
+  if (typeof customer === "object" && customer !== null && "id" in customer) {
+    const id = (customer as { id?: unknown }).id;
+    if (typeof id === "string" && id.trim()) return id.trim();
+  }
+  return null;
+}
+
+async function resolveUserIdForSubscription(subscription: CreemSubscription) {
+  const metadataUserId = getMetadataUserId(subscription as unknown as Record<string, any>);
+  if (metadataUserId) return metadataUserId;
+
+  const creemCustomerId = getCreemCustomerId(subscription.customer);
+  if (!creemCustomerId) return null;
+
+  const customer = await getCustomerByCreemCustomerId(creemCustomerId);
+  return customer?.user_id ?? null;
+}
+
+async function isProcessedWebhookEvent(externalEventId: string) {
+  if (!externalEventId) return false;
+
+  const existing = await getD1()
+    .prepare(
+      "SELECT id FROM webhook_events WHERE provider = ? AND external_event_id = ? AND processed_at IS NOT NULL LIMIT 1"
+    )
+    .bind("creem", externalEventId)
+    .first<{ id: string } | null>();
+
+  return Boolean(existing?.id);
+}
+
+async function upsertWebhookEventLog(externalEventId: string, payload: string, processed: boolean) {
+  if (!externalEventId) return;
+
+  const now = isoNow();
+  const db = getD1();
+  const existing = await db
+    .prepare("SELECT id FROM webhook_events WHERE provider = ? AND external_event_id = ? LIMIT 1")
+    .bind("creem", externalEventId)
+    .first<{ id: string } | null>();
+
+  if (existing?.id) {
+    await db
+      .prepare(
+        "UPDATE webhook_events SET payload_json = ?, processed_at = ?, created_at = COALESCE(created_at, ?) WHERE id = ?"
+      )
+      .bind(payload, processed ? now : null, now, existing.id)
+      .run();
+    return;
+  }
+
+  await db
+    .prepare(
+      "INSERT INTO webhook_events (id, provider, external_event_id, payload_json, processed_at, created_at) VALUES (?, ?, ?, ?, ?, ?)"
+    )
+    .bind(crypto.randomUUID(), "creem", externalEventId, payload, processed ? now : null, now)
+    .run();
+}
+
 async function handleCheckoutCompleted(event: CreemWebhookEvent) {
   const checkout = event.object;
   console.log("Processing completed checkout:", checkout);
+
+  if (isCloudflareDataBackend()) {
+    const checkoutObject = checkout as CreemCheckout;
+    const userId = getMetadataUserId(checkoutObject as unknown as Record<string, any>);
+    const fallbackEmail =
+      typeof checkoutObject?.customer === "object" ? checkoutObject.customer?.email : null;
+
+    const resolvedUserId = await createOrUpdateCustomerFromCreem({
+      creemCustomer: checkoutObject.customer,
+      userId,
+      fallbackEmail,
+    });
+
+    if (checkoutObject.subscription) {
+      await createOrUpdateSubscriptionFromCreem({
+        subscription: checkoutObject.subscription,
+        userId: resolvedUserId,
+      });
+    }
+
+    const credits = getOrderCredits(checkoutObject);
+    if (credits > 0) {
+      await addCreditsToCustomerByUserId({
+        userId: resolvedUserId,
+        credits,
+        creemOrderId: checkoutObject.order?.id,
+        description: `Purchased ${credits} credits (${checkoutObject.metadata?.product_type || "unknown"})`,
+        metadata: {
+          source: "creem_webhook",
+          eventType: event.eventType,
+        },
+      });
+    }
+
+    return;
+  }
 
   try {
     // Validate required data
@@ -115,6 +258,24 @@ async function handleSubscriptionActive(event: CreemWebhookEvent) {
   const subscription = event.object;
   console.log("Processing active subscription:", subscription);
 
+  if (isCloudflareDataBackend()) {
+    const subscriptionObject = subscription as CreemSubscription;
+    const userId = await resolveUserIdForSubscription(subscriptionObject);
+    if (!userId) {
+      throw new Error("Missing user mapping for subscription.active event");
+    }
+
+    await createOrUpdateCustomerFromCreem({
+      creemCustomer: subscriptionObject.customer,
+      userId,
+    });
+    await createOrUpdateSubscriptionFromCreem({
+      subscription: subscriptionObject,
+      userId,
+    });
+    return;
+  }
+
   try {
     // Create or update customer
     const customerId = await createOrUpdateCustomer(
@@ -134,6 +295,24 @@ async function handleSubscriptionPaid(event: CreemWebhookEvent) {
   const subscription = event.object;
   console.log("Processing paid subscription:", subscription);
 
+  if (isCloudflareDataBackend()) {
+    const subscriptionObject = subscription as CreemSubscription;
+    const userId = await resolveUserIdForSubscription(subscriptionObject);
+    if (!userId) {
+      throw new Error("Missing user mapping for subscription.paid event");
+    }
+
+    await createOrUpdateCustomerFromCreem({
+      creemCustomer: subscriptionObject.customer,
+      userId,
+    });
+    await createOrUpdateSubscriptionFromCreem({
+      subscription: subscriptionObject,
+      userId,
+    });
+    return;
+  }
+
   try {
     // Update subscription status and period
     const customerId = await createOrUpdateCustomer(
@@ -150,6 +329,24 @@ async function handleSubscriptionPaid(event: CreemWebhookEvent) {
 async function handleSubscriptionCanceled(event: CreemWebhookEvent) {
   const subscription = event.object;
   console.log("Processing canceled subscription:", subscription);
+
+  if (isCloudflareDataBackend()) {
+    const subscriptionObject = subscription as CreemSubscription;
+    const userId = await resolveUserIdForSubscription(subscriptionObject);
+    if (!userId) {
+      throw new Error("Missing user mapping for subscription.canceled event");
+    }
+
+    await createOrUpdateCustomerFromCreem({
+      creemCustomer: subscriptionObject.customer,
+      userId,
+    });
+    await createOrUpdateSubscriptionFromCreem({
+      subscription: subscriptionObject,
+      userId,
+    });
+    return;
+  }
 
   try {
     // Update subscription status
@@ -168,6 +365,24 @@ async function handleSubscriptionExpired(event: CreemWebhookEvent) {
   const subscription = event.object;
   console.log("Processing expired subscription:", subscription);
 
+  if (isCloudflareDataBackend()) {
+    const subscriptionObject = subscription as CreemSubscription;
+    const userId = await resolveUserIdForSubscription(subscriptionObject);
+    if (!userId) {
+      throw new Error("Missing user mapping for subscription.expired event");
+    }
+
+    await createOrUpdateCustomerFromCreem({
+      creemCustomer: subscriptionObject.customer,
+      userId,
+    });
+    await createOrUpdateSubscriptionFromCreem({
+      subscription: subscriptionObject,
+      userId,
+    });
+    return;
+  }
+
   try {
     // Update subscription status
     const customerId = await createOrUpdateCustomer(
@@ -184,6 +399,24 @@ async function handleSubscriptionExpired(event: CreemWebhookEvent) {
 async function handleSubscriptionTrialing(event: CreemWebhookEvent) {
   const subscription = event.object;
   console.log("Processing trialing subscription:", subscription);
+
+  if (isCloudflareDataBackend()) {
+    const subscriptionObject = subscription as CreemSubscription;
+    const userId = await resolveUserIdForSubscription(subscriptionObject);
+    if (!userId) {
+      throw new Error("Missing user mapping for subscription.trialing event");
+    }
+
+    await createOrUpdateCustomerFromCreem({
+      creemCustomer: subscriptionObject.customer,
+      userId,
+    });
+    await createOrUpdateSubscriptionFromCreem({
+      subscription: subscriptionObject,
+      userId,
+    });
+    return;
+  }
 
   try {
     // Update subscription status

@@ -5,6 +5,10 @@ import { getProjectId } from "@/utils/supabase/project";
 import { consumeRateLimit } from "@/utils/rate-limit";
 import { estimateGenerationCredits, normalizeVideoGenerationRequest } from "@/utils/video-generation";
 import { buildKieCallbackUrl, createKieSeedanceTask } from "@/utils/kie";
+import { isCloudflareDataBackend } from "@/utils/backend/runtime";
+import { requireSessionUser } from "@/utils/backend/auth";
+import { createGenerationWithCredits, listProcessingGenerationViewsByUserId, updateGenerationProviderState } from "@/utils/d1/generations";
+import { provisionCustomerIfMissing } from "@/utils/d1/customers";
 
 export const runtime = "nodejs";
 
@@ -23,6 +27,18 @@ function getRequestIp(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  if (isCloudflareDataBackend()) {
+    const user = await requireSessionUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const url = new URL(request.url);
+    const limit = Math.min(Number(url.searchParams.get("limit") || "10"), 20);
+    const generations = await listProcessingGenerationViewsByUserId(user.id, limit);
+    return NextResponse.json({ generations });
+  }
+
   const supabase = await createClient();
   const serviceSupabase = createServiceRoleClient();
   const projectId = await getProjectId(serviceSupabase);
@@ -57,6 +73,179 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (isCloudflareDataBackend()) {
+    const rawPayload = (await request.json()) as Record<string, unknown>;
+    const payload = normalizeVideoGenerationRequest(rawPayload);
+    if (!payload.prompt) {
+      return NextResponse.json({ error: "Prompt is required.", code: "MISSING_PROMPT" }, { status: 400 });
+    }
+
+    if (payload.images.length === 0 && payload.videos.length === 0 && payload.mode !== "text_to_video") {
+      return NextResponse.json(
+        { error: "At least one image or video reference is required.", code: "MISSING_REFERENCES" },
+        { status: 400 }
+      );
+    }
+
+    if (payload.images.length > 9 || payload.videos.length > 3 || payload.audios.length > 3) {
+      return NextResponse.json(
+        { error: "The request exceeds the allowed asset limits.", code: "ASSET_LIMIT_EXCEEDED" },
+        { status: 400 }
+      );
+    }
+
+    const user = await requireSessionUser();
+    if (!user) {
+      return NextResponse.json({ error: "Please sign in to generate.", code: "UNAUTHORIZED" }, { status: 401 });
+    }
+
+    await provisionCustomerIfMissing({
+      userId: user.id,
+      email: user.email,
+      name: user.name,
+    });
+
+    const ip = getRequestIp(request);
+    const rateLimit = await consumeRateLimit({
+      scope: "ai-generate",
+      key: `cloudflare:${user.id}:${ip}`,
+      limit: 10,
+      windowMs: 5 * 60 * 1000,
+    });
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          error: "Too many generation attempts. Please wait a few minutes and try again.",
+          code: "RATE_LIMITED",
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": Math.max(Math.ceil((rateLimit.resetAt - Date.now()) / 1000), 1).toString(),
+          },
+        }
+      );
+    }
+
+    const existingProcessing = await listProcessingGenerationViewsByUserId(user.id, 1);
+    const latest = existingProcessing[0];
+    if (latest) {
+      const pendingAge = Date.now() - new Date(latest.created_at).getTime();
+      if (pendingAge < ACTIVE_GENERATION_WINDOW_MS) {
+        return NextResponse.json(
+          { error: "A generation is already in progress. Please wait for it to finish.", code: "GENERATION_IN_PROGRESS" },
+          { status: 429 }
+        );
+      }
+    }
+
+    const estimatedCredits = estimateGenerationCredits(payload);
+    let generation;
+
+    try {
+      generation = await createGenerationWithCredits({
+        userId: user.id,
+        prompt: payload.prompt,
+        modelId: payload.videoModel,
+        generationType: payload.mode,
+        creditsCost: estimatedCredits,
+        resolution: payload.resolution,
+        durationSeconds: payload.durationSeconds,
+        aspectRatio: payload.aspectRatio,
+        metadata: {
+          provider: "kie",
+          providerModel: payload.videoModel,
+          containsRealPeople: payload.containsRealPeople,
+          returnLastFrame: payload.returnLastFrame,
+          workspacePreset: payload.workspacePreset,
+          providerStatus: "waiting",
+          orchestration: "kie_seedance",
+          assetCounts: {
+            images: payload.images.length,
+            videos: payload.videos.length,
+            audios: payload.audios.length,
+          },
+        },
+        assets: [
+          ...payload.images.map((asset, index) => ({ kind: "image" as const, url: asset.url, sortOrder: index })),
+          ...payload.videos.map((asset, index) => ({ kind: "video" as const, url: asset.url, sortOrder: index })),
+          ...payload.audios.map((asset, index) => ({ kind: "audio" as const, url: asset.url, sortOrder: index })),
+        ],
+      });
+    } catch (error: any) {
+      if (error?.message === "INSUFFICIENT_CREDITS") {
+        return NextResponse.json(
+          { error: "Insufficient credits", code: "INSUFFICIENT_CREDITS", required: estimatedCredits },
+          { status: 402 }
+        );
+      }
+      return NextResponse.json({ error: error?.message || "Could not initialize generation", code: "GENERATION_LOG_FAILED" }, { status: 500 });
+    }
+
+    if (!generation?.id) {
+      return NextResponse.json({ error: "Could not initialize generation", code: "GENERATION_LOG_FAILED" }, { status: 500 });
+    }
+
+    try {
+      const providerJobId = await createKieSeedanceTask({
+        model: payload.videoModel,
+        request: payload,
+        callbackUrl: buildKieCallbackUrl(),
+      });
+
+      await updateGenerationProviderState({
+        id: generation.id,
+        providerJobId,
+        status: "pending",
+        statusDetail: "provider_waiting",
+        metadata: {
+          provider: "kie",
+          providerModel: payload.videoModel,
+          providerStatus: "waiting",
+          containsRealPeople: payload.containsRealPeople,
+          returnLastFrame: payload.returnLastFrame,
+          workspacePreset: payload.workspacePreset,
+          orchestration: "kie_seedance",
+          assetCounts: {
+            images: payload.images.length,
+            videos: payload.videos.length,
+            audios: payload.audios.length,
+          },
+        },
+      });
+
+      return NextResponse.json(
+        {
+          id: generation.id,
+          status: "pending",
+          statusDetail: "provider_waiting",
+          providerJobId,
+          estimatedCredits,
+          message: "Generation job created and submitted to Kie.",
+        },
+        { status: 202 }
+      );
+    } catch (providerError: any) {
+      await updateGenerationProviderState({
+        id: generation.id,
+        status: "failed",
+        statusDetail: "provider_submission_failed",
+        metadata: {
+          provider: "kie",
+          providerModel: payload.videoModel,
+          providerStatus: "submission_failed",
+          failureMessage: providerError?.message || "Failed to submit task to Kie",
+        },
+      });
+
+      return NextResponse.json(
+        { error: providerError?.message || "Failed to submit generation to Kie", code: "PROVIDER_SUBMISSION_FAILED" },
+        { status: 502 }
+      );
+    }
+  }
+
   const supabase = await createClient();
   const serviceSupabase = createServiceRoleClient();
 
@@ -97,7 +286,7 @@ export async function POST(request: NextRequest) {
     }
 
     const ip = getRequestIp(request);
-    const rateLimit = consumeRateLimit({
+    const rateLimit = await consumeRateLimit({
       scope: "ai-generate",
       key: `${projectId}:${user.id}:${ip}`,
       limit: 10,

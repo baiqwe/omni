@@ -1,8 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useUser } from "@/hooks/use-user";
-import { createClient } from "@/utils/supabase/client";
 
 export type ProcessingGeneration = {
   id: string;
@@ -25,7 +24,6 @@ export function useProcessingGenerations() {
   const [generations, setGenerations] = useState<ProcessingGeneration[]>([]);
   const [loading, setLoading] = useState(true);
   const pollAttemptRef = useRef(0);
-  const supabase = useMemo(() => createClient(), []);
 
   const fetchGenerations = useCallback(async () => {
     type ProcessingGenerationsResponse = {
@@ -80,23 +78,6 @@ export function useProcessingGenerations() {
       }, delay);
     };
 
-    const channel = supabase
-      .channel(`processing-generations-${user.id}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "generations",
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => {
-          pollAttemptRef.current = 0;
-          void fetchGenerations();
-        }
-      )
-      .subscribe();
-
     scheduleNextPoll();
 
     return () => {
@@ -104,9 +85,8 @@ export function useProcessingGenerations() {
       if (timer) {
         window.clearTimeout(timer);
       }
-      void supabase.removeChannel(channel);
     };
-  }, [fetchGenerations, generations.length, supabase, user]);
+  }, [fetchGenerations, generations.length, user]);
 
   return {
     generations,
