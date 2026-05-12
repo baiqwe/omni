@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  "name": "geminiomni",
+  "name": "omni",
   "compatibility_date": "2026-04-23",
   "compatibility_flags": [
     "nodejs_compat",
@@ -11,16 +11,6 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  "routes": [
-    {
-      "pattern": "geminiomni.xyz",
-      "custom_domain": true
-    },
-    {
-      "pattern": "www.geminiomni.xyz",
-      "custom_domain": true
-    }
-  ],
   "observability": {
     "enabled": true
   }
