@@ -14,8 +14,8 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
 
   const title = isZh ? `隐私政策 | ${site.siteName}` : `Privacy Policy | ${site.siteName}`;
   const description = isZh
-    ? "了解 Seedance 2 如何处理参考图片、视频、音频、生成结果、账号数据、支付信息和分析数据。"
-    : "Learn how Seedance 2 handles reference images, videos, audio uploads, generated outputs, account data, billing data, and analytics.";
+    ? "了解 Gemini Omni 如何处理参考图片、视频、音频、生成结果、账号数据、支付信息和分析数据。"
+    : "Learn how Gemini Omni handles reference images, videos, audio uploads, generated outputs, account data, billing data, and analytics.";
 
   const ogImage = new URL(site.ogImagePath, site.siteUrl).toString();
 
@@ -23,7 +23,7 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
     title,
     description,
     robots: {
-      index: false,
+      index: true,
       follow: true,
     },
     alternates: buildLocaleAlternates(`/${locale}/privacy`),

@@ -1,8 +1,8 @@
-# Seedance 2 DESIGN.md
+# Gemini Omni DESIGN.md
 
 ## 1. Visual Theme & Atmosphere
 
-Seedance 2 should feel like a cinematic production interface, not a playful AI toy. The design language is primarily inspired by RunwayML from the `awesome-design-md` collection:
+Gemini Omni should feel like a cinematic production interface, not a playful AI toy. The design language is primarily inspired by RunwayML from the `awesome-design-md` collection:
 
 - dark editorial canvas
 - visual output and media references as the primary storytelling device

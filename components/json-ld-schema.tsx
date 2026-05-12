@@ -6,9 +6,6 @@
  */
 import { getTranslations } from 'next-intl/server';
 import { site } from '@/config/site';
-import { galleryItems } from '@/config/gallery';
-import { toSchemaDateTime } from '@/utils/seo/date';
-import { parseDurationLabelToSeconds, secondsToIsoDuration } from '@/utils/seo/video';
 
 export async function SoftwareApplicationSchema({ locale }: { locale: string }) {
     const t = await getTranslations({ locale, namespace: 'metadata' });
@@ -29,7 +26,7 @@ export async function SoftwareApplicationSchema({ locale }: { locale: string }) 
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": site.siteName,
-        "alternateName": "Seedance 2",
+        "alternateName": "Gemini Omni Hub",
         "url": site.siteUrl,
         "inLanguage": locale === "zh" ? "zh-CN" : "en-US",
         "publisher": {
@@ -42,21 +39,23 @@ export async function SoftwareApplicationSchema({ locale }: { locale: string }) 
     const appSchema = {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": `${site.siteName} - Multi-Modal AI Video Workspace`,
+        "name": `${site.siteName} - Gemini Omni Intelligence Hub`,
         "description": t('description'),
         "applicationCategory": "MultimediaApplication",
         "operatingSystem": "Web Browser",
         "offers": {
             "@type": "Offer",
             "price": "0",
-            "priceCurrency": "USD"
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/PreOrder",
+            "url": site.siteUrl
         },
         "featureList": [
-            "Multi-modal AI video generation workspace",
-            "Image, video, audio, and text references",
-            "Reference-driven motion and camera control",
-            "Async-ready generation queue",
-            "Video extension and production workflow planning"
+            "Gemini Omni launch signal monitoring",
+            "Google Omni Video Model capability tracking",
+            "Multimodal AI video trend aggregation",
+            "Rapid indexing and schema-ready landing structure",
+            "Traffic routing to production-ready AI tools"
         ],
         "screenshot": new URL(site.ogImagePath, site.siteUrl).toString(),
         "provider": {
@@ -66,27 +65,30 @@ export async function SoftwareApplicationSchema({ locale }: { locale: string }) 
         }
     };
 
-    const videoSchemas = galleryItems.slice(0, 3).map((item) => {
-        const durationSeconds = parseDurationLabelToSeconds(item.durationLabel) ?? 5;
-
-        return {
-            "@context": "https://schema.org",
-            "@type": "VideoObject",
-            "name": locale === "zh" ? item.titleZh : item.title,
-            "description": locale === "zh" ? item.descriptionZh : item.description,
-            "thumbnailUrl": new URL(item.afterImage, site.siteUrl).toString(),
-            "contentUrl": new URL(item.videoUrl, site.siteUrl).toString(),
-            "embedUrl": new URL(`/${locale}/${item.slug}#showcase`, site.siteUrl).toString(),
-            "duration": secondsToIsoDuration(durationSeconds),
-            "uploadDate": toSchemaDateTime("2026-04-23T00:00:00+08:00"),
-            "publisher": {
-                "@type": "Organization",
-                "name": site.siteName
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is Gemini Omni?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Gemini Omni refers to Google's emerging multimodal AI direction combining text, image, audio, and video capabilities."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How to access Gemini Omni?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Access depends on official rollout and API release timelines announced by Google."
+                }
             }
-        };
-    });
+        ]
+    };
 
-    const schema = [organizationSchema, websiteSchema, appSchema, ...videoSchemas];
+    const schema = [organizationSchema, websiteSchema, appSchema, faqSchema];
 
     return (
         <script

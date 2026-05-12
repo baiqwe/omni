@@ -4,7 +4,7 @@ export type VideoGenerationMode =
   | "text_to_video"
   | "video_extension";
 
-export type VideoModelId = "bytedance/seedance-2" | "bytedance/seedance-2-fast";
+export type VideoModelId = "bytedance/omni-2" | "bytedance/omni-2-fast";
 export type VideoAssetKind = "image" | "video" | "audio";
 
 export type VideoAsset = {
@@ -28,7 +28,7 @@ export type VideoGenerationRequest = {
   workspacePreset?: string | null;
 };
 
-export const KIE_SEEDANCE_SUPPORTED_MODELS: VideoModelId[] = ["bytedance/seedance-2", "bytedance/seedance-2-fast"];
+export const KIE_SEEDANCE_SUPPORTED_MODELS: VideoModelId[] = ["bytedance/omni-2", "bytedance/omni-2-fast"];
 export const KIE_SEEDANCE_SUPPORTED_MODES: VideoGenerationMode[] = ["multi_modal_video", "image_to_video", "text_to_video"];
 export const KIE_SEEDANCE_SUPPORTED_RESOLUTIONS: VideoGenerationRequest["resolution"][] = ["720p"];
 export const KIE_SEEDANCE_SUPPORTED_DURATIONS: VideoGenerationRequest["durationSeconds"][] = [15];
@@ -86,9 +86,9 @@ export function estimateGenerationCredits(input: Pick<VideoGenerationRequest, "m
 
 export function normalizeVideoGenerationRequest(payload: any): VideoGenerationRequest {
   const videoModel =
-    payload?.videoModel === "bytedance/seedance-2-fast"
-      ? "bytedance/seedance-2-fast"
-      : "bytedance/seedance-2";
+    payload?.videoModel === "bytedance/omni-2-fast"
+      ? "bytedance/omni-2-fast"
+      : "bytedance/omni-2";
   const mode = (payload?.mode || "multi_modal_video") as VideoGenerationMode;
   const resolutionCandidate = (payload?.resolution || "720p") as VideoGenerationRequest["resolution"];
   const durationCandidate = Number(payload?.durationSeconds || 15) as VideoGenerationRequest["durationSeconds"];

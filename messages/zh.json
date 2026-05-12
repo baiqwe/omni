@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "Seedance 2.0 - AI 视频生成器与多模态创作工作流",
-    "description": "Seedance 2.0 是一套围绕图生视频、文生视频、参考动作生成和视频延展构建的多模态 AI 视频工作流。",
-    "keywords": "seedance 2.0, seedance 2, seedance2, seedance 2 ai 视频生成器, seedance 2 工作流"
+    "title": "Gemini Omni Video Generator | Official Waitlist & Early Access",
+    "description": "Gemini Omni Hub 聚合 Google Omni Video Model 动态、多模态 AI 进展信号与早期接入路径。",
+    "keywords": "gemini omni, google gemini omni, google omni video model, omni ai model, multimodal ai video, how to access gemini omni"
   },
   "nav": {
     "home": "首页",
@@ -18,7 +18,7 @@
     "badge": "多模态输入 • 精准动作 • 视频延展",
     "title": "体验真正的",
     "title_highlight": "多模态 AI 视频创作",
-    "subtitle": "把图、文、音、视频放进同一个沉浸式工作台，用自然语言和参考素材共同控制结果。",
+    "subtitle": "持续追踪 Gemini Omni 上线信号，沉淀可索引内容，并把等待流量导向已上线 AI 产品矩阵。",
     "feature_1": "参考任何内容",
     "feature_2": "异步任务就绪",
     "feature_3": "面向生产环境",
@@ -80,7 +80,7 @@
     "f3_title": "适配异步任务系统",
     "f3_desc": "为后续的排队、进度轮询、失败恢复和结果延展预留结构。",
     "styles_title": "可控模型，先要把能力讲清楚",
-    "styles_subtitle": "首页要让人一眼看懂 Seedance 2 的强项：参考能力、动作精度、视频延展和音频逻辑。",
+    "styles_subtitle": "首页要让人一眼看懂 Gemini Omni 的强项：参考能力、动作精度、视频延展和音频逻辑。",
     "styles_more": "查看工作台",
     "use_title": "为习惯用参考思考的创作者而生",
     "use_subtitle": "它更像一台视频工作站，而不是一个只会吐结果的花哨玩具。",
@@ -90,7 +90,7 @@
     "u2_desc": "在拍摄前先验证运镜、场景连续性和动作节奏。",
     "u3_title": "内容创作者与短视频团队",
     "u3_desc": "把流行模板、音乐和视觉参考变成可复用的内容生产流。",
-    "faq_title": "如何使用 Seedance 2",
+    "faq_title": "如何使用 Gemini Omni",
     "faq_subtitle": "这一版先把产品体验壳和工作流落下，再继续接真实能力。",
     "faq1_q": "上传素材",
     "faq1_a": "把静帧、参考视频和可选音频一起放进工作台，让模型先有明确可依赖的输入。",
@@ -100,7 +100,7 @@
     "faq3_a": "等异步任务系统接入后，用户可以生成、延展、局部调整，而不是每次都从头来过。",
     "faq4_q": "上传素材会怎么处理？",
     "faq4_a": "理想状态下，素材应先进入项目隔离的存储桶，再按所选模型提供商的协议转发。最终细节应写入隐私政策。",
-    "cta_title": "准备开始用 Seedance 2 创作了吗？",
+    "cta_title": "准备开始用 Gemini Omni 创作了吗？",
     "cta_subtitle": "注册账号，进入创作中心，再按你的出片频率选择合适方案。",
     "cta_signup": "创建账号",
     "cta_pricing": "查看定价"
@@ -120,12 +120,12 @@
     "link_about": "关于我们",
     "link_contact": "联系我们",
     "rights": "保留所有权利。",
-    "brand": "Seedance 2.0",
+    "brand": "Gemini Omni",
     "built_by": "为真正做视频的人而建"
   },
   "Contact": {
-    "meta_title": "联系我们 | Seedance 2.0",
-    "meta_desc": "如果你对 Seedance 2.0 的工作流、订单、账号、上线计划或隐私有疑问，可以通过这里联系支持团队。",
+    "meta_title": "联系我们 | Gemini Omni",
+    "meta_desc": "如果你对 Gemini Omni 的工作流、订单、账号、上线计划或隐私有疑问，可以通过这里联系支持团队。",
     "home": "返回首页",
     "title": "联系我们",
     "p1": "如果你对生成结果、订单、退款、账号问题或隐私请求有任何疑问，我们都可以协助处理。这个页面会作为统一的联系入口，方便你快速找到支持团队。",
@@ -136,9 +136,9 @@
   },
   "Pricing": {
     "eyebrow": "生产级定价",
-    "title": "按你的使用频率选择合适的 Seedance 2 方案。",
+    "title": "按你的使用频率选择合适的 Gemini Omni 方案。",
     "subtitle": "先用一次性买断包试水，确定工作流跑顺以后，再切到更适合高频创作的订阅方案。",
-    "artist_anchor": "和反复做预演、镜头测试或外包剪辑相比，一个合适的 Seedance 方案更像是提高产能，而不是多一笔纯软件成本。",
+    "artist_anchor": "和反复做预演、镜头测试或外包剪辑相比，一个合适的 Omni 方案更像是提高产能，而不是多一笔纯软件成本。",
     "buyout_label": "买断",
     "subscription_label": "专业版",
     "one_time_payment": "一次性付款",

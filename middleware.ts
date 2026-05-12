@@ -13,6 +13,20 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(normalizedUrl, 307)
   }
 
+  // Single-page mode: keep only /{locale} and a small set of trust/legal pages.
+  const allowedLocalizedPaths = /^\/(en|zh)\/(about|contact|privacy|terms)\/?$/
+  if (allowedLocalizedPaths.test(request.nextUrl.pathname)) {
+    return intlMiddleware(request)
+  }
+
+  const singlePageMatch = request.nextUrl.pathname.match(/^\/(en|zh)\/.+/)
+  if (singlePageMatch) {
+    const localeRootUrl = request.nextUrl.clone()
+    localeRootUrl.pathname = `/${singlePageMatch[1]}`
+    localeRootUrl.search = ""
+    return NextResponse.redirect(localeRootUrl, 307)
+  }
+
   return intlMiddleware(request)
 }
 

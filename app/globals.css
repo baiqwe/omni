@@ -68,19 +68,19 @@ html {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     background-image:
-      radial-gradient(circle at 50% -12%, rgba(66, 110, 255, 0.15), transparent 28%),
-      radial-gradient(circle at 8% 16%, rgba(90, 219, 205, 0.04), transparent 18%),
-      radial-gradient(circle at 88% 12%, rgba(127, 92, 255, 0.05), transparent 18%),
-      linear-gradient(180deg, #101116 0%, #12141a 42%, #0d0f14 100%);
+      radial-gradient(circle at 50% -12%, rgba(66, 110, 255, 0.18), transparent 30%),
+      radial-gradient(circle at 10% 18%, rgba(45, 212, 191, 0.08), transparent 20%),
+      radial-gradient(circle at 88% 12%, rgba(245, 158, 11, 0.07), transparent 20%),
+      linear-gradient(180deg, #101116 0%, #12151c 42%, #0d1017 100%);
     background-size: auto, auto, auto, auto;
     background-position: center top, 8% 16%, 88% 12%, center top;
   }
   .dark body {
     background-image:
-      radial-gradient(circle at 50% -12%, rgba(66, 110, 255, 0.15), transparent 28%),
-      radial-gradient(circle at 8% 16%, rgba(90, 219, 205, 0.04), transparent 18%),
-      radial-gradient(circle at 88% 12%, rgba(127, 92, 255, 0.05), transparent 18%),
-      linear-gradient(180deg, #101116 0%, #12141a 42%, #0d0f14 100%);
+      radial-gradient(circle at 50% -12%, rgba(66, 110, 255, 0.18), transparent 30%),
+      radial-gradient(circle at 10% 18%, rgba(45, 212, 191, 0.08), transparent 20%),
+      radial-gradient(circle at 88% 12%, rgba(245, 158, 11, 0.07), transparent 20%),
+      linear-gradient(180deg, #101116 0%, #12151c 42%, #0d1017 100%);
     background-size: auto, auto, auto, auto;
     background-position: center top, 8% 16%, 88% 12%, center top;
   }

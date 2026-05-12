@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({
-      bucket: process.env.R2_BUCKET_NAME || "seedance2-media",
+      bucket: process.env.R2_BUCKET_NAME || "omni-media",
       path,
       signedUrl,
       publicUrl: getR2PublicUrl(path),

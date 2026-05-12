@@ -4,7 +4,7 @@ import { createServiceRoleClient } from "@/utils/supabase/service-role";
 import { getProjectId } from "@/utils/supabase/project";
 import { consumeRateLimit } from "@/utils/rate-limit";
 import { estimateGenerationCredits, normalizeVideoGenerationRequest } from "@/utils/video-generation";
-import { buildKieCallbackUrl, createKieSeedanceTask } from "@/utils/kie";
+import { buildKieCallbackUrl, createKieOmniTask } from "@/utils/kie";
 import { isCloudflareDataBackend } from "@/utils/backend/runtime";
 import { requireSessionUser } from "@/utils/backend/auth";
 import { createGenerationWithCredits, listProcessingGenerationViewsByUserId, updateGenerationProviderState } from "@/utils/d1/generations";
@@ -160,7 +160,7 @@ export async function POST(request: NextRequest) {
           returnLastFrame: payload.returnLastFrame,
           workspacePreset: payload.workspacePreset,
           providerStatus: "waiting",
-          orchestration: "kie_seedance",
+          orchestration: "kie_omni",
           assetCounts: {
             images: payload.images.length,
             videos: payload.videos.length,
@@ -188,7 +188,7 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      const providerJobId = await createKieSeedanceTask({
+      const providerJobId = await createKieOmniTask({
         model: payload.videoModel,
         request: payload,
         callbackUrl: buildKieCallbackUrl(),
@@ -206,7 +206,7 @@ export async function POST(request: NextRequest) {
           containsRealPeople: payload.containsRealPeople,
           returnLastFrame: payload.returnLastFrame,
           workspacePreset: payload.workspacePreset,
-          orchestration: "kie_seedance",
+          orchestration: "kie_omni",
           assetCounts: {
             images: payload.images.length,
             videos: payload.videos.length,
@@ -344,7 +344,7 @@ export async function POST(request: NextRequest) {
       credits_cost: number;
     };
 
-    const { data: rpcRows, error: rpcError } = await supabase.rpc("create_seedance_generation_with_credits", {
+    const { data: rpcRows, error: rpcError } = await supabase.rpc("create_omni_generation_with_credits", {
       p_user_id: user.id,
       p_prompt: payload.prompt,
       p_model_id: payload.videoModel,
@@ -366,7 +366,7 @@ export async function POST(request: NextRequest) {
         returnLastFrame: payload.returnLastFrame,
         workspacePreset: payload.workspacePreset,
         providerStatus: "waiting",
-        orchestration: "kie_seedance",
+        orchestration: "kie_omni",
         assetCounts: {
           images: payload.images.length,
           videos: payload.videos.length,
@@ -402,7 +402,7 @@ export async function POST(request: NextRequest) {
     generationId = generationRow.id;
 
     try {
-      const providerJobId = await createKieSeedanceTask({
+      const providerJobId = await createKieOmniTask({
         model: payload.videoModel,
         request: payload,
         callbackUrl: buildKieCallbackUrl(),
@@ -422,7 +422,7 @@ export async function POST(request: NextRequest) {
             containsRealPeople: payload.containsRealPeople,
             returnLastFrame: payload.returnLastFrame,
             workspacePreset: payload.workspacePreset,
-            orchestration: "kie_seedance",
+            orchestration: "kie_omni",
             assetCounts: {
               images: payload.images.length,
               videos: payload.videos.length,

@@ -15,7 +15,7 @@ export function Logo() {
       href={localePrefix}
       className="flex items-center gap-2.5 transition-opacity hover:opacity-90"
     >
-      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[linear-gradient(135deg,#5ad7ff,#7d57ff)] shadow-[0_8px_20px_-12px_rgba(80,120,255,0.8)]">
+      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[linear-gradient(135deg,#22d3ee,#f59e0b)] shadow-[0_8px_20px_-12px_rgba(20,184,166,0.8)]">
         <Image
           src="/favicon.svg"
           alt={`${site.siteName} Logo`}

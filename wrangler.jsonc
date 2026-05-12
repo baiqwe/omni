@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  "name": "seeddance2",
+  "name": "geminiomni",
   "compatibility_date": "2026-04-23",
   "compatibility_flags": [
     "nodejs_compat",
@@ -14,7 +14,7 @@
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "seeddance2"
+      "service": "geminiomni"
     }
   ],
   // Phase 1 Cloudflare data bindings for the Supabase -> Auth.js + D1 + R2 + KV migration.
@@ -22,14 +22,14 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "seedance2-prod",
+      "database_name": "geminiomni-prod",
       "database_id": "REPLACE_WITH_D1_DATABASE_ID"
     }
   ],
   "r2_buckets": [
     {
       "binding": "MEDIA_BUCKET",
-      "bucket_name": "seedance2-media"
+      "bucket_name": "geminiomni-media"
     }
   ],
   "kv_namespaces": [

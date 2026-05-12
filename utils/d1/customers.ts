@@ -76,7 +76,7 @@ export async function provisionCustomerIfMissing(input: {
       customer.user_id,
       customer.credits,
       "add",
-      "Welcome bonus for Seedance 2 account provisioning",
+      "Welcome bonus for Gemini Omni account provisioning",
       null,
       jsonStringify({ source: "authjs_d1_provisioning" }),
       now

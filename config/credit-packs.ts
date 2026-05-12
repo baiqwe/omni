@@ -33,7 +33,7 @@ export const PLAN_MINI: PricingPlan = {
     price: 4.99,
     credits: 40,
     type: 'one_time',
-    description: "A small one-time pack for testing short Seedance workflows.",
+    description: "A small one-time pack for testing short Omni workflows.",
     descriptionZh: "适合轻量试水的单次买断包，用来体验短时长工作流。",
     originalPrice: 6.99
 };

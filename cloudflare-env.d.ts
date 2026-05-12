@@ -3,7 +3,7 @@
 // Runtime types generated with workerd@1.20251210.0 2026-04-23 global_fetch_strictly_public,nodejs_compat
 declare namespace Cloudflare {
 	interface Env {
-		WORKER_SELF_REFERENCE: Fetcher /* seeddance2 */;
+		WORKER_SELF_REFERENCE: Fetcher /* geminiomni */;
 		ASSETS: Fetcher;
 		DB: D1Database;
 		MEDIA_BUCKET: R2Bucket;

@@ -1,10 +1,10 @@
-# Seedance 2.0
+# Gemini Omni
 
-This repo is a Next.js 15 + Supabase + Tailwind + next-intl application refactored into a **multi-modal AI video workspace** with:
+This repository now ships a **single-page Gemini Omni launch site** focused on:
 
-- A tool-first homepage and localized scenario landing pages
-- Signed-upload asset staging for image, video, and audio references
-- Async generation jobs, dashboard recovery, and public video share pages
+- SEO-friendly landing content for `geminiomni.xyz`
+- Structured data (`SoftwareApplication`, `FAQPage`, `BreadcrumbList`)
+- Trust pages (`About`, `Privacy`, `Terms`, `Contact`) with bilingual routing
 - Cloudflare Workers deployment support via `@opennextjs/cloudflare`
 
 ## Getting Started
@@ -20,7 +20,8 @@ npm run dev
 ## Configure
 
 - **Brand & domain:** `NEXT_PUBLIC_SITE_NAME`, `NEXT_PUBLIC_APP_URL`
-- **Landing pages:** `config/landing-pages.ts`
+- **Verification:** `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`
+- **Support email:** `NEXT_PUBLIC_SUPPORT_EMAIL`
 
 ## Deploy To Cloudflare Workers
 

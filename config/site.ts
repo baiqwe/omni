@@ -10,8 +10,8 @@ export type SiteConfig = {
   };
 };
 
-const PRODUCTION_SITE_URL = "https://seedance2video.cc";
-const SUPPORT_EMAIL_FALLBACK = "hello@seedance2video.cc";
+const PRODUCTION_SITE_URL = "https://geminiomni.xyz";
+const SUPPORT_EMAIL_FALLBACK = "hello@geminiomni.xyz";
 const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
 const PLACEHOLDER_SUPPORT_EMAILS = new Set(["support@example.com", "hello@example.com"]);
 
@@ -36,7 +36,7 @@ function normalizeSupportEmail(email?: string): string {
 }
 
 export const site: SiteConfig = {
-  siteName: process.env.NEXT_PUBLIC_SITE_NAME || "Seedance 2.0",
+  siteName: process.env.NEXT_PUBLIC_SITE_NAME || "Gemini Omni Hub",
   siteUrl: normalizeSiteUrl(process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || PRODUCTION_SITE_URL),
   ogImagePath: process.env.NEXT_PUBLIC_OG_IMAGE_PATH || "/web-app-manifest-512x512.png",
   supportEmail: normalizeSupportEmail(process.env.NEXT_PUBLIC_SUPPORT_EMAIL),

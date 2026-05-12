@@ -15,8 +15,8 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
 
   const title = isZh ? `关于我们 | ${site.siteName}` : `About | ${site.siteName}`;
   const description = isZh
-    ? "了解 Seedance 2 背后的产品定位、适用人群、工作流设计原则，以及我们如何把多模态 AI 视频生成做得更可控。"
-    : "Learn what Seedance 2 is, who it serves, and how we approach controllable multi-modal AI video generation workflows.";
+    ? "了解 Gemini Omni 背后的产品定位、适用人群、工作流设计原则，以及我们如何把多模态 AI 视频生成做得更可控。"
+    : "Learn what Gemini Omni is, who it serves, and how we approach controllable multi-modal AI video generation workflows.";
 
   const ogImage = new URL(site.ogImagePath, site.siteUrl).toString();
 
@@ -48,7 +48,7 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
   const localePrefix = `/${locale}`;
   const teamFaqs = [
     {
-      question: isZh ? "Seedance 2 团队最在意什么？" : "What does the Seedance 2 team care about most?",
+      question: isZh ? "Gemini Omni 团队最在意什么？" : "What does the Gemini Omni team care about most?",
       answer: isZh
         ? "我们最在意的是可控性、可复用性和可解释性。比起单次 demo 的惊艳感，我们更看重团队能不能稳定复用输入素材、镜头逻辑和节奏判断。"
         : "We care most about controllability, repeatability, and explainability. Instead of chasing one-off demo magic, we prioritize whether teams can reliably reuse references, camera logic, and pacing decisions.",
@@ -89,8 +89,8 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
             </h1>
             <p className="text-lg text-muted-foreground">
               {isZh
-                ? "Seedance 2 是一个面向多模态 AI 视频生成的产品站与工作台，核心目标不是“随便生成一条视频”，而是让参考图、参考视频、音频和文字指令能真正组织成一个更可控的生产流程。"
-                : "Seedance 2 is a product site and workspace for multi-modal AI video generation. The goal is not to produce any clip at random, but to turn reference images, video clips, audio, and natural-language direction into a more controllable production workflow."}
+                ? "Gemini Omni 是一个面向多模态 AI 视频生成的产品站与工作台，核心目标不是“随便生成一条视频”，而是让参考图、参考视频、音频和文字指令能真正组织成一个更可控的生产流程。"
+                : "Gemini Omni is a product site and workspace for multi-modal AI video generation. The goal is not to produce any clip at random, but to turn reference images, video clips, audio, and natural-language direction into a more controllable production workflow."}
             </p>
             <p className="text-sm text-muted-foreground">
               {isZh
@@ -142,13 +142,13 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">{isZh ? "这套产品适合谁" : "Who Seedance 2 Is For"}</CardTitle>
+                <CardTitle className="text-lg">{isZh ? "这套产品适合谁" : "Who Gemini Omni Is For"}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
                 <p>
                   {isZh
-                    ? "Seedance 2 适合广告与营销团队、影视预演团队、短视频工作室、品牌内容团队，以及任何需要把参考素材系统化地转成视频结果的人。"
-                    : "Seedance 2 is built for ad and marketing teams, previs artists, short-form studios, brand content groups, and anyone who needs to turn references into repeatable video output."}
+                    ? "Gemini Omni 适合广告与营销团队、影视预演团队、短视频工作室、品牌内容团队，以及任何需要把参考素材系统化地转成视频结果的人。"
+                    : "Gemini Omni is built for ad and marketing teams, previs artists, short-form studios, brand content groups, and anyone who needs to turn references into repeatable video output."}
                 </p>
                 <p>
                   {isZh
@@ -190,8 +190,8 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
                 </p>
                 <p>
                   {isZh
-                    ? "这样第一次接触 Seedance 2 的用户才会知道：这是谁做的、为什么这样设计、以及在什么场景下它值得被信任。"
-                    : "That gives first-time visitors enough context to understand who built Seedance 2, why it is designed this way, and in which situations it is worth trusting."}
+                    ? "这样第一次接触 Gemini Omni 的用户才会知道：这是谁做的、为什么这样设计、以及在什么场景下它值得被信任。"
+                    : "That gives first-time visitors enough context to understand who built Gemini Omni, why it is designed this way, and in which situations it is worth trusting."}
                 </p>
               </CardContent>
             </Card>
@@ -208,7 +208,7 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
                 </p>
                 <p>
                   {isZh
-                    ? "因此 Seedance 2 的长期方向不只是“更会生成”，也包括更清晰的文档、更明确的政策和更稳的生产体验。"
+                    ? "因此 Gemini Omni 的长期方向不只是“更会生成”，也包括更清晰的文档、更明确的政策和更稳的生产体验。"
                     : "That is why the long-term direction is not only better generation quality, but also clearer documentation, more explicit policy language, and a steadier production experience."}
                 </p>
               </CardContent>
@@ -230,8 +230,8 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
               </p>
               <p>
                 {isZh
-                  ? `这也是为什么 ${site.siteName} 会把首页、创作中心、价格、关于我们、隐私、条款、联系页和帮助中心一起建设。对用户来说，这能明显降低试错成本。`
-                  : `That is why ${site.siteName} is built as a connected system of homepage, creation center, pricing, about, privacy, terms, contact, and help content. For real users, that lowers the cost of trial and error.`}
+                  ? `这也是为什么 ${site.siteName} 会把首页、关于我们、隐私、条款和联系页一起建设。对用户来说，这能明显降低试错成本。`
+                  : `That is why ${site.siteName} is built as a connected system of homepage, about, privacy, terms, and contact pages. For real users, that lowers the cost of trial and error.`}
               </p>
             </div>
           </div>
@@ -247,7 +247,7 @@ export default async function AboutPage(props: { params: Promise<{ locale: strin
                 <Link href={`${localePrefix}`}>{isZh ? "返回首页" : "Back to Homepage"}</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href={`${localePrefix}/creative-center`}>{isZh ? "进入创作中心" : "Open Creation Center"}</Link>
+                <Link href={`${localePrefix}/contact`}>{isZh ? "联系团队" : "Contact Team"}</Link>
               </Button>
             </div>
           </div>

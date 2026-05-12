@@ -1,4 +1,4 @@
--- Auth.js + D1 core schema for Seedance 2.0
+-- Auth.js + D1 core schema for Gemini Omni
 -- Apply this after creating the D1 database binding.
 
 PRAGMA foreign_keys = ON;

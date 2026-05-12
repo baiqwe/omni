@@ -14,8 +14,8 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
 
   const title = isZh ? `服务条款 | ${site.siteName}` : `Terms of Service | ${site.siteName}`;
   const description = isZh
-    ? "使用 Seedance 2 前请阅读条款，包括账号、上传内容、AI 视频结果、积分计费、订阅与禁止用途。"
-    : "Read the terms before using Seedance 2, including accounts, uploads, AI video outputs, credits billing, subscriptions, and prohibited use.";
+    ? "使用 Gemini Omni 前请阅读条款，包括账号、上传内容、AI 视频结果、积分计费、订阅与禁止用途。"
+    : "Read the terms before using Gemini Omni, including accounts, uploads, AI video outputs, credits billing, subscriptions, and prohibited use.";
 
   const ogImage = new URL(site.ogImagePath, site.siteUrl).toString();
 
@@ -23,7 +23,7 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
     title,
     description,
     robots: {
-      index: false,
+      index: true,
       follow: true,
     },
     alternates: buildLocaleAlternates(`/${locale}/terms`),
@@ -111,8 +111,8 @@ export default async function TermsPage(props: { params: Promise<{ locale: strin
             <CardContent className="text-sm text-muted-foreground leading-relaxed space-y-3">
               <p>
                 {isZh
-                  ? "Seedance 2 输出的是 AI 自动生成的视频或相关媒体结果，可能不准确、不连续、不可商用，或者不符合你的预期。"
-                  : "Seedance 2 produces AI-generated video or related media outputs that may be inaccurate, inconsistent, unsuitable for commercial use, or otherwise different from your expectations."}
+                  ? "Gemini Omni 输出的是 AI 自动生成的视频或相关媒体结果，可能不准确、不连续、不可商用，或者不符合你的预期。"
+                  : "Gemini Omni produces AI-generated video or related media outputs that may be inaccurate, inconsistent, unsuitable for commercial use, or otherwise different from your expectations."}
               </p>
               <p>
                 {isZh

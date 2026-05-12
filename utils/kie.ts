@@ -1,7 +1,7 @@
 import type { VideoGenerationRequest, VideoModelId } from "@/utils/video-generation";
 
 export const KIE_DEFAULT_BASE_URL = "https://api.kie.ai/api/v1";
-export const KIE_VIDEO_MODELS: VideoModelId[] = ["bytedance/seedance-2", "bytedance/seedance-2-fast"];
+export const KIE_VIDEO_MODELS: VideoModelId[] = ["bytedance/omni-2", "bytedance/omni-2-fast"];
 
 type KieCreateTaskResponse = {
   code?: number;
@@ -94,7 +94,7 @@ function extractCoverUrl(source: unknown): string | null {
   return typeof match === "string" ? match : null;
 }
 
-export function buildKieSeedanceInput(request: VideoGenerationRequest) {
+export function buildKieOmniInput(request: VideoGenerationRequest) {
   const baseInput: Record<string, unknown> = {
     prompt: request.prompt,
     duration: `${request.durationSeconds}s`,
@@ -130,7 +130,7 @@ export function buildKieSeedanceInput(request: VideoGenerationRequest) {
   };
 }
 
-export async function createKieSeedanceTask(input: {
+export async function createKieOmniTask(input: {
   model: VideoModelId;
   request: VideoGenerationRequest;
   callbackUrl?: string | null;
@@ -143,7 +143,7 @@ export async function createKieSeedanceTask(input: {
     },
     body: JSON.stringify({
       model: input.model,
-      input: buildKieSeedanceInput(input.request),
+      input: buildKieOmniInput(input.request),
       ...(input.callbackUrl ? { callBackUrl: input.callbackUrl } : {}),
     }),
   });

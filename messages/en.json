@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "Seedance 2.0 - AI Video Generator and Multi-Modal Creation Workflow",
-    "description": "Seedance 2.0 is an AI video generator built around one multi-modal workflow for image to video, text to video, reference-led motion, and video extension.",
-    "keywords": "seedance 2.0, seedance 2, seedance2, seedance 2 ai video generator, seedance 2 workflow"
+    "title": "Gemini Omni Video Generator | Official Waitlist & Early Access",
+    "description": "Gemini Omni Hub tracks Google Omni Video Model updates, multimodal AI launch signals, and early-access implementation paths.",
+    "keywords": "gemini omni, google gemini omni, google omni video model, omni ai model, multimodal ai video, how to access gemini omni"
   },
   "nav": {
     "home": "Home",
@@ -18,7 +18,7 @@
     "badge": "Multi-Modal Input • Precision Motion • Video Extension",
     "title": "Experience true",
     "title_highlight": "multi-modal AI video creation",
-    "subtitle": "Combine images, videos, audio, and natural language in a single cinematic workspace designed for controllable Seedance-style generation.",
+    "subtitle": "Track Gemini Omni rollout signals, collect practical launch intelligence, and route waiting traffic into production-ready AI tools.",
     "feature_1": "Reference anything",
     "feature_2": "Async-ready workflow",
     "feature_3": "Built for production",
@@ -80,7 +80,7 @@
     "f3_title": "Async pipeline friendly",
     "f3_desc": "Designed to grow into queued jobs, status polling, and resumable generation.",
     "styles_title": "A controllable model needs legible capabilities",
-    "styles_subtitle": "The homepage should communicate what Seedance 2 does best: reference handling, motion precision, extension, and audio-aware generation.",
+    "styles_subtitle": "The homepage should communicate what Gemini Omni does best: reference handling, motion precision, extension, and audio-aware generation.",
     "styles_more": "Explore the workspace",
     "use_title": "Built for creators who think in references",
     "use_subtitle": "From marketing teams to previs artists, the product should feel closer to a workstation than a gimmick.",
@@ -90,7 +90,7 @@
     "u2_desc": "Prototype camera movement, scene continuity, and visual timing before production.",
     "u3_title": "Social & creator systems",
     "u3_desc": "Turn trends, music, and visual references into repeatable content pipelines.",
-    "faq_title": "How to create with Seedance 2",
+    "faq_title": "How to create with Gemini Omni",
     "faq_subtitle": "This branch already stages the production UX before the provider integration lands.",
     "faq1_q": "Upload your assets",
     "faq1_a": "Start with stills, reference clips, and optional audio so the model has concrete material to follow.",
@@ -100,7 +100,7 @@
     "faq3_a": "Once the async job system is wired, users can generate, extend, and refine without restarting the entire flow.",
     "faq4_q": "What happens to uploaded assets?",
     "faq4_a": "Assets should be stored in project-scoped buckets and forwarded only to the selected generation provider. Privacy details belong in the final policy.",
-    "cta_title": "Ready to start creating with Seedance 2?",
+    "cta_title": "Ready to start creating with Gemini Omni?",
     "cta_subtitle": "Open an account, explore the creation center, and choose the plan that matches your video workflow.",
     "cta_signup": "Create account",
     "cta_pricing": "View pricing"
@@ -120,12 +120,12 @@
     "link_about": "About",
     "link_contact": "Contact",
     "rights": "All rights reserved.",
-    "brand": "Seedance 2.0",
+    "brand": "Gemini Omni",
     "built_by": "Built for creators shipping moving images"
   },
   "Contact": {
-    "meta_title": "Contact Us | Seedance 2.0",
-    "meta_desc": "Reach Seedance 2.0 support for workflow questions, billing, privacy requests, or rollout updates.",
+    "meta_title": "Contact Us | Gemini Omni",
+    "meta_desc": "Reach Gemini Omni support for workflow questions, billing, privacy requests, or rollout updates.",
     "home": "Back to Home",
     "title": "Contact Us",
     "p1": "If you have questions about results, billing, privacy, or account issues, we are here to help. We keep this page simple so you always have a clear place to reach support.",
@@ -136,9 +136,9 @@
   },
   "Pricing": {
     "eyebrow": "Production Pricing",
-    "title": "Choose the Seedance 2 plan that matches how often you generate.",
+    "title": "Choose the Gemini Omni plan that matches how often you generate.",
     "subtitle": "Start with a one-time pack for testing, or switch to a subscription once your team needs repeatable video output every week.",
-    "artist_anchor": "Compared with repeated concept edits, previs revisions, or outsourced motion tests, a well-sized Seedance plan should feel like faster creative throughput, not just another bill.",
+    "artist_anchor": "Compared with repeated concept edits, previs revisions, or outsourced motion tests, a well-sized Omni plan should feel like faster creative throughput, not just another bill.",
     "buyout_label": "Buy-out",
     "subscription_label": "Pro",
     "one_time_payment": "One-time payment",

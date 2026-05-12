@@ -47,7 +47,7 @@ export async function createGenerationWithCredits(input: {
         input.userId,
         -input.creditsCost,
         "spend",
-        "Seedance generation charge",
+        "Omni generation charge",
         null,
         jsonStringify({ source: "create_generation_with_credits" }),
         now

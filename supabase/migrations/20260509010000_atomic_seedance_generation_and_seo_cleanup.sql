@@ -1,4 +1,4 @@
-create or replace function public.create_seedance_generation_with_credits(
+create or replace function public.create_gemini-omni_generation_with_credits(
     p_user_id uuid,
     p_prompt text,
     p_model_id text,
@@ -75,7 +75,7 @@ begin
         v_customer_id,
         p_credits_cost,
         'subtract',
-        format('Seedance generation (%s, %s, %ss)', p_generation_type, coalesce(p_resolution, 'unknown'), coalesce(p_duration_seconds, 0)),
+        format('Omni generation (%s, %s, %ss)', p_generation_type, coalesce(p_resolution, 'unknown'), coalesce(p_duration_seconds, 0)),
         now(),
         jsonb_build_object('action', 'ai_generation', 'mode', p_generation_type)
     );
@@ -125,7 +125,7 @@ begin
 end;
 $$;
 
-alter function public.create_seedance_generation_with_credits(
+alter function public.create_gemini-omni_generation_with_credits(
     uuid,
     text,
     text,
@@ -143,7 +143,7 @@ alter function public.create_seedance_generation_with_credits(
     jsonb
 ) set search_path = public;
 
-grant execute on function public.create_seedance_generation_with_credits(
+grant execute on function public.create_gemini-omni_generation_with_credits(
     uuid,
     text,
     text,

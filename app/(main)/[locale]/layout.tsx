@@ -5,11 +5,9 @@ import { routing } from '@/i18n/routing';
 import Header from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ThemeProvider } from "next-themes";
-import { Toaster } from "@/components/ui/toaster";
 import { SoftwareApplicationSchema } from "@/components/json-ld-schema";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { site } from "@/config/site";
-import { AuthSessionProvider } from "@/components/providers/auth-session-provider";
 
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }));
@@ -80,6 +78,8 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
             icon: [
                 { url: '/favicon.ico', sizes: 'any' },
                 { url: '/favicon.svg', type: 'image/svg+xml' },
+                { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+                { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
                 { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
             ],
             apple: [
@@ -95,7 +95,7 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
 
         // ✅ 其他 SEO 相关
         category: 'technology',
-        classification: 'AI Video Generation Tool',
+        classification: 'AI Multimodal Product Portal',
         verification: site.googleSiteVerification
             ? {
                 google: site.googleSiteVerification,
@@ -124,21 +124,18 @@ export default async function LocaleLayout(props: {
             <GoogleAnalytics />
             <SoftwareApplicationSchema locale={locale} />
             <NextIntlClientProvider messages={messages} locale={locale}>
-                <AuthSessionProvider>
-                    <ThemeProvider
-                        attribute="class"
-                        defaultTheme="dark"
-                        enableSystem={false}
-                        disableTransitionOnChange
-                    >
-                        <div className="relative min-h-screen flex flex-col">
-                            <Header />
-                            <main className="flex-1">{children}</main>
-                            <Footer />
-                        </div>
-                        <Toaster />
-                    </ThemeProvider>
-                </AuthSessionProvider>
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="dark"
+                    enableSystem={false}
+                    disableTransitionOnChange
+                >
+                    <div className="relative min-h-screen flex flex-col">
+                        <Header />
+                        <main className="flex-1">{children}</main>
+                        <Footer />
+                    </div>
+                </ThemeProvider>
             </NextIntlClientProvider>
         </>
     );

@@ -6,28 +6,26 @@ type Props = {
 };
 
 function getQuickLinks(locale: string) {
-  const localePrefix = `/${locale}`;
-
   return [
     {
-      href: `${localePrefix}/image-to-video`,
-      label: locale === "zh" ? "图生视频" : "Image to Video",
+      href: "#overview",
+      label: locale === "zh" ? "什么是 Gemini Omni" : "What is Gemini Omni",
     },
     {
-      href: `${localePrefix}/reference-video-generator`,
-      label: locale === "zh" ? "参考视频生成" : "Reference Video",
+      href: "#capabilities",
+      label: locale === "zh" ? "核心能力预测" : "Core Capabilities",
     },
     {
-      href: `${localePrefix}/video-extension`,
-      label: locale === "zh" ? "视频延展" : "Video Extension",
+      href: "#indexing",
+      label: locale === "zh" ? "快速收录方案" : "Rapid Indexing",
     },
     {
-      href: `${localePrefix}/pricing`,
-      label: locale === "zh" ? "价格方案" : "Pricing",
+      href: "#api",
+      label: locale === "zh" ? "API 预览" : "API Preview",
     },
     {
-      href: `${localePrefix}/guides`,
-      label: locale === "zh" ? "使用指南" : "Guides",
+      href: "#faq",
+      label: locale === "zh" ? "常见问题" : "FAQ",
     },
   ];
 }
@@ -39,30 +37,30 @@ export async function HomeHeroHeading({ locale }: Props) {
     <div className="mx-auto flex max-w-5xl flex-col items-center space-y-5 text-center">
       <div className="inline-flex items-center gap-2 rounded-full border border-white/14 bg-black/22 px-4 py-2 text-sm text-white/80 shadow-[0_12px_40px_-24px_rgba(0,0,0,0.7)] backdrop-blur-xl">
         <span className="inline-flex h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_18px_rgba(103,232,249,0.75)]" />
-        {locale === "zh" ? "Seedance 2 已上线" : "Seedance 2 is now live"}
+        {locale === "zh" ? "Google Gemini Omni 监测中" : "Tracking Google Gemini Omni"}
       </div>
       <div className="space-y-4">
         <h1 className="text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
           {locale === "zh" ? (
             <>
-              <span className="text-white">Seedance 2</span>
+              <span className="text-white">Gemini Omni</span>
               <span className="block bg-[linear-gradient(90deg,#f8fbff_0%,#93c5fd_38%,#c4b5fd_70%,#f8fbff_100%)] bg-clip-text text-transparent">
-                AI 视频生成器
+                Google 多模态视频入口
               </span>
             </>
           ) : (
             <>
-              <span className="text-white">Seedance 2</span>
+              <span className="text-white">Gemini Omni</span>
               <span className="block bg-[linear-gradient(90deg,#f8fbff_0%,#93c5fd_38%,#c4b5fd_70%,#f8fbff_100%)] bg-clip-text text-transparent">
-                AI Video Generator
+                Google Multimodal Video Gateway
               </span>
             </>
           )}
         </h1>
         <p className="mx-auto max-w-4xl text-xl leading-9 text-white/82">
           {locale === "zh"
-            ? "Seedance 2 把图生视频、文生视频、参考动作生成和视频延展放进同一个多模态工作流，让创作者先写一句话，再按需补充图片、视频和音频参考。"
-            : "Seedance 2 combines image to video, text to video, reference-driven motion, and video extension in one multi-modal workflow so creators can start with a single prompt and add images, clips, or audio only when needed."}
+            ? "聚焦 Gemini Omni、Google Omni Video Model 与 Multi-modal AI 的最新动态，提供可被搜索引擎快速理解的结构化内容与预览工具入口。"
+            : "Focused on Gemini Omni, Google Omni Video Model, and multimodal AI trends with structured content that search engines can index fast."}
         </p>
         <p className="mx-auto max-w-3xl text-base leading-8 text-white/62">
           {t("subtitle")}
@@ -92,18 +90,18 @@ export async function HomeHeroSupport({ locale }: Props) {
       <div className="mx-auto grid max-w-4xl gap-3 text-left text-sm text-white/68 md:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-black/22 px-4 py-3 backdrop-blur-md">
           {locale === "zh"
-            ? "先用一句话把镜头想清楚，再决定是否补图片、视频或音频参考，这样更接近真实团队的创作顺序。"
-            : "Start with one clear scene description, then decide whether images, clips, or audio references are actually needed. That mirrors how real teams usually begin."}
+            ? "页面不是空白倒计时，而是持续更新的 Gemini Omni 情报与应用前置页。"
+            : "This page is not a blank countdown. It is a continuously updated Gemini Omni intelligence layer."}
         </div>
         <div className="rounded-2xl border border-white/10 bg-black/22 px-4 py-3 backdrop-blur-md">
           {locale === "zh"
-            ? "首页负责快速进入，创作中心负责角色、动作、节奏和多模态参考的细化控制，Guides 负责解释为什么要这样做。"
-            : "Use the homepage to get moving quickly, switch to the creation center when identity, motion, pacing, and references need finer control, then use Guides for the deeper explanations."}
+            ? "通过关键词密度、FAQ 与 SoftwareApplication Schema，提升 Gemini Omni 相关查询可见度。"
+            : "Semantic keyword density, FAQ blocks, and SoftwareApplication schema improve discoverability."}
         </div>
         <div className="rounded-2xl border border-white/10 bg-black/22 px-4 py-3 backdrop-blur-md">
           {locale === "zh"
-            ? "适合广告创意、角色一致性、影视预演、产品展示和短视频批量生产，也最适合那些本来就在用参考素材沟通创意的团队。"
-            : "Designed for ad creative, character consistency, previs, product reveals, and repeatable short-form production, especially for teams that already communicate through references."}
+            ? "在官方 API 全量开放前，先把等待流量导向你已上线的 AI 工具矩阵，形成转化闭环。"
+            : "Before full API access, direct waiting traffic to your launched AI products to close conversion loops."}
         </div>
       </div>
     </div>

@@ -101,10 +101,10 @@ begin
     if not exists (
         select 1
         from cron.job
-        where jobname = 'seedance-cleanup-staged-inputs'
+        where jobname = 'gemini-omni-cleanup-staged-inputs'
     ) then
         perform cron.schedule(
-            'seedance-cleanup-staged-inputs',
+            'gemini-omni-cleanup-staged-inputs',
             '15 3 * * *',
             $$select public.cleanup_staged_generation_inputs(interval '24 hours');$$
         );

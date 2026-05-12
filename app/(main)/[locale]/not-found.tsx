@@ -12,12 +12,12 @@ export default async function LocaleNotFound() {
           {isZh ? "页面未找到" : "Page not found"}
         </div>
         <h1 className="mt-5 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-          {isZh ? "这个链接已经失效，先回到 Seedance 2 主路径。" : "This URL is no longer active. Return to the main Seedance 2 flow."}
+          {isZh ? "这个链接已经失效，先回到 Gemini Omni 主路径。" : "This URL is no longer active. Return to the main Gemini Omni flow."}
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base leading-8 text-white/66">
           {isZh
-            ? "你可以回到首页继续尝试简化版生成器，或直接进入创作中心使用完整多模态工作台。"
-            : "You can return to the homepage for the simplified generator, or jump straight into the creation center for the full multi-modal workspace."}
+            ? "你可以回到首页，或继续查看关于、隐私和条款页面。"
+            : "You can return to the homepage, or continue with the About, Privacy, and Terms pages."}
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
@@ -27,16 +27,16 @@ export default async function LocaleNotFound() {
             {isZh ? "返回首页" : "Back to home"}
           </Link>
           <Link
-            href={`/${locale}/creative-center`}
+            href={`/${locale}/about`}
             className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-medium text-white/84 transition-colors hover:bg-white/[0.08] hover:text-white"
           >
-            {isZh ? "进入创作中心" : "Open creation center"}
+            {isZh ? "查看关于" : "About"}
           </Link>
           <Link
-            href={`/${locale}/guides`}
+            href={`/${locale}/privacy`}
             className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-white/74 transition-colors hover:bg-white/[0.08] hover:text-white"
           >
-            {isZh ? "查看指南" : "Read the guides"}
+            {isZh ? "查看隐私" : "Privacy"}
           </Link>
         </div>
       </div>

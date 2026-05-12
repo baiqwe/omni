@@ -1,6 +1,6 @@
 import { AwsClient } from "aws4fetch";
 
-const DEFAULT_BUCKET = process.env.R2_BUCKET_NAME?.trim() || "seedance2-media";
+const DEFAULT_BUCKET = process.env.R2_BUCKET_NAME?.trim() || "omni-media";
 
 function getR2Env() {
   const accountId = process.env.R2_ACCOUNT_ID?.trim();

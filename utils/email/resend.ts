@@ -6,7 +6,7 @@ type SendPasswordResetEmailInput = {
 
 export async function sendPasswordResetEmail(input: SendPasswordResetEmailInput) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  const from = process.env.AUTH_EMAIL_FROM?.trim() || "Seedance 2 <no-reply@seedance2video.cc>";
+  const from = process.env.AUTH_EMAIL_FROM?.trim() || "Gemini Omni <no-reply@geminiomni.xyz>";
 
   if (!apiKey) {
     console.warn("RESEND_API_KEY is not configured. Password reset email was not sent.", {
@@ -17,7 +17,7 @@ export async function sendPasswordResetEmail(input: SendPasswordResetEmailInput)
   }
 
   const subject =
-    input.locale === "zh" ? "重置你的 Seedance 2 密码" : "Reset your Seedance 2 password";
+    input.locale === "zh" ? "重置你的 Gemini Omni 密码" : "Reset your Gemini Omni password";
   const intro =
     input.locale === "zh"
       ? "点击下面的链接重置你的密码。链接将在 30 分钟后失效。"

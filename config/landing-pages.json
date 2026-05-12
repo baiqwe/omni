@@ -2,9 +2,9 @@
   "image-to-video": {
     "slug": "image-to-video",
     "targetKeyword": "image to video ai",
-    "title": "Seedance 2 Image to Video - Turn Stills into Cinematic Motion",
+    "title": "Gemini Omni Image to Video - Turn Stills into Cinematic Motion",
     "description": "Start from a still image, add camera intent and timing, then turn it into a controllable AI video workflow.",
-    "h1": "Seedance 2 Image to Video",
+    "h1": "Gemini Omni Image to Video",
     "subtitle": "Transform still frames into motion-driven video shots with clearer prompt control and cinematic pacing.",
     "mode": "image_to_video",
     "faqs": [
@@ -21,9 +21,9 @@
   "reference-video-generator": {
     "slug": "reference-video-generator",
     "targetKeyword": "reference video generator",
-    "title": "Seedance 2 Reference Video Generator - Build AI Video from Real Inputs",
+    "title": "Gemini Omni Reference Video Generator - Build AI Video from Real Inputs",
     "description": "Use image, video, and audio references together so the output follows real creative direction instead of vague prompts.",
-    "h1": "Seedance 2 Reference Video Generator",
+    "h1": "Gemini Omni Reference Video Generator",
     "subtitle": "Blend reference images, clips, and soundtrack cues inside a single AI video generation workflow.",
     "mode": "multi_modal_video",
     "faqs": [
@@ -40,9 +40,9 @@
   "dance-motion-transfer": {
     "slug": "dance-motion-transfer",
     "targetKeyword": "ai dance motion transfer",
-    "title": "Seedance 2 Dance Motion Transfer - Clone Movement with New Characters",
+    "title": "Gemini Omni Dance Motion Transfer - Clone Movement with New Characters",
     "description": "Transfer choreography timing and energy from a reference dance clip into a new AI video with clearer control.",
-    "h1": "Seedance 2 Dance Motion Transfer",
+    "h1": "Gemini Omni Dance Motion Transfer",
     "subtitle": "Use a motion reference clip to carry choreography, rhythm, and body timing into a fresh output sequence.",
     "mode": "multi_modal_video",
     "faqs": [
@@ -59,9 +59,9 @@
   "product-ad-generator": {
     "slug": "product-ad-generator",
     "targetKeyword": "ai product ad generator",
-    "title": "Seedance 2 Product Ad Generator - Turn Product Frames into Campaign Video",
+    "title": "Gemini Omni Product Ad Generator - Turn Product Frames into Campaign Video",
     "description": "Generate polished product motion tests and campaign shots from still images, motion references, and commercial prompts.",
-    "h1": "Seedance 2 Product Ad Generator",
+    "h1": "Gemini Omni Product Ad Generator",
     "subtitle": "Turn product stills into glossy reveal shots, launch teasers, and campaign-ready visual loops.",
     "mode": "multi_modal_video",
     "faqs": [
@@ -78,9 +78,9 @@
   "storyboard-to-video": {
     "slug": "storyboard-to-video",
     "targetKeyword": "storyboard to video ai",
-    "title": "Seedance 2 Storyboard to Video - Extend Still Frames into Previs",
+    "title": "Gemini Omni Storyboard to Video - Extend Still Frames into Previs",
     "description": "Convert storyboard frames or still compositions into moving previs shots for scene timing and camera exploration.",
-    "h1": "Seedance 2 Storyboard to Video",
+    "h1": "Gemini Omni Storyboard to Video",
     "subtitle": "Stretch still sequences into motion for previs, blocking, and scene continuity tests before production.",
     "mode": "image_to_video",
     "faqs": [
@@ -97,9 +97,9 @@
   "video-extension": {
     "slug": "video-extension",
     "targetKeyword": "ai video extension",
-    "title": "Seedance 2 Video Extension - Continue Existing Clips Smoothly",
+    "title": "Gemini Omni Video Extension - Continue Existing Clips Smoothly",
     "description": "Extend an existing clip with smoother continuity, matching scene logic, camera direction, and motion momentum.",
-    "h1": "Seedance 2 Video Extension",
+    "h1": "Gemini Omni Video Extension",
     "subtitle": "Keep the same scene alive beyond the original clip by continuing motion and visual logic instead of restarting from scratch.",
     "mode": "video_extension",
     "faqs": [
@@ -116,9 +116,9 @@
   "ai-music-video-generator": {
     "slug": "ai-music-video-generator",
     "targetKeyword": "ai music video generator",
-    "title": "Seedance 2 AI Music Video Generator - Build Rhythm-Led Visual Sequences",
-    "description": "Use Seedance 2 to turn prompts, mood frames, motion references, and rhythm cues into music-video-style AI shots.",
-    "h1": "Seedance 2 AI Music Video Generator",
+    "title": "Gemini Omni AI Music Video Generator - Build Rhythm-Led Visual Sequences",
+    "description": "Use Gemini Omni to turn prompts, mood frames, motion references, and rhythm cues into music-video-style AI shots.",
+    "h1": "Gemini Omni AI Music Video Generator",
     "subtitle": "Create rhythm-aware visual sequences by combining prompt direction, image references, motion clips, and soundtrack cues.",
     "mode": "multi_modal_video",
     "faqs": [
@@ -135,9 +135,9 @@
   "ecommerce-product-video-ai": {
     "slug": "ecommerce-product-video-ai",
     "targetKeyword": "ecommerce product video ai",
-    "title": "Seedance 2 Ecommerce Product Video AI - Turn Product Frames into Sales Motion",
-    "description": "Create ecommerce-ready product video shots from still imagery, reveal references, and commercial prompts inside Seedance 2.",
-    "h1": "Seedance 2 Ecommerce Product Video AI",
+    "title": "Gemini Omni Ecommerce Product Video AI - Turn Product Frames into Sales Motion",
+    "description": "Create ecommerce-ready product video shots from still imagery, reveal references, and commercial prompts inside Gemini Omni.",
+    "h1": "Gemini Omni Ecommerce Product Video AI",
     "subtitle": "Turn product stills into launch loops, reveal shots, and ecommerce-ready campaign edits with clearer motion control.",
     "mode": "multi_modal_video",
     "faqs": [
@@ -154,9 +154,9 @@
   "ai-short-drama-maker": {
     "slug": "ai-short-drama-maker",
     "targetKeyword": "ai short drama maker",
-    "title": "Seedance 2 AI Short Drama Maker - Build Previs and Short Narrative Beats",
-    "description": "Use Seedance 2 to explore short-form drama scenes with storyboards, keyframes, motion references, and scene continuity prompts.",
-    "h1": "Seedance 2 AI Short Drama Maker",
+    "title": "Gemini Omni AI Short Drama Maker - Build Previs and Short Narrative Beats",
+    "description": "Use Gemini Omni to explore short-form drama scenes with storyboards, keyframes, motion references, and scene continuity prompts.",
+    "h1": "Gemini Omni AI Short Drama Maker",
     "subtitle": "Plan short drama scenes, emotional beats, and camera continuity before full production by turning still ideas into motion.",
     "mode": "image_to_video",
     "faqs": [
@@ -173,9 +173,9 @@
   "cinematic-product-reveal-generator": {
     "slug": "cinematic-product-reveal-generator",
     "targetKeyword": "cinematic product reveal generator",
-    "title": "Seedance 2 Cinematic Product Reveal Generator - Design Premium Launch Shots",
-    "description": "Use Seedance 2 to generate cinematic product reveal videos with richer motion design, light sweeps, and premium launch pacing.",
-    "h1": "Seedance 2 Cinematic Product Reveal Generator",
+    "title": "Gemini Omni Cinematic Product Reveal Generator - Design Premium Launch Shots",
+    "description": "Use Gemini Omni to generate cinematic product reveal videos with richer motion design, light sweeps, and premium launch pacing.",
+    "h1": "Gemini Omni Cinematic Product Reveal Generator",
     "subtitle": "Build premium product reveal shots with stronger camera intent, lighting accents, and launch-friendly pacing.",
     "mode": "multi_modal_video",
     "faqs": [
