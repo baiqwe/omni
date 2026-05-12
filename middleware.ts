@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
     const normalizedPathname = request.nextUrl.pathname.replace(/^\/(en|zh)(?:\/(?:en|zh))+/, `/${duplicateLocaleMatch[1]}`)
     const normalizedUrl = request.nextUrl.clone()
     normalizedUrl.pathname = normalizedPathname || `/${duplicateLocaleMatch[1]}`
-    return NextResponse.redirect(normalizedUrl, 307)
+    return NextResponse.redirect(normalizedUrl, 308)
   }
 
   // Single-page mode: keep only /{locale} and a small set of trust/legal pages.
@@ -23,8 +23,7 @@ export async function middleware(request: NextRequest) {
   if (singlePageMatch) {
     const localeRootUrl = request.nextUrl.clone()
     localeRootUrl.pathname = `/${singlePageMatch[1]}`
-    localeRootUrl.search = ""
-    return NextResponse.redirect(localeRootUrl, 307)
+    return NextResponse.redirect(localeRootUrl, 308)
   }
 
   return intlMiddleware(request)

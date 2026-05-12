@@ -1,99 +1,82 @@
-/**
- * JSON-LD Structured Data for SoftwareApplication
- * Helps search engines understand the app as a web application
- * 
- * Note: This is a server component to avoid hydration issues
- */
 import { getTranslations } from 'next-intl/server';
 import { site } from '@/config/site';
 
 export async function SoftwareApplicationSchema({ locale }: { locale: string }) {
-    const t = await getTranslations({ locale, namespace: 'metadata' });
-    const sameAs = [site.socialLinks.linkedin, site.socialLinks.reddit].filter(
-        (value): value is string => Boolean(value)
-    );
+  const t = await getTranslations({ locale, namespace: 'metadata' });
+  const isZh = locale === 'zh';
+  const localeCode = isZh ? 'zh-CN' : 'en-US';
 
-    const organizationSchema = {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": site.siteName,
-        "url": site.siteUrl,
-        "email": site.supportEmail,
+  const baseUrl = site.siteUrl.endsWith('/') ? site.siteUrl.slice(0, -1) : site.siteUrl;
+  const orgId = `${baseUrl}/#organization`;
+  const websiteId = `${baseUrl}/#website`;
+  const appId = `${baseUrl}/#softwareapplication`;
+
+  const sameAs = [site.socialLinks.linkedin, site.socialLinks.reddit].filter(
+    (value): value is string => Boolean(value)
+  );
+
+  const featureList = isZh
+    ? [
+        '多模态输入创作流程说明',
+        'Gemini Omni 能力方向与开放节奏追踪',
+        '视频工作流准备与接口示例',
+        '可直接访问的在线视频与图像创作工具入口',
+      ]
+    : [
+        'Guided multimodal workflow onboarding',
+        'Gemini Omni capability and rollout tracking',
+        'API-style integration examples for video workflows',
+        'Direct links to live video and image creation tools',
+      ];
+
+  const schema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': orgId,
+        name: site.siteName,
+        url: site.siteUrl,
+        email: site.supportEmail,
         ...(sameAs.length ? { sameAs } : {}),
-    };
-
-    const websiteSchema = {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": site.siteName,
-        "alternateName": "Gemini Omni Hub",
-        "url": site.siteUrl,
-        "inLanguage": locale === "zh" ? "zh-CN" : "en-US",
-        "publisher": {
-            "@type": "Organization",
-            "name": site.siteName,
-            "url": site.siteUrl,
+      },
+      {
+        '@type': 'WebSite',
+        '@id': websiteId,
+        url: site.siteUrl,
+        name: site.siteName,
+        inLanguage: ['en-US', 'zh-CN'],
+        publisher: {
+          '@id': orgId,
         },
-    };
-
-    const appSchema = {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": `${site.siteName} - Gemini Omni Intelligence Hub`,
-        "description": t('description'),
-        "applicationCategory": "MultimediaApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD",
-            "availability": "https://schema.org/PreOrder",
-            "url": site.siteUrl
+      },
+      {
+        '@type': 'SoftwareApplication',
+        '@id': appId,
+        name: site.siteName,
+        description: t('description'),
+        url: `${site.siteUrl}/${isZh ? 'zh' : 'en'}`,
+        inLanguage: localeCode,
+        applicationCategory: 'MultimediaApplication',
+        operatingSystem: 'Web Browser',
+        screenshot: new URL(site.ogImagePath, site.siteUrl).toString(),
+        provider: {
+          '@id': orgId,
         },
-        "featureList": [
-            "Gemini Omni launch signal monitoring",
-            "Google Omni Video Model capability tracking",
-            "Multimodal AI video trend aggregation",
-            "Rapid indexing and schema-ready landing structure",
-            "Traffic routing to production-ready AI tools"
-        ],
-        "screenshot": new URL(site.ogImagePath, site.siteUrl).toString(),
-        "provider": {
-            "@type": "Organization",
-            "name": site.siteName,
-            "url": site.siteUrl
-        }
-    };
+        isPartOf: {
+          '@id': websiteId,
+        },
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/PreOrder',
+          url: site.siteUrl,
+        },
+        featureList,
+      },
+    ],
+  };
 
-    const faqSchema = {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "What is Gemini Omni?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Gemini Omni refers to Google's emerging multimodal AI direction combining text, image, audio, and video capabilities."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "How to access Gemini Omni?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Access depends on official rollout and API release timelines announced by Google."
-                }
-            }
-        ]
-    };
-
-    const schema = [organizationSchema, websiteSchema, appSchema, faqSchema];
-
-    return (
-        <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
-    );
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 }

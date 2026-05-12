@@ -9,7 +9,7 @@ export const routing = defineRouting({
   locales,
   // Used when no locale matches
   defaultLocale: 'en',
-  alternateLinks: false,
+  alternateLinks: true,
   // Always use locale prefix for Cloudflare Pages compatibility
   localePrefix: 'always',
   // Locale is fully encoded in the URL, so we disable locale cookies/detection

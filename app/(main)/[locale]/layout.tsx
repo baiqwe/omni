@@ -8,6 +8,7 @@ import { ThemeProvider } from "next-themes";
 import { SoftwareApplicationSchema } from "@/components/json-ld-schema";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { site } from "@/config/site";
+import { buildLocaleAlternates } from "@/utils/seo/metadata";
 
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }));
@@ -28,6 +29,7 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
         },
         description: messages.metadata.description,
         keywords: messages.metadata.keywords,
+        alternates: buildLocaleAlternates(`/${locale}`),
 
         // ✅ 作者和站点信息
         authors: [{ name: site.siteName }],
@@ -40,7 +42,6 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
             description: messages.metadata.description,
             type: "website",
             locale: locale === 'zh' ? 'zh_CN' : 'en_US',
-            url: `${site.siteUrl}/${locale}`,
             siteName: site.siteName,
             images: [
                 {

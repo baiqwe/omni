@@ -18,8 +18,8 @@ export default function Header() {
 
   const mainNavItems: NavItem[] = [
     { id: "overview", label: currentLocale === "zh" ? "概览" : "Overview", href: "#overview" },
-    { id: "capabilities", label: currentLocale === "zh" ? "能力预测" : "Capabilities", href: "#capabilities" },
-    { id: "indexing", label: currentLocale === "zh" ? "收录策略" : "Indexing", href: "#indexing" },
+    { id: "capabilities", label: currentLocale === "zh" ? "能力预览" : "Capabilities", href: "#capabilities" },
+    { id: "indexing", label: currentLocale === "zh" ? "开放进展" : "Rollout", href: "#indexing" },
     { id: "api", label: "API", href: "#api" },
     { id: "faq", label: "FAQ", href: "#faq" },
   ];
