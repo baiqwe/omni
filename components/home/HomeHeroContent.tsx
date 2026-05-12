@@ -13,11 +13,11 @@ function getQuickLinks(locale: string) {
     },
     {
       href: "#capabilities",
-      label: locale === "zh" ? "核心能力预测" : "Core Capabilities",
+      label: locale === "zh" ? "能力预览" : "Capabilities",
     },
     {
       href: "#indexing",
-      label: locale === "zh" ? "快速收录方案" : "Rapid Indexing",
+      label: locale === "zh" ? "开放进展" : "Rollout Status",
     },
     {
       href: "#api",
@@ -59,8 +59,8 @@ export async function HomeHeroHeading({ locale }: Props) {
         </h1>
         <p className="mx-auto max-w-4xl text-xl leading-9 text-white/82">
           {locale === "zh"
-            ? "聚焦 Gemini Omni、Google Omni Video Model 与 Multi-modal AI 的最新动态，提供可被搜索引擎快速理解的结构化内容与预览工具入口。"
-            : "Focused on Gemini Omni, Google Omni Video Model, and multimodal AI trends with structured content that search engines can index fast."}
+            ? "在这里快速了解 Gemini Omni 的能力方向、使用方式和开放进展，帮助你更早规划视频创作流程。"
+            : "Get a clear view of Gemini Omni capabilities, practical workflows, and rollout status so you can prepare your video pipeline early."}
         </p>
         <p className="mx-auto max-w-3xl text-base leading-8 text-white/62">
           {t("subtitle")}
@@ -90,18 +90,18 @@ export async function HomeHeroSupport({ locale }: Props) {
       <div className="mx-auto grid max-w-4xl gap-3 text-left text-sm text-white/68 md:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-black/22 px-4 py-3 backdrop-blur-md">
           {locale === "zh"
-            ? "页面不是空白倒计时，而是持续更新的 Gemini Omni 情报与应用前置页。"
-            : "This page is not a blank countdown. It is a continuously updated Gemini Omni intelligence layer."}
+            ? "这里不是空白倒计时页面，而是持续更新的产品说明与上手入口。"
+            : "This is not a blank countdown page. It is a living guide with practical onboarding context."}
         </div>
         <div className="rounded-2xl border border-white/10 bg-black/22 px-4 py-3 backdrop-blur-md">
           {locale === "zh"
-            ? "通过关键词密度、FAQ 与 SoftwareApplication Schema，提升 Gemini Omni 相关查询可见度。"
-            : "Semantic keyword density, FAQ blocks, and SoftwareApplication schema improve discoverability."}
+            ? "你可以先看核心能力、示例接口和常见问题，快速判断它是否适合你的场景。"
+            : "Review core capabilities, API examples, and FAQ to quickly decide whether it fits your workflow."}
         </div>
         <div className="rounded-2xl border border-white/10 bg-black/22 px-4 py-3 backdrop-blur-md">
           {locale === "zh"
-            ? "在官方 API 全量开放前，先把等待流量导向你已上线的 AI 工具矩阵，形成转化闭环。"
-            : "Before full API access, direct waiting traffic to your launched AI products to close conversion loops."}
+            ? "在全面开放前，你也可以先使用我们已上线的工具，立即开始做视频和图像实验。"
+            : "Before full access, you can still create right now through our live video and image tools."}
         </div>
       </div>
     </div>

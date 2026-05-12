@@ -7,9 +7,10 @@ interface HomeClientWrapperProps {
     heroHeading: ReactNode;
     heroSupport: ReactNode;
     staticContent: ReactNode;
+    locale: string;
 }
 
-export default function HomeClientWrapper({ heroHeading, heroSupport, staticContent }: HomeClientWrapperProps) {
+export default function HomeClientWrapper({ heroHeading, heroSupport, staticContent, locale }: HomeClientWrapperProps) {
     const [showStaticContent, setShowStaticContent] = useState(true);
 
     return (
@@ -26,7 +27,7 @@ export default function HomeClientWrapper({ heroHeading, heroSupport, staticCont
                 <div className="relative z-10 container px-4 md:px-6">
                     <div className="mx-auto flex max-w-6xl flex-col justify-center space-y-10 lg:min-h-[calc(100vh-11rem)] lg:space-y-14">
                         {heroHeading}
-                        <HomeInteractive onShowStaticContent={setShowStaticContent} />
+                        <HomeInteractive locale={locale} onShowStaticContent={setShowStaticContent} />
                         {heroSupport}
                     </div>
                 </div>

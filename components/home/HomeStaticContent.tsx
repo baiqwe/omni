@@ -9,75 +9,75 @@ export default async function HomeStaticContent({ locale }: Props) {
     {
       title: isZh ? "什么是 Gemini Omni？" : "What is Gemini Omni?",
       body: isZh
-        ? "Gemini Omni 被普遍视作 Google 下一代多模态 AI 路线的重要节点，目标是打通文本、图像、音频与视频理解和生成。"
-        : "Gemini Omni is widely viewed as a key milestone in Google's next-generation multimodal AI roadmap.",
+        ? "Gemini Omni 可以理解为 Google 在多模态方向上的重要产品能力：让文字、图像、音频和视频在同一条创作链路里协同工作。"
+        : "Gemini Omni can be understood as a key multimodal direction from Google, where text, images, audio, and video work together in one creation flow.",
     },
     {
-      title: isZh ? "Google Omni Video Model 焦点" : "Google Omni Video Model focus",
+      title: isZh ? "你可以期待什么体验" : "What kind of experience to expect",
       body: isZh
-        ? "行业讨论重点集中在视频生成质量、时长一致性、跨模态对齐和实时交互能力，这些都决定了 Omni 模型的实际生产力。"
-        : "Discussion centers on video quality, long-range coherence, cross-modal alignment, and real-time interaction.",
+        ? "相比单一提示词生成，它更强调参考素材控制、镜头连续性和创作迭代效率。"
+        : "Compared with one-shot prompt generation, it is expected to focus more on reference control, shot continuity, and iterative creation speed.",
     },
     {
-      title: isZh ? "为什么先做内容聚合页" : "Why build a content hub first",
+      title: isZh ? "当前页面能帮你做什么" : "What this page helps you do now",
       body: isZh
-        ? "相比空白的 Coming Soon 页面，持续更新的 Gemini Omni 内容页更容易获得搜索引擎抓取和长尾关键词排名。"
-        : "A living Gemini Omni content hub tends to get indexed faster than a blank coming-soon page.",
+        ? "先用一页看清能力边界、开放进展和替代工具，避免盲等或重复试错。"
+        : "Understand capability boundaries, rollout progress, and available alternatives in one place so you can avoid blind waiting.",
     },
   ];
 
   const capabilityForecasts = [
-    isZh ? "高保真 4K 级视频生成能力（预测）" : "High-fidelity 4K-class generation (forecast)",
-    isZh ? "更长时长的语义一致性与镜头连续性（预测）" : "Longer semantic coherence and shot continuity (forecast)",
-    isZh ? "多模态实时理解与对话式视频创作（预测）" : "Real-time multimodal understanding and conversational video creation (forecast)",
-    isZh ? "可结合企业工作流的 API 化调用路径（预测）" : "API-ready integration paths for production workflows (forecast)",
+    isZh ? "更高质量的视频细节与画面稳定性（预测）" : "Higher visual fidelity and frame stability (forecast)",
+    isZh ? "更长时长下的语义一致性与镜头衔接（预测）" : "Longer semantic consistency and shot continuity (forecast)",
+    isZh ? "图像、音频与文本之间更自然的联动生成（预测）" : "More natural cross-modal generation between image, audio, and text (forecast)",
+    isZh ? "更适合团队协作的接口与工作流接入方式（预测）" : "API and workflow integration patterns better suited for teams (forecast)",
   ];
 
-  const indexingSteps = [
+  const rolloutSteps = [
     {
-      title: "Google Search Console",
+      title: isZh ? "第一步：先理解适用场景" : "Step 1: Define your use case",
       body: isZh
-        ? "验证域名后立即提交 sitemap，并对关键 URL 发起手动抓取请求。"
-        : "Verify the domain, submit sitemap.xml, and request indexing for core URLs.",
+        ? "先明确你要做的是广告短片、预演镜头、社媒素材，还是品牌内容。目标越清晰，后续迭代越快。"
+        : "Decide whether you are creating ads, previs shots, social clips, or brand content. Clear goals lead to faster iteration.",
     },
     {
-      title: "Structured Data",
+      title: isZh ? "第二步：提前整理参考素材" : "Step 2: Prepare your reference assets",
       body: isZh
-        ? "在页面中标注 SoftwareApplication、FAQPage 和 WebSite 信息，帮助 Google 明确页面语义。"
-        : "Mark the page with SoftwareApplication, FAQPage, and WebSite schema blocks.",
+        ? "建议提前准备关键画面、参考视频和音频片段，等能力开放后可以第一时间进入生产。"
+        : "Prepare key frames, reference clips, and audio assets early so you can start production immediately when access expands.",
     },
     {
-      title: "External Signals",
+      title: isZh ? "第三步：关注开放节奏" : "Step 3: Track rollout timing",
       body: isZh
-        ? "通过 X/Twitter、产品矩阵站点和社区帖子增加初始外链与抓取信号。"
-        : "Use X/Twitter, your product network, and community posts to seed crawl signals.",
+        ? "我们会持续更新 Gemini Omni 相关动态与可用状态，帮助你判断何时从测试切到正式使用。"
+        : "We continuously update Gemini Omni status and launch signals so you can decide when to move from exploration to production.",
     },
     {
-      title: "Fresh Content Cadence",
+      title: isZh ? "第四步：先用可用工具验证想法" : "Step 4: Validate ideas with live tools",
       body: isZh
-        ? "每 48-72 小时更新一次 Gemini Omni 进展摘要，持续触发重新抓取。"
-        : "Publish a Gemini Omni update every 48-72 hours to trigger re-crawls.",
+        ? "如果你现在就要出结果，可以先用已上线工具完成实验与提案，再迁移到 Gemini Omni。"
+        : "If you need output right now, use live tools for experiments and client drafts, then migrate to Gemini Omni later.",
     },
   ];
 
   const faqs = [
     {
-      question: isZh ? "Gemini Omni 现在可以直接调用 API 吗？" : "Is Gemini Omni API fully available now?",
+      question: isZh ? "Gemini Omni 现在可以直接用吗？" : "Can I use Gemini Omni directly right now?",
       answer: isZh
-        ? "当前页面主要用于追踪 Gemini Omni 与 Google Omni Video Model 的进展信号，官方 API 的开放节奏以 Google 公告为准。"
-        : "This page tracks Gemini Omni and Google Omni Video Model rollout signals. Official API timing depends on Google announcements.",
+        ? "当前以逐步开放为主，不同能力的可用范围会变化。你可以先参考本页更新，按可用状态安排工作计划。"
+        : "Access is rolling out in stages, and availability can change by feature. Use this page for updates and plan your workflow accordingly.",
     },
     {
-      question: isZh ? "为什么页面里反复出现 Gemini Omni 关键词？" : "Why is Gemini Omni repeated frequently on the page?",
+      question: isZh ? "等待期间我该做哪些准备？" : "What should I prepare while waiting?",
       answer: isZh
-        ? "这是为了建立清晰的语义相关性，帮助搜索引擎理解页面主题，覆盖 how to access gemini omni 等检索意图。"
-        : "It reinforces topical relevance for search engines and captures intent queries such as how to access Gemini Omni.",
+        ? "优先整理参考素材与创作脚本，明确输出目标和风格约束。这样开放后可以直接进入高效率迭代。"
+        : "Prioritize reference assets, creative scripts, and output constraints. This makes your first production iterations much faster.",
     },
     {
-      question: isZh ? "等待期间用户会流失吗？" : "Will users churn while waiting for launch?",
+      question: isZh ? "如果我现在就要生成内容怎么办？" : "What if I need generated content now?",
       answer: isZh
-        ? "页面通过替代工具入口把等待流量导向现有产品，降低流量损耗并提升整体转化率。"
-        : "The page routes waiting traffic to live tools, reducing churn and improving conversion efficiency.",
+        ? "你可以先使用页面中的在线工具进行视频或图像创作，先拿到可执行结果，再衔接后续能力升级。"
+        : "You can start with the linked live tools for video or image creation now, then transition as Gemini Omni capabilities expand.",
     },
   ];
 
@@ -88,14 +88,14 @@ export default async function HomeStaticContent({ locale }: Props) {
       <section id="overview" className="py-20">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-6xl">
-            <div className="section-kicker">{isZh ? "Gemini Omni Intelligence Hub" : "Gemini Omni Intelligence Hub"}</div>
+            <div className="section-kicker">{isZh ? "产品概览" : "Product Overview"}</div>
             <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              {isZh ? "为 Gemini Omni 与 Google Omni Video Model 设计的首发承接页" : "A launch-ready page for Gemini Omni and Google Omni Video Model"}
+              {isZh ? "一页看懂 Gemini Omni 的方向与价值" : "Understand Gemini Omni in one page"}
             </h2>
             <p className="mt-4 max-w-4xl text-base leading-8 text-white/66 sm:text-lg">
               {isZh
-                ? "这里聚合 Gemini Omni 相关信息、能力预测和 SEO 实操清单，既满足快速收录，也承接“如何使用 Gemini Omni”类检索流量。"
-                : "This hub aggregates Gemini Omni updates, capability forecasts, and SEO execution steps to capture launch-intent traffic."}
+                ? "这不是只讲概念的落地页，而是面向真实创作流程的用户指南：先帮你判断值不值得用，再帮你准备怎么用。"
+                : "This is not just a concept page. It is a user-facing guide for real creative workflows: decide if it fits, then prepare to use it effectively."}
             </p>
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               {keySignals.map((item) => (
@@ -112,9 +112,9 @@ export default async function HomeStaticContent({ locale }: Props) {
       <section id="capabilities" className="border-y border-white/6 bg-[linear-gradient(180deg,#0b1022_0%,#0b0f1d_100%)] py-20">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-6xl">
-            <div className="section-kicker">{isZh ? "Capability Forecast" : "Capability Forecast"}</div>
+            <div className="section-kicker">{isZh ? "能力预览" : "Capability Preview"}</div>
             <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              {isZh ? "Gemini Omni 多模态能力预测" : "Gemini Omni multimodal capability forecast"}
+              {isZh ? "你最关心的能力方向" : "Capability directions users care about"}
             </h2>
             <div className="mt-8 grid gap-4 md:grid-cols-2">
               {capabilityForecasts.map((item) => (
@@ -130,12 +130,12 @@ export default async function HomeStaticContent({ locale }: Props) {
       <section id="indexing" className="py-20">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-6xl">
-            <div className="section-kicker">{isZh ? "Rapid Indexing Playbook" : "Rapid Indexing Playbook"}</div>
+            <div className="section-kicker">{isZh ? "开放进展" : "Rollout Guide"}</div>
             <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              {isZh ? "Gemini Omni 站点快速收录执行清单" : "Fast indexing checklist for Gemini Omni pages"}
+              {isZh ? "现在到正式使用前，你可以这样准备" : "How to prepare before full access"}
             </h2>
             <div className="mt-8 grid gap-4 md:grid-cols-2">
-              {indexingSteps.map((step) => (
+              {rolloutSteps.map((step) => (
                 <div key={step.title} className="surface-card p-6">
                   <h3 className="text-base font-semibold text-white">{step.title}</h3>
                   <p className="mt-2 text-sm leading-7 text-white/66">{step.body}</p>
@@ -149,14 +149,14 @@ export default async function HomeStaticContent({ locale }: Props) {
       <section id="api" className="border-y border-white/6 bg-[linear-gradient(180deg,#0a1221_0%,#0a0f1b_100%)] py-20">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-6xl">
-            <div className="section-kicker">{isZh ? "API Preview Block" : "API Preview Block"}</div>
+            <div className="section-kicker">{isZh ? "接口示例" : "API Example"}</div>
             <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              {isZh ? "Gemini Omni API 调用预览（占位）" : "Gemini Omni API integration preview (placeholder)"}
+              {isZh ? "接口调用示例（占位）" : "API call example (placeholder)"}
             </h2>
             <p className="mt-4 max-w-4xl text-base leading-8 text-white/66 sm:text-lg">
               {isZh
-                ? "即使在等待正式开放阶段，也建议保留一个干净的 API 代码区块，有助于强化 Google Omni Video Model 与开发者意图关键词。"
-                : "Even before official release, keeping a clean API block strengthens developer-intent keyword coverage."}
+                ? "下面示例用于帮助你提前理解接入方式。参数和地址以官方发布为准。"
+                : "Use this sample to understand the integration shape early. Final endpoint and parameters will follow official releases."}
             </p>
             <pre className="mt-6 overflow-x-auto rounded-3xl border border-white/12 bg-black/30 p-5 text-xs leading-7 text-white/82 sm:text-sm">
 {`// Placeholder: Gemini Omni video generation
@@ -186,7 +186,7 @@ console.log(result);`}
           <div className="mx-auto max-w-6xl">
             <div className="section-kicker">FAQ</div>
             <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              {isZh ? "Gemini Omni 常见问题" : "Gemini Omni frequently asked questions"}
+              {isZh ? "常见问题" : "Frequently asked questions"}
             </h2>
             <div className="mt-8 grid gap-4">
               {faqs.map((faq) => (

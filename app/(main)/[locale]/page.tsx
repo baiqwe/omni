@@ -49,7 +49,7 @@ export default async function HomePage(props: { params: Promise<{ locale: string
 
     return (
         <>
-            <HomeClientWrapper heroHeading={heroHeading} heroSupport={heroSupport} staticContent={staticContent} />
+            <HomeClientWrapper heroHeading={heroHeading} heroSupport={heroSupport} staticContent={staticContent} locale={locale} />
         </>
     );
 }

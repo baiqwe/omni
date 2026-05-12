@@ -12,17 +12,16 @@ export function Footer() {
   const localePrefix = `/${currentLocale}`;
 
   const productLinks = [
-    { label: "Animeify.co", href: "https://animeify.co" },
-    { label: "Wingdings", href: "https://wingdings.co" },
-    { label: "Random Generator", href: "https://randomobject.co" },
+    { label: "Seedance2Video", href: "https://seedance2video.cc" },
+    { label: "GPTImage2", href: "https://gptimage2.online" },
   ];
 
   const pageLinks = [
     { label: isZh ? "概览" : "Overview", href: "#overview" },
-    { label: isZh ? "能力预测" : "Capabilities", href: "#capabilities" },
-    { label: isZh ? "收录策略" : "Indexing", href: "#indexing" },
-    { label: "API", href: "#api" },
-    { label: "FAQ", href: "#faq" },
+    { label: isZh ? "能力预览" : "Capabilities", href: "#capabilities" },
+    { label: isZh ? "开放进展" : "Rollout", href: "#indexing" },
+    { label: isZh ? "接口示例" : "API", href: "#api" },
+    { label: isZh ? "常见问题" : "FAQ", href: "#faq" },
   ];
 
   return (
@@ -34,11 +33,11 @@ export function Footer() {
               <Logo />
               <p className="mt-4 text-sm leading-7 text-muted-foreground">
                 {isZh
-                  ? "围绕 Gemini Omni 与 Google Omni Video Model 的单页信息入口，用于快速收录、热度承接与矩阵导流。"
-                  : "Single-page Gemini Omni hub built for rapid indexing, launch-intent capture, and product-network traffic routing."}
+                  ? "面向创作者的 Gemini Omni 单页站点，帮助你快速了解能力、跟踪开放进展，并尽快开始创作。"
+                  : "A user-first Gemini Omni single-page site to understand capabilities, track rollout progress, and start creating sooner."}
               </p>
               <p className="mt-3 inline-flex rounded-full border border-border/80 bg-background/80 px-3 py-1.5 text-xs text-muted-foreground">
-                {isZh ? "Status: API 接入监测中" : "Status: API rollout monitoring"}
+                {isZh ? "状态：功能逐步开放中" : "Status: features rolling out"}
               </p>
             </div>
 
@@ -79,7 +78,7 @@ export function Footer() {
               © {new Date().getFullYear()} {site.siteName}. {isZh ? "保留所有权利。" : "All rights reserved."}
             </p>
             <p className="text-center text-sm text-muted-foreground md:text-right">
-              {isZh ? "Built for Gemini Omni launch traffic" : "Built for Gemini Omni launch traffic"}
+              {isZh ? "为真实创作流程而构建" : "Built for real creative workflows"}
             </p>
           </div>
         </div>

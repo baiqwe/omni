@@ -4,10 +4,13 @@ import { useEffect } from 'react';
 import { ArrowUpRight, CalendarClock, Globe2, Sparkles } from 'lucide-react';
 
 interface HomeInteractiveProps {
+  locale: string;
   onShowStaticContent: (show: boolean) => void;
 }
 
-export default function HomeInteractive({ onShowStaticContent }: HomeInteractiveProps) {
+export default function HomeInteractive({ locale, onShowStaticContent }: HomeInteractiveProps) {
+  const isZh = locale === 'zh';
+
   useEffect(() => {
     onShowStaticContent(true);
   }, [onShowStaticContent]);
@@ -19,14 +22,15 @@ export default function HomeInteractive({ onShowStaticContent }: HomeInteractive
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-3 py-1 text-xs uppercase tracking-[0.16em] text-white/72">
               <Sparkles className="h-3.5 w-3.5" />
-              Gemini Omni Early Access Signal
+              {isZh ? '抢先关注' : 'Early Access Watch'}
             </div>
             <h2 className="mt-4 text-2xl font-semibold text-white md:text-3xl">
-              Gemini Omni API integration in progress
+              {isZh ? 'Gemini Omni 功能正在逐步开放' : 'Gemini Omni features are rolling out'}
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-white/70 md:text-base">
-              We publish fresh context around Google Gemini Omni, multimodal video trends, and rollout signals so
-              teams can monitor launch timing and prepare implementation decisions early.
+              {isZh
+                ? '你可以先在这里了解能力边界、使用场景和最新进展，等官方能力全面开放后再无缝切换到正式工作流。'
+                : 'Use this page to understand capabilities, practical use cases, and rollout progress, then switch to full workflows as official access expands.'}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               <a
@@ -34,28 +38,37 @@ export default function HomeInteractive({ onShowStaticContent }: HomeInteractive
                 className="inline-flex items-center gap-2 rounded-full border border-white/14 bg-white/[0.06] px-4 py-2 text-sm text-white transition-colors hover:bg-white/[0.12]"
               >
                 <CalendarClock className="h-4 w-4" />
-                View indexing checklist
+                {isZh ? '查看开放进展' : 'View rollout updates'}
               </a>
               <a
                 href="#api"
                 className="inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-400/12 px-4 py-2 text-sm text-cyan-100 transition-colors hover:bg-cyan-400/20"
               >
                 <Globe2 className="h-4 w-4" />
-                Open API preview block
+                {isZh ? '查看接口示例' : 'See API example'}
               </a>
             </div>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-black/26 p-5">
-            <div className="text-xs uppercase tracking-[0.16em] text-white/45">Traffic Bridge</div>
-            <div className="mt-2 text-lg font-semibold text-white">Bai&apos;s AI Toolset</div>
+            <div className="text-xs uppercase tracking-[0.16em] text-white/45">{isZh ? '现在可体验' : 'Available Now'}</div>
+            <div className="mt-2 text-lg font-semibold text-white">{isZh ? '先体验这两个在线工具' : 'Try these live tools first'}</div>
             <p className="mt-2 text-sm leading-7 text-white/65">
-              While Gemini Omni is rolling out, route intent traffic to live tools and keep acquisition ROI positive.
+              {isZh
+                ? '如果你现在就想做视频实验或图片创作，可以先从下面两个产品开始，不用等待。'
+                : 'If you want to create right away, start with the two products below while Gemini Omni access expands.'}
             </p>
             <div className="mt-4 space-y-2">
-              <OutboundCard href="https://animeify.co" label="Animeify.co" desc="AI anime transformation" />
-              <OutboundCard href="https://wingdings.co" label="Wingdings" desc="Fast translation assistant" />
-              <OutboundCard href="https://randomobject.co" label="Random Generator" desc="Instant idea catalyst" />
+              <OutboundCard
+                href="https://seedance2video.cc"
+                label="Seedance2Video"
+                desc={isZh ? '在线 AI 视频生成体验' : 'Online AI video generation'}
+              />
+              <OutboundCard
+                href="https://gptimage2.online"
+                label="GPTImage2"
+                desc={isZh ? '在线 AI 图像创作体验' : 'Online AI image creation'}
+              />
             </div>
           </div>
         </div>
